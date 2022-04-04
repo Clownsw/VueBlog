@@ -1,5 +1,4 @@
 pub mod controller;
-pub mod dao;
 
 use vueblog_common::pojo::status::AppState;
 

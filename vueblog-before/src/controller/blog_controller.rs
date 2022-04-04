@@ -1,6 +1,6 @@
 use actix_web::{get, web, HttpRequest, Responder};
 use vueblog_common::{
-    dao::{get_by_id, select_all_count, select_all_limit},
+    dao::blog_dao::{get_by_id, select_all_count, select_all_limit},
     pojo::{
         blog::{LimitBlogs, SelectBlog},
         msg::ResultMsg,

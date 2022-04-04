@@ -1,6 +1,7 @@
 pub mod pojo;
 pub mod dao;
 pub mod util;
+pub mod config;
 
 #[cfg(test)]
 mod tests {
