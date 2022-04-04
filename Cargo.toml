@@ -1,0 +1,6 @@
+[workspace]
+members = [
+	"vueblog-common",
+	"vueblog-after",
+	"vueblog-before"
+]
