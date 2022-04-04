@@ -4,3 +4,9 @@ members = [
 	"vueblog-after",
 	"vueblog-before"
 ]
+
+[profile.release]
+lto = true
+strip = true
+debug = false
+opt-level = 3
