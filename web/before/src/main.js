@@ -16,7 +16,6 @@ import '@kangc/v-md-editor/lib/theme/style/github.css';
 
 import Prism from 'prismjs';
 import hljs from 'highlight.js';
-import './permisson'
 
 VueMarkdownEditor.use(vuepressTheme, {
     Prism,

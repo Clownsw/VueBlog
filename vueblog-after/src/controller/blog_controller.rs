@@ -1,13 +1,16 @@
 use actix_web::{get, post, web, HttpRequest, Responder};
 use chrono::Utc;
 use vueblog_common::{
-    dao::blog_dao::{add_blog, get_by_id, select_all_count, select_all_limit, update_blog_by_id, delete_blog_by_id},
+    dao::blog_dao::{
+        add_blog, delete_blog_by_id, get_by_id, select_all_count, select_all_limit,
+        update_blog_by_id,
+    },
     pojo::{
         blog::{InsertBlog, LimitBlogs, RequestBlog, SelectBlog, UpdateBlog},
         msg::ResultMsg,
         status::AppState,
     },
-    util::{error_util, sql_util::sql_run_is_success},
+    util::{common_util::to_json_string, error_util, sql_util::sql_run_is_success},
 };
 
 use crate::util::login_util::is_login_return;
@@ -53,10 +56,12 @@ pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> imp
 
     match get_by_id(&data.db_pool, id).await {
         Ok(v) => serde_json::to_string(&v).unwrap(),
-        Err(_) => serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-            error_util::BLOG_HAS_DELETE,
-        ))))
-        .unwrap(),
+        Err(_) => {
+            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                error_util::BLOG_HAS_DELETE,
+            ))))
+            .await
+        }
     }
 }
 
@@ -83,22 +88,24 @@ pub async fn blog_delete(
             // 如果文章的创建者, 不是当前传入的token的用户, 直接返回错误信息
             if v.user_id == user.id {
                 if sql_run_is_success(delete_blog_by_id(&data.db_pool, id).await).await {
-                    return serde_json::to_string(&ResultMsg::<()>::success_message(Some(
-                        String::from(error_util::SUCCESS),
-                    )))
-                    .unwrap();
+                    return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
+                        error_util::SUCCESS,
+                    ))))
+                    .await;
                 }
             }
 
-            serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                 error_util::NOT_REQUEST_ACCESS,
             ))))
-            .unwrap()
+            .await
         }
-        Err(_) => serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-            error_util::BLOG_HAS_DELETE,
-        ))))
-        .unwrap(),
+        Err(_) => {
+            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                error_util::BLOG_HAS_DELETE,
+            ))))
+            .await
+        }
     }
 }
 
@@ -128,10 +135,10 @@ pub async fn blog_edit(
                     Ok(v2) => {
                         // 没有权限编辑
                         if v2.user_id != user.id {
-                            return serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(
-                                String::from(error_util::NOT_EDIT_ACCESS),
-                            )))
-                            .unwrap();
+                            return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                                error_util::NOT_EDIT_ACCESS,
+                            ))))
+                            .await;
                         }
 
                         let update_blog = UpdateBlog {
@@ -144,23 +151,23 @@ pub async fn blog_edit(
                         if sql_run_is_success(update_blog_by_id(&data.db_pool, update_blog).await)
                             .await
                         {
-                            return serde_json::to_string(&ResultMsg::<()>::success_message(Some(
+                            return to_json_string(&ResultMsg::<()>::success_message(Some(
                                 String::from(error_util::SUCCESS),
                             )))
-                            .unwrap();
+                            .await;
                         }
 
-                        return serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(
-                            String::from(error_util::ERROR),
-                        )))
-                        .unwrap();
+                        return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                            error_util::ERROR,
+                        ))))
+                        .await;
                     }
                     Err(_) => {
                         // 找不到这个文章
-                        return serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(
-                            String::from(error_util::BLOG_HAS_DELETE),
-                        )))
-                        .unwrap();
+                        return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                            error_util::BLOG_HAS_DELETE,
+                        ))))
+                        .await;
                     }
                 }
             } else {
@@ -175,21 +182,23 @@ pub async fn blog_edit(
                 };
 
                 if sql_run_is_success(add_blog(&data.db_pool, insert_blog).await).await {
-                    return serde_json::to_string(&ResultMsg::<()>::success_message(Some(
-                        String::from(error_util::SUCCESS),
-                    )))
-                    .unwrap();
+                    return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
+                        error_util::SUCCESS,
+                    ))))
+                    .await;
                 }
 
-                return serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                     error_util::SUCCESS,
                 ))))
-                .unwrap();
+                .await;
             }
         }
-        Err(_) => serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-            error_util::INCOMPLETE_REQUEST,
-        ))))
-        .unwrap(),
+        Err(_) => {
+            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                error_util::INCOMPLETE_REQUEST,
+            ))))
+            .await
+        }
     }
 }

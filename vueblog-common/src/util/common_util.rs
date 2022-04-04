@@ -3,6 +3,7 @@ use std::{future::Future, pin::Pin};
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder};
 use redis::{AsyncCommands, RedisError};
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
+use serde::Serialize;
 
 use crate::{config::global_config, pojo::user::SelectUser};
 
@@ -37,6 +38,13 @@ pub async fn sign_captcha_code(
     }
 
     false
+}
+
+/**
+ * 转换到JSON字符串
+ */
+pub async fn to_json_string<T: ?Sized + Serialize>(data: &T) -> String {
+    serde_json::to_string(&data).unwrap()
 }
 
 pub async fn test_aop<F, T>(f: F) -> T
