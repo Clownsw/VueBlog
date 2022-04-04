@@ -2,7 +2,13 @@
 name = "vueblog-common"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["smilex<msmliexx1@gmail.com>"]
 
 [dependencies]
+actix-web =  { version = "4", features = ["actix-web-codegen", "compress-brotli", "compress-gzip", "compress-zstd", "macros"] }
+redis = { version = "0.17.0", features = ["tokio-comp"] }
+redis-async-pool = "0.2.4"
+sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "runtime-actix-native-tls"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

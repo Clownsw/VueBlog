@@ -2,7 +2,7 @@
 name = "vueblog-after"
 version = "0.1.0"
 edition = "2021"
+authors = ["smilex<msmliexx1@gmail.com>"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
