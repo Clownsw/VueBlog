@@ -1,6 +1,10 @@
 use crate::{
     dao::user_dao::{get_by_id, select_all_user},
-    pojo::{msg::ResultMsg, status::AppState, user::ResponseUser},
+    pojo::{
+        msg::ResultMsg,
+        status::AppState,
+        user::{ResponseUser, SelectUser},
+    },
     util::{common_util::to_json_string, error_util, login_util::is_login_return},
 };
 use actix_web::{get, post, web, HttpRequest, Responder};
@@ -8,11 +12,16 @@ use actix_web::{get, post, web, HttpRequest, Responder};
 /**
  * 获取所有用户并序列化为JSON返回
  */
-#[get("/user/all")]
-pub async fn all_user(data: web::Data<AppState>) -> impl Responder {
+#[post("/user/all")]
+pub async fn all_user(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    if let Some(v) = error_msg {
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
+    }
+
     let all_user = select_all_user(&data.db_pool).await.unwrap();
 
-    to_json_string(&all_user).await
+    to_json_string(&ResultMsg::<Vec<SelectUser>>::success(Some(all_user))).await
 }
 
 /**
@@ -22,7 +31,7 @@ pub async fn all_user(data: web::Data<AppState>) -> impl Responder {
 pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     let (user, error_msg) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_msg {
-        return v;
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
     }
 
     let user = user.unwrap();
@@ -49,7 +58,7 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
 pub async fn index(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     let (user, error_msg) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_msg {
-        return v;
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
     }
 
     let user = user.unwrap();

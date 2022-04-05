@@ -22,7 +22,7 @@
           </el-form-item>
 
           <el-form-item label="密码" prop="password">
-            <el-input v-model="loginForm.password"></el-input>
+            <el-input type="password" v-model="loginForm.password"></el-input>
           </el-form-item>
 
           <el-form-item label="验证码" prop="captcha_code">

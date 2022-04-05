@@ -9,7 +9,9 @@ use sqlx::{MySqlPool, Pool};
 use controller::blog_controller::{blog_delete, blog_edit};
 use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::{
-    blog_controller::blog_list, other_controller::generate_captcha_code, user_controller::user_info,
+    blog_controller::blog_list,
+    other_controller::generate_captcha_code,
+    user_controller::{all_user, user_info},
 };
 use vueblog_common::pojo::status::AppState;
 
@@ -84,6 +86,7 @@ async fn main() -> std::io::Result<()> {
             .service(login)
             .service(sign_token)
             .service(generate_captcha_code)
+            .service(all_user)
             .service(user_info)
     })
     .bind((server_address, server_port))?

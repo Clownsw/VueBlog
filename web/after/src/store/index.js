@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         user: JSON.parse(sessionStorage.getItem("user")),
-        token: '',
+        token: localStorage.getItem("token"),
     },
     getters: {
         getToken: state => {

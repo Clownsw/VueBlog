@@ -26,7 +26,7 @@ pub async fn blog_delete(
 
     let (user, error_str) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_str {
-        return v;
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
     }
 
     let user = user.unwrap();
@@ -68,7 +68,7 @@ pub async fn blog_edit(
 ) -> impl Responder {
     let (user, error_str) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_str {
-        return v;
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
     }
 
     let user = user.unwrap();

@@ -45,7 +45,7 @@ export default {
     }
   },
   components: {
-    SideMenu
+    SideMenu,
   },
   methods: {
     logout() {
@@ -68,16 +68,14 @@ export default {
 }
 
 .el-header {
-  background-color: #B3C0D1;
+  background-color: #f5f5f5;
   color: #333;
   line-height: 60px;
+  text-align: center;
 }
 
 .el-main {
-  background-color: #E9EEF3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
+  padding: 8px;
 }
 
 .el-dropdown-link {
