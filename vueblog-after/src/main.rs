@@ -45,15 +45,6 @@ async fn make_redis_client() -> RedisPool {
 }
 
 /**
- * 初始化JWT KEY
- */
-async fn make_jwt_key() {
-    let mut jwt_key_ref = JWT_KEY.lock().unwrap();
-    *jwt_key_ref = std::env::var("JWT_KEY").unwrap();
-    info!("JWT TOKEN={}", *jwt_key_ref);
-}
-
-/**
  * 初始化
  */
 async fn init() -> (String, u16, MySqlPool, RedisPool) {
@@ -68,9 +59,6 @@ async fn init() -> (String, u16, MySqlPool, RedisPool) {
 
     // redis客户端
     let redis_client = make_redis_client().await;
-
-    // JWT KEY
-    make_jwt_key().await;
 
     // 服务地址
     let server_address = std::env::var("VUEBLOG_AFTER_URL").unwrap();
