@@ -105,8 +105,10 @@
           label="操作"
           show-overflow-tooltip
           align="center">
-        <el-button type="info">编辑</el-button>
-        <el-button type="danger">删除</el-button>
+        <template slot-scope="scope">
+          <el-button type="info" @click="show(scope)">编辑</el-button>
+          <el-button type="danger" @click="show">删除</el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -156,6 +158,9 @@ export default {
           .then(resp => {
             this.tableData = resp.data.data
           })
+    },
+    show(d) {
+      console.log(d)
     }
   },
   created() {

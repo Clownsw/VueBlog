@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 05/04/2022 11:15:11
+ Date: 05/04/2022 20:08:22
 */
 
 SET NAMES utf8mb4;
@@ -78,11 +78,12 @@ CREATE TABLE `m_user`  (
   `created` datetime(0) NOT NULL,
   `last_login` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
 INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
+INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 0, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;
