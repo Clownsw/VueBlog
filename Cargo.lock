@@ -3035,7 +3035,6 @@ dependencies = [
  "chrono",
  "dotenv",
  "jsonwebtoken",
- "lazy_static",
  "log",
  "pretty_env_logger",
  "redis",

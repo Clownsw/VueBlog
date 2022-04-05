@@ -1,24 +1,16 @@
 pub mod controller;
 
-#[macro_use]
-extern crate lazy_static;
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
-use std::sync::{Arc, Mutex};
 
 use controller::blog_controller::{blog_delete, blog_edit};
 use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::blog_controller::blog_list;
 use vueblog_common::controller::other_controller::generate_captcha_code;
 use vueblog_common::pojo::status::AppState;
-
-lazy_static! {
-    // JWT加密秘钥
-    pub static ref JWT_KEY: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
-}
 
 /**
  * 初始化数据库连接池

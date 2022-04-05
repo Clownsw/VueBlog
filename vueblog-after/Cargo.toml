@@ -18,6 +18,5 @@ sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "r
 redis = { version = "0.17.0", features = ["tokio-comp"] }
 redis-async-pool = "0.2.4"
 jsonwebtoken = "8.0.1"
-lazy_static = "1.4.0"
 
 vueblog-common = { path = "../vueblog-common" }
