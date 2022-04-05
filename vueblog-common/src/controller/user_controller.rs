@@ -1,5 +1,7 @@
 use crate::{
-    dao::user_dao::select_all_user, pojo::status::AppState, util::login_util::is_login_return,
+    dao::user_dao::select_all_user,
+    pojo::status::AppState,
+    util::{common_util::to_json_string, login_util::is_login_return},
 };
 use actix_web::{get, web, HttpRequest, Responder};
 
@@ -10,7 +12,7 @@ use actix_web::{get, web, HttpRequest, Responder};
 pub async fn all_user(data: web::Data<AppState>) -> impl Responder {
     let all_user = select_all_user(&data.db_pool).await.unwrap();
 
-    serde_json::to_string(&all_user)
+    to_json_string(&all_user).await
 }
 
 #[get("/user/index")]
@@ -22,5 +24,5 @@ pub async fn index(req: HttpRequest, data: web::Data<AppState>) -> impl Responde
 
     let user = user.unwrap();
 
-    serde_json::to_string(&user).unwrap()
+    to_json_string(&user).await
 }

@@ -1,10 +1,21 @@
-use actix_web::{HttpRequest, http::header};
+use actix_web::{http::header, HttpRequest};
 use serde::de::DeserializeOwned;
 use sqlx::MySqlPool;
 
-use crate::{pojo::{claims::Claims, user::{SelectUser, TokenUser}, msg::ResultMsg}, dao::user_dao::get_by_id};
+use crate::{
+    dao::user_dao::get_by_id,
+    pojo::{
+        claims::Claims,
+        msg::ResultMsg,
+        user::{SelectUser, TokenUser},
+    },
+};
 
-use super::{error_util, jwt_util::{sign_token_default, is_token_expried}};
+use super::{
+    common_util::to_json_string,
+    error_util,
+    jwt_util::{is_token_expried, sign_token_default},
+};
 
 /**
  * 判断是否登录
@@ -47,14 +58,27 @@ pub async fn is_login_return(
                 if v.status != -1 {
                     return (Some(v), None);
                 }
-                let r = ResultMsg::<()>::fail_msg(Some(String::from(
-                    error_util::USER_STATUS_UNAVAILABLE,
-                )));
-                return (None, Some(serde_json::to_string(&r).unwrap()));
+
+                return (
+                    None,
+                    Some(
+                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                            error_util::USER_STATUS_UNAVAILABLE,
+                        ))))
+                        .await,
+                    ),
+                );
             }
         }
     }
 
-    let r = ResultMsg::<()>::fail_msg(Some(String::from(error_util::NOT_REQUEST_ACCESS)));
-    (None, Some(serde_json::to_string(&r).unwrap()))
+    (
+        None,
+        Some(
+            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                error_util::NOT_REQUEST_ACCESS,
+            ))))
+            .await,
+        ),
+    )
 }

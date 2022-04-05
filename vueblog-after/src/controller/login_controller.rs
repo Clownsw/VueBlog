@@ -10,7 +10,7 @@ use vueblog_common::{
         user::{LoginUser, ResponseUser, TokenUser},
     },
     util::{
-        common_util::{build_http_response_json, sign_captcha_code},
+        common_util::{build_http_response_json, sign_captcha_code, to_json_string},
         error_util,
         jwt_util::{get_token_default_token_user, sign_token_default},
     },
@@ -33,10 +33,10 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
             return build_http_response_json(StatusCode::BAD_REQUEST)
                 .await
                 .set_body(
-                    serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                    to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                         error_util::NOT_FOUND_USERNAME_OR_PASSWORD,
                     ))))
-                    .unwrap(),
+                    .await,
                 );
         }
     };
@@ -78,20 +78,22 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
                     let response_user = ResponseUser::from_select_user(token, v);
 
                     return build_http_response_json(StatusCode::OK).await.set_body(
-                        serde_json::to_string(&ResultMsg::success(Some(
-                            serde_json::to_string(&response_user).unwrap(),
-                        )))
-                        .unwrap(),
+                        to_json_string(&ResultMsg::<ResponseUser>::success_all(
+                            200,
+                            Some(String::from(error_util::SUCCESS)),
+                            Some(response_user),
+                        ))
+                        .await,
                     );
                 }
 
                 build_http_response_json(StatusCode::FORBIDDEN)
                     .await
                     .set_body(
-                        serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                             error_util::USER_STATUS_UNAVAILABLE,
                         ))))
-                        .unwrap(),
+                        .await,
                     )
             }
             // 找不到直接返回相关错误提示
@@ -106,10 +108,10 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
                 build_http_response_json(StatusCode::NOT_FOUND)
                     .await
                     .set_body(
-                        serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                             error_util::ERROR_USERNAME_OR_PASSWORD,
                         ))))
-                        .unwrap(),
+                        .await,
                     )
             }
         }
@@ -117,10 +119,10 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
         build_http_response_json(StatusCode::NOT_FOUND)
             .await
             .set_body(
-                serde_json::to_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
                     error_util::ERROR_CAPTCHA_CODE,
                 ))))
-                .unwrap(),
+                .await,
             )
     }
 }
@@ -133,17 +135,17 @@ pub async fn sign_token(body: String) -> impl Responder {
     match sign_token_default::<Claims<TokenUser>>(body.as_str()).await {
         Ok(v) => {
             if v.claims.exp > Utc::now().timestamp_millis() as usize {
-                return serde_json::to_string(&ResultMsg::<()>::success_message(Some(
-                    String::from(error_util::SUCCESS),
-                )))
-                .unwrap();
+                return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
+                    error_util::SUCCESS,
+                ))))
+                .await;
             }
         }
         Err(_) => {}
     }
 
-    serde_json::to_string(&ResultMsg::<()>::success_message(Some(String::from(
+    to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
         error_util::NOT_REQUEST_ACCESS,
     ))))
-    .unwrap()
+    .await
 }
