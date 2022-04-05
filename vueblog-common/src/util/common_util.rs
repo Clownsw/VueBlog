@@ -31,7 +31,7 @@ pub async fn sign_captcha_code(
                 return false;
             }
 
-            return v == code.to_lowercase();
+            return v == code;
         }
         Err(_) => {}
     }

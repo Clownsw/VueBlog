@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     getCaptcha() {
-      this.$axios.get("http://localhost:9999/api/captcha")
+      this.$axios.get("api/captcha")
           .then(resp => {
             this.loginForm.captcha_id = resp.data.data.id
             this.base64_url = resp.data.data.base64_url
@@ -77,9 +77,25 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post("http://localhost:9999/admin/login", this.loginForm)
+          this.$axios.post("admin/login", this.loginForm)
               .then(resp => {
-                console.log(resp)
+                if (resp.status === 200) {
+                  console.log(resp.data)
+                  const token = resp.data.data.token
+                  console.log("token = " + token)
+
+                  this.$store.commit('SET_TOKEN', token)
+
+                  this.$message({
+                    message: '登录成功',
+                    type: 'success'
+                  });
+
+                  setTimeout(() => {
+                    this.$router.push('/')
+                  }, 1500)
+                }
+
                 this.getCaptcha()
               })
         } else {

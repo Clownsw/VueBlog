@@ -25,7 +25,7 @@ pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder 
     redis_util::set_and_ttl(
         &mut async_conn,
         result.clone(),
-        code.text.clone().to_lowercase(),
+        code.text.clone(),
         60 * 1000,
     )
     .await;
