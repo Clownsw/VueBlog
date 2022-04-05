@@ -1,5 +1,4 @@
 pub mod controller;
-pub mod util;
 
 #[macro_use]
 extern crate lazy_static;
@@ -13,6 +12,7 @@ use std::sync::{Arc, Mutex};
 use controller::blog_controller::{blog_delete, blog_edit};
 use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::blog_controller::blog_list;
+use vueblog_common::controller::other_controller::generate_captcha_code;
 use vueblog_common::pojo::status::AppState;
 
 lazy_static! {
@@ -102,6 +102,7 @@ async fn main() -> std::io::Result<()> {
             .service(blog_edit)
             .service(login)
             .service(sign_token)
+            .service(generate_captcha_code)
     })
     .bind((server_address, server_port))?
     .run()

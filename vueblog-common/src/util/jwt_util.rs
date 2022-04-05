@@ -1,10 +1,12 @@
-use crate::JWT_KEY;
+use crate::{
+    config::global_config::JWT_KEY,
+    pojo::{claims::Claims, user::TokenUser},
+};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{
     decode, encode, Algorithm, DecodingKey, EncodingKey, Header, TokenData, Validation,
 };
 use serde::{de::DeserializeOwned, Serialize};
-use vueblog_common::pojo::{claims::Claims, user::TokenUser};
 
 /**
  * 以默认算法生成token
@@ -17,7 +19,7 @@ pub async fn get_token_default<T: Serialize>(
     let token = encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(jwt_key_clone.lock().unwrap().as_bytes()),
+        &EncodingKey::from_secret(jwt_key_clone.as_bytes()),
     );
 
     token
@@ -34,7 +36,7 @@ where
 
     let token_message = decode(
         token,
-        &DecodingKey::from_secret(jwt_key_clone.lock().unwrap().as_bytes()),
+        &DecodingKey::from_secret(jwt_key_clone.as_bytes()),
         &Validation::new(Algorithm::HS256),
     );
 

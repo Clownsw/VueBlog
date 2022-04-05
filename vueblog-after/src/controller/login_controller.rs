@@ -1,4 +1,3 @@
-use crate::util::jwt_util::{get_token_default_token_user, sign_token_default};
 use actix_web::{http::StatusCode, post, web, HttpRequest, Responder};
 use chrono::Utc;
 use log::{error, info};
@@ -13,6 +12,7 @@ use vueblog_common::{
     util::{
         common_util::{build_http_response_json, sign_captcha_code},
         error_util,
+        jwt_util::{get_token_default_token_user, sign_token_default},
     },
 };
 

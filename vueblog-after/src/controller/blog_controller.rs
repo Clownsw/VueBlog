@@ -1,4 +1,3 @@
-use crate::util::login_util::is_login_return;
 use actix_web::{post, web, HttpRequest, Responder};
 use chrono::Utc;
 use vueblog_common::{
@@ -8,7 +7,10 @@ use vueblog_common::{
         msg::ResultMsg,
         status::AppState,
     },
-    util::{common_util::to_json_string, error_util, sql_util::sql_run_is_success},
+    util::{
+        common_util::to_json_string, error_util, login_util::is_login_return,
+        sql_util::sql_run_is_success,
+    },
 };
 
 /**
