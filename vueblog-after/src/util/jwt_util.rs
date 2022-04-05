@@ -1,11 +1,10 @@
+use crate::JWT_KEY;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{
     decode, encode, Algorithm, DecodingKey, EncodingKey, Header, TokenData, Validation,
 };
 use serde::{de::DeserializeOwned, Serialize};
 use vueblog_common::pojo::{claims::Claims, user::TokenUser};
-
-use crate::JWT_KEY;
 
 /**
  * 以默认算法生成token

@@ -1,7 +1,8 @@
-pub mod pojo;
-pub mod dao;
-pub mod util;
 pub mod config;
+pub mod controller;
+pub mod dao;
+pub mod pojo;
+pub mod util;
 
 #[cfg(test)]
 mod tests {

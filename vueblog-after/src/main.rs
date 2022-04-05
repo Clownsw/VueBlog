@@ -3,15 +3,17 @@ pub mod util;
 
 #[macro_use]
 extern crate lazy_static;
-use std::sync::{Arc, Mutex};
-
-use log::info;
-use redis_async_pool::{RedisConnectionManager, RedisPool};
-use vueblog_common::pojo::status::AppState;
-
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
+use log::info;
+use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
+use std::sync::{Arc, Mutex};
+
+use controller::blog_controller::{blog_delete, blog_edit};
+use controller::login_controller::{login, sign_token};
+use vueblog_common::controller::blog_controller::blog_list;
+use vueblog_common::pojo::status::AppState;
 
 lazy_static! {
     // JWT加密秘钥
@@ -86,6 +88,8 @@ async fn init() -> (String, u16, MySqlPool, RedisPool) {
 async fn main() -> std::io::Result<()> {
     let (server_address, server_port, db_pool, redis_client) = init().await;
 
+    info!("URL: http://{}:{}/", server_address.as_str(), server_port);
+
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::permissive())
@@ -93,6 +97,11 @@ async fn main() -> std::io::Result<()> {
                 db_pool: db_pool.clone(),
                 redis_pool: Some(redis_client.clone()),
             }))
+            .service(blog_list)
+            .service(blog_delete)
+            .service(blog_edit)
+            .service(login)
+            .service(sign_token)
     })
     .bind((server_address, server_port))?
     .run()

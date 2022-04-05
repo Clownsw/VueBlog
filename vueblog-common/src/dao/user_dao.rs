@@ -1,6 +1,5 @@
-use sqlx::MySqlPool;
-
 use crate::pojo::user::SelectUser;
+use sqlx::MySqlPool;
 
 /**
  * 查询所有用户

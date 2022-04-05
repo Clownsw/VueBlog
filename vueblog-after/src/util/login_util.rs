@@ -1,3 +1,4 @@
+use super::jwt_util::{is_token_expried, sign_token_default};
 use actix_web::{http::header, HttpRequest};
 use serde::de::DeserializeOwned;
 use sqlx::MySqlPool;
@@ -10,8 +11,6 @@ use vueblog_common::{
     },
     util::error_util,
 };
-
-use super::jwt_util::{is_token_expried, sign_token_default};
 
 /**
  * 判断是否登录

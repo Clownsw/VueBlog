@@ -1,12 +1,12 @@
 pub mod controller;
 
-use vueblog_common::pojo::status::AppState;
-
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
+use controller::blog_controller::blog_detail;
+use log::info;
 use sqlx::{MySqlPool, Pool};
-
-use controller::blog_controller::{blog_detail, blog_list};
+use vueblog_common::controller::blog_controller::blog_list;
+use vueblog_common::pojo::status::AppState;
 
 /**
  * 初始化数据库连接池
@@ -44,6 +44,8 @@ async fn init() -> (String, u16, MySqlPool) {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let (server_address, server_port, db_pool) = init().await;
+
+    info!("URL: http://{}:{}/", server_address.as_str(), server_port);
 
     HttpServer::new(move || {
         App::new()

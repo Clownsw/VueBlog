@@ -1,11 +1,9 @@
-use std::{future::Future, pin::Pin};
-
+use crate::{config::global_config, pojo::user::SelectUser};
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder};
 use redis::{AsyncCommands, RedisError};
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use serde::Serialize;
-
-use crate::{config::global_config, pojo::user::SelectUser};
+use std::{future::Future, pin::Pin};
 
 /**
  * 创建一个响应对象_json

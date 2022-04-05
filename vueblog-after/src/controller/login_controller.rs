@@ -1,3 +1,4 @@
+use crate::util::jwt_util::{get_token_default_token_user, sign_token_default};
 use actix_web::{http::StatusCode, post, web, HttpRequest, Responder};
 use chrono::Utc;
 use log::{error, info};
@@ -15,12 +16,10 @@ use vueblog_common::{
     },
 };
 
-use crate::util::jwt_util::{get_token_default_token_user, sign_token_default};
-
 /**
  * 登录API
  */
-#[post("/login")]
+#[post("/admin/login")]
 pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     let login_user: LoginUser;
 
