@@ -15,7 +15,7 @@ router.beforeEach(((to, from, next) => {
             axios.post("token", token)
                 .then(resp => {
                     if (resp.data.message === '无权限访问!') {
-                        store.commit('SET_TOKEN', '')
+                        sessionStorage.clear()
                         next({
                             path: '/login'
                         })

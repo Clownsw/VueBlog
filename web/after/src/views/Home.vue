@@ -14,9 +14,11 @@
               {{ user.username }}<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人中心</el-dropdown-item>
               <el-dropdown-item>
-                <el-link @click="logout">退出</el-link>
+                <el-link>个人中心</el-link>
+              </el-dropdown-item>
+              <el-dropdown-item @click.native="logout" style="text-align: center">
+                退出
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -48,6 +50,7 @@ export default {
   methods: {
     logout() {
       this.$store.commit("SET_TOKEN", "")
+      sessionStorage.clear()
       this.$router.push("/login")
     }
   },
@@ -87,6 +90,10 @@ export default {
   width: 210px;
   justify-content: space-around;
   align-items: center;
+}
+
+a {
+  text-decoration: none;
 }
 </style>
 

@@ -17,18 +17,19 @@ const routes = [
         meta: {
             requireAuth: true,
         },
-        redirect: "Index",
+        redirect: "/sys/index",
         children: [
             {
-                path: '/index',
+                path: '/sys/index',
                 name: 'Index',
                 component: Index,
                 meta: {
+                    title: '后台首页',
                     requireAuth: true
                 }
             },
             {
-                path: '/users',
+                path: '/sys/users',
                 name: 'SysUser',
                 component: User,
                 meta: {
@@ -37,7 +38,7 @@ const routes = [
                 }
             },
             {
-                path: '/roles',
+                path: '/sys/roles',
                 name: 'SysRole',
                 component: Role,
                 meta: {
@@ -46,7 +47,7 @@ const routes = [
                 }
             },
             {
-                path: '/menus',
+                path: '/sys/menus',
                 name: 'SysMenu',
                 component: Menu,
                 meta: {
