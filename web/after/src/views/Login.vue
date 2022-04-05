@@ -80,9 +80,7 @@ export default {
           this.$axios.post("admin/login", this.loginForm)
               .then(resp => {
                 if (resp.status === 200) {
-                  console.log(resp.data)
                   const token = resp.data.data.token
-                  console.log("token = " + token)
 
                   this.$store.commit('SET_TOKEN', token)
 
@@ -92,14 +90,13 @@ export default {
                   });
 
                   setTimeout(() => {
-                    this.$router.push('/')
+                    this.$router.push('/index')
                   }, 1500)
                 }
 
                 this.getCaptcha()
               })
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
