@@ -13,6 +13,7 @@ use vueblog_common::{
         common_util::{build_http_response_json, sign_captcha_code, to_json_string},
         error_util,
         jwt_util::{get_token_default_token_user, sign_token_default},
+        redis_util,
     },
 };
 
@@ -52,6 +53,8 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
     )
     .await
     {
+        redis_util::delete(&mut async_conn, login_user.captcha_id.clone()).await;
+
         // 验证账户密码的合法性
         match get_by_name_and_passwd(
             &data.db_pool,

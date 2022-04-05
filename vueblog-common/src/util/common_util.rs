@@ -1,6 +1,7 @@
+use super::redis_util;
 use crate::{config::global_config, pojo::user::SelectUser};
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder};
-use redis::{AsyncCommands, RedisError};
+use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use serde::Serialize;
 use std::{future::Future, pin::Pin};
@@ -22,7 +23,7 @@ pub async fn sign_captcha_code(
     id: String,
     code: String,
 ) -> bool {
-    let result = conn.get::<_, String>(id).await;
+    let result = redis_util::get::<String, String>(conn, id).await;
 
     match result {
         Ok(v) => {

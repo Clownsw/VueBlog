@@ -1,12 +1,11 @@
 use crate::{
     config::global_config,
     pojo::{captcha::ResultCaptcha, msg::ResultMsg, status::AppState},
-    util::{common_util::to_json_string, error_util},
+    util::{common_util::to_json_string, error_util, redis_util},
 };
 use actix_web::{get, web, Responder};
 use captcha_rust::Captcha;
 use crypto::{digest::Digest, sha2::Sha256};
-use redis::AsyncCommands;
 
 /**
  * 生成验证码
@@ -23,10 +22,13 @@ pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder 
 
     // 将验证码保存在redis, TTL为60秒
     let mut async_conn = data.redis_pool.as_ref().unwrap().get().await.unwrap();
-    async_conn
-        .pset_ex::<_, _, ()>(result.clone(), code.text.clone().to_lowercase(), 60 * 1000)
-        .await
-        .unwrap();
+    redis_util::set_and_ttl(
+        &mut async_conn,
+        result.clone(),
+        code.text.clone().to_lowercase(),
+        60 * 1000,
+    )
+    .await;
 
     // 将验证码返回
     to_json_string(&ResultMsg::<ResultCaptcha>::success_all(
