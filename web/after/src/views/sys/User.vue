@@ -106,8 +106,19 @@
           show-overflow-tooltip
           align="center">
         <template slot-scope="scope">
-          <el-button type="info" @click="edit(scope.row)">编辑</el-button>
-          <el-button type="danger" @click="show">删除</el-button>
+          <el-button type="info" @click="editUser(scope.row)">编辑</el-button>
+
+          <el-popconfirm
+              confirm-button-text='删除'
+              cancel-button-text='取消'
+              icon="el-icon-info"
+              icon-color="red"
+              title="您确定要删除该用户吗？"
+              style="margin-left: 5px"
+              @confirm="deleteUser(scope.row.id)"
+          >
+            <el-button type="danger" slot="reference">删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -220,12 +231,20 @@ export default {
             this.tableData = resp.data.data
           })
     },
-    edit(obj) {
+    editUser(obj) {
       this.ruleForm = JSON.parse(JSON.stringify(obj))
       this.editStatus = true
     },
-    show(d) {
-      console.log(d)
+    deleteUser(id) {
+      this.$axios.post("user/delete/" + id, {}, {
+        headers: {
+          'authorization': this.$store.getters.getToken,
+        }
+      })
+          .then(resp => {
+            this.$message.success(resp.data.message)
+            this.getUsers()
+          })
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -243,7 +262,9 @@ export default {
             }
           })
               .then(resp => {
-                console.log(resp)
+                this.$message.success(resp.data.message)
+                this.editStatus = false
+                this.getUsers()
               })
         } else {
           return false;

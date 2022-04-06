@@ -12,3 +12,5 @@ pub const ERROR_CAPTCHA_CODE: &str = "验证码错误, 或验证码已过期!";
 pub const USER_STATUS_UNAVAILABLE: &str = "用户已被禁用!";
 pub const BLOG_HAS_DELETE: &str = "该博文已被删除!";
 pub const INCOMPLETE_REQUEST: &str = "不完整的请求!";
+
+pub const ERROR_UNKNOWN: &str = "未知的错误!";

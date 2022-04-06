@@ -71,3 +71,17 @@ pub async fn update_by_id(
     .execute(db_pool)
     .await
 }
+
+/**
+ * 通过用户ID删除用户
+ */
+pub async fn delete_by_id(db_pool: &MySqlPool, id: i64) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            DELETE FROM m_user WHERE id = ?
+        "#,
+        id
+    )
+    .execute(db_pool)
+    .await
+}
