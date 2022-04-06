@@ -1,5 +1,8 @@
-use super::redis_util;
-use crate::{config::global_config, pojo::user::SelectUser};
+use super::{error_util, redis_util};
+use crate::{
+    config::global_config,
+    pojo::{msg::ResultMsg, user::SelectUser},
+};
 use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder};
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
@@ -44,6 +47,45 @@ pub async fn sign_captcha_code(
  */
 pub async fn to_json_string<T: ?Sized + Serialize>(data: &T) -> String {
     serde_json::to_string(&data).unwrap()
+}
+
+pub async fn build_response_ok_all<T>(data: Option<T>, message: String) -> HttpResponse<String>
+where
+    T: Serialize,
+{
+    build_http_response_json(StatusCode::OK)
+        .await
+        .set_body(to_json_string(&ResultMsg::<T>::success_all(200, Some(message), data)).await)
+}
+
+/**
+ * 返回一个200状态码的响应对象
+ */
+pub async fn build_response_ok_message(message: String) -> HttpResponse<String> {
+    build_response_ok_all::<()>(None, message).await
+}
+
+pub async fn build_response_fail_all<T>(data: Option<T>, message: String) -> HttpResponse<String>
+where
+    T: Serialize,
+{
+    build_http_response_json(StatusCode::BAD_REQUEST)
+        .await
+        .set_body(to_json_string(&ResultMsg::<T>::fail_all(400, Some(message), data)).await)
+}
+
+/**
+ * 返回一个400错误码的响应对象
+ */
+pub async fn build_response_baq_request_message(message: String) -> HttpResponse<String> {
+    build_response_fail_all::<()>(None, message).await
+}
+
+/**
+ * 返回一个400错误码的响应对象
+ */
+pub async fn build_response_baq_request() -> HttpResponse<String> {
+    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T

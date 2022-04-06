@@ -6,13 +6,16 @@ use crate::{
         user::{ResponseUser, SelectUser, UpdateUser},
     },
     util::{
-        common_util::{build_http_response_json, to_json_string},
+        common_util::{
+            build_response_baq_request, build_response_baq_request_message,
+            build_response_ok_message, to_json_string,
+        },
         error_util,
         login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
-use actix_web::{get, http::StatusCode, post, web, HttpRequest, Responder};
+use actix_web::{get, post, web, HttpRequest, Responder};
 
 /**
  * 获取所有用户并序列化为JSON返回
@@ -71,34 +74,20 @@ pub async fn user_update(
     // 验证用户是否登录
     let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_msg {
-        return build_http_response_json(StatusCode::BAD_REQUEST)
-            .await
-            .set_body(to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await);
+        return build_response_baq_request_message(v).await;
     }
 
     // 序列化JSON, 如果失败直接返回400
     match serde_json::from_str::<UpdateUser>(body.as_str()) {
         Ok(v) => {
             if sql_run_is_success(update_by_id(&data.db_pool, v).await).await {
-                return build_http_response_json(StatusCode::OK).await.set_body(
-                    to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-                        error_util::SUCCESS,
-                    ))))
-                    .await,
-                );
+                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
             }
         }
         Err(_) => {}
     }
 
-    build_http_response_json(StatusCode::BAD_REQUEST)
-        .await
-        .set_body(
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::INCOMPLETE_REQUEST,
-            ))))
-            .await,
-        )
+    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
 }
 
 /**
@@ -115,28 +104,14 @@ pub async fn user_delete(
     // 验证用户是否登录
     let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_msg {
-        return build_http_response_json(StatusCode::BAD_REQUEST)
-            .await
-            .set_body(to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await);
+        return build_response_baq_request_message(v).await;
     }
 
     if sql_run_is_success(delete_by_id(&data.db_pool, id).await).await {
-        return build_http_response_json(StatusCode::OK).await.set_body(
-            to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-                error_util::SUCCESS,
-            ))))
-            .await,
-        );
+        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
     }
 
-    build_http_response_json(StatusCode::BAD_REQUEST)
-        .await
-        .set_body(
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::INCOMPLETE_REQUEST,
-            ))))
-            .await,
-        )
+    build_response_baq_request().await
 }
 
 #[get("/user/index")]
