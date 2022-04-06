@@ -1,12 +1,13 @@
 use crate::{
-    dao::user_dao::{get_by_id, select_all_user},
+    dao::user_dao::{get_by_id, select_all_user, update_by_id},
     pojo::{
         msg::ResultMsg,
         status::AppState,
-        user::{ResponseUser, SelectUser},
+        user::{ResponseUser, SelectUser, UpdateUser},
     },
     util::{common_util::to_json_string, error_util, login_util::is_login_return},
 };
+use log::info;
 use actix_web::{get, post, web, HttpRequest, Responder};
 
 /**
@@ -52,6 +53,43 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             .await
         }
     }
+}
+
+/**
+ * 更新用户信息
+ */
+#[post("/user/update")]
+pub async fn user_update(
+    body: String,
+    req: HttpRequest,
+    data: web::Data<AppState>,
+) -> impl Responder {
+    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    if let Some(v) = error_msg {
+        info!("未登录");
+        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
+    }
+
+    info!("登录了");
+
+    match serde_json::from_str::<UpdateUser>(body.as_str()) {
+        Ok(v) => {
+            if let Ok(v) = update_by_id(&data.db_pool, v).await {
+                if v.rows_affected() > 0 {
+                    return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
+                        error_util::SUCCESS,
+                    ))))
+                    .await;
+                }
+            }
+        }
+        Err(_) => {}
+    }
+
+    to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+        error_util::INCOMPLETE_REQUEST,
+    ))))
+    .await
 }
 
 #[get("/user/index")]

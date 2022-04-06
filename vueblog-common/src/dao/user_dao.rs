@@ -1,4 +1,5 @@
-use crate::pojo::user::SelectUser;
+use crate::pojo::user::{SelectUser, UpdateUser};
+use sqlx::mysql::MySqlQueryResult;
 use sqlx::MySqlPool;
 
 /**
@@ -47,5 +48,26 @@ pub async fn get_by_name_and_passwd(
         password
     )
     .fetch_one(db_pool)
+    .await
+}
+
+/**
+ * 通过用户ID更新用户信息
+ */
+pub async fn update_by_id(
+    db_pool: &MySqlPool,
+    update_user: UpdateUser,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            UPDATE m_user SET username = ?, password = ?, avatar = ?, status = ? WHERE id = ?
+        "#,
+        update_user.username,
+        update_user.password,
+        update_user.avatar,
+        update_user.status,
+        update_user.id,
+    )
+    .execute(db_pool)
     .await
 }

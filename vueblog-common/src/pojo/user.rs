@@ -83,3 +83,16 @@ impl TokenUser {
         }
     }
 }
+
+/**
+ * 修改用户实体
+ */
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UpdateUser {
+    pub id: i64,
+    pub username: String,
+    pub avatar: String,
+    pub email: String,
+    pub password: String,
+    pub status: i32,
+}

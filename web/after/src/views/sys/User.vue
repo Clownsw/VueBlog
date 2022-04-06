@@ -106,11 +106,47 @@
           show-overflow-tooltip
           align="center">
         <template slot-scope="scope">
-          <el-button type="info" @click="show(scope)">编辑</el-button>
+          <el-button type="info" @click="edit(scope.row)">编辑</el-button>
           <el-button type="danger" @click="show">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+
+    <!--  用户信息编辑窗口  -->
+    <el-dialog
+        title="编辑"
+        :visible.sync="editStatus"
+        width="25%"
+        center
+        class="edit-box">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+
+        <el-form-item label="用户ID" prop="id">
+          <el-input v-model="ruleForm.id" readonly></el-input>
+        </el-form-item>
+
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="ruleForm.username"></el-input>
+        </el-form-item>
+
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="ruleForm.password"></el-input>
+        </el-form-item>
+
+        <el-form-item label="头像" prop="avatar">
+          <el-input v-model="ruleForm.avatar"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="ruleForm.email"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')" style="float: right">修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -133,7 +169,32 @@ export default {
           last_login_time: "2022-03-29 21:24:00",
         }
       ],
-      multipleSelection: []
+      multipleSelection: [],
+      editStatus: false,
+      ruleForm: {
+        id: 0,
+        username: '',
+        password: '',
+        avatar: '',
+        email: '',
+      },
+      rules: {
+        id: [
+          {required: true, message: '请输入用户ID', trigger: 'blur'},
+        ],
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+        ],
+        avatar: [
+          {required: true, message: '请输入头像地址', trigger: 'blur'},
+        ],
+        email: [
+          {required: true, message: '请输入邮箱', trigger: 'blur'},
+        ],
+      }
     }
   },
   methods: {
@@ -159,9 +220,39 @@ export default {
             this.tableData = resp.data.data
           })
     },
+    edit(obj) {
+      this.ruleForm = JSON.parse(JSON.stringify(obj))
+      this.editStatus = true
+    },
     show(d) {
       console.log(d)
-    }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$axios.post("user/update", {
+            id: this.ruleForm.id,
+            username: this.ruleForm.username,
+            password: this.ruleForm.password,
+            email: this.ruleForm.email,
+            avatar: this.ruleForm.avatar,
+            status: this.ruleForm.status
+          }, {
+            headers: {
+              'authorization': this.$store.getters.getToken,
+            }
+          })
+              .then(resp => {
+                console.log(resp)
+              })
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
   },
   created() {
     this.getUsers()
@@ -170,4 +261,7 @@ export default {
 </script>
 
 <style scoped>
+.edit-box ::v-deep(.el-dialog) {
+  padding-right: 30px !important;
+}
 </style>
