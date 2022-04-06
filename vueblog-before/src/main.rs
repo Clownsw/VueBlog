@@ -19,12 +19,18 @@ async fn make_db_pool() -> MySqlPool {
 /**
  * 初始化
  */
-async fn init() -> (String, u16, MySqlPool) {
+async fn init() -> (String, u16, usize, MySqlPool) {
     // 加载.env
     dotenv::dotenv().ok();
 
     // 初始化日志
     pretty_env_logger::init_custom_env("VUEBLOG_BEFORE_LOG_LEVEL");
+
+    // HTTP worker 个数
+    let workers = std::env::var("VUEBLOG_AFTER_WORKERS")
+        .unwrap()
+        .parse::<usize>()
+        .unwrap();
 
     // 数据库连接池
     let db_pool = make_db_pool().await;
@@ -38,12 +44,12 @@ async fn init() -> (String, u16, MySqlPool) {
         .parse::<u16>()
         .unwrap();
 
-    (server_address, server_port, db_pool)
+    (server_address, server_port, workers, db_pool)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let (server_address, server_port, db_pool) = init().await;
+    let (server_address, server_port, workers, db_pool) = init().await;
 
     info!("URL: http://{}:{}/", server_address.as_str(), server_port);
 
@@ -57,6 +63,7 @@ async fn main() -> std::io::Result<()> {
             .service(blog_list)
             .service(blog_detail)
     })
+    .workers(workers)
     .bind((server_address, server_port))?
     .run()
     .await
