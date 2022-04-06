@@ -46,15 +46,15 @@ pub async fn to_json_string<T: ?Sized + Serialize>(data: &T) -> String {
     serde_json::to_string(&data).unwrap()
 }
 
-pub async fn test_aop<F, T>(f: F) -> T
+pub async fn test_aop<F, T, K>(f: F) -> T
 where
-    F: Fn(Option<SelectUser>) -> Pin<Box<dyn Future<Output = T>>>,
+    F: Fn(Option<K>) -> Pin<Box<dyn Future<Output = T>>>,
 {
     f(None).await
 }
 
 pub async fn run_test_aop() {
-    test_aop(|select_user| {
+    test_aop::<_, (), SelectUser>(|select_user| {
         Box::pin(async {
             match select_user {
                 Some(v) => {
