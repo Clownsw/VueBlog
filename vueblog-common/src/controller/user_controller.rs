@@ -1,8 +1,8 @@
 use crate::{
-    dao::user_dao::{delete_by_id, get_by_id, select_all_user, update_by_id},
+    dao::user_dao::{delete_by_id, get_by_id, insert_user, select_all_user, update_by_id},
     pojo::{
         status::AppState,
-        user::{ResponseUser, SelectUser, UpdateUser},
+        user::{InsertUser, ResponseUser, SelectUser, UpdateUser},
     },
     util::{
         common_util::{
@@ -76,6 +76,29 @@ pub async fn user_update(
     match serde_json::from_str::<UpdateUser>(body.as_str()) {
         Ok(v) => {
             if sql_run_is_success(update_by_id(&data.db_pool, v).await).await {
+                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+            }
+        }
+        Err(_) => {}
+    }
+
+    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+}
+
+/**
+ * 添加用户
+ */
+#[post("/user/insert")]
+pub async fn user_add(body: String, req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    // 验证用户是否登录
+    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    if let Some(v) = error_msg {
+        return build_response_baq_request_message(v).await;
+    }
+
+    match serde_json::from_str::<InsertUser>(body.as_str()) {
+        Ok(v) => {
+            if sql_run_is_success(insert_user(&data.db_pool, v).await).await {
                 return build_response_ok_message(String::from(error_util::SUCCESS)).await;
             }
         }

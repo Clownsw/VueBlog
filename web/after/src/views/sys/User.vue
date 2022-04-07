@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary">新增</el-button>
+        <el-button type="primary" @click="addUser">新增</el-button>
       </el-form-item>
 
       <el-form-item>
@@ -82,7 +82,7 @@
           align="center">
         <template slot-scope="scope">
           <el-tag size="small" v-if="scope.row.status === 1" type="success">正常</el-tag>
-          <el-tag size="small" v-else-if="scope.row.status === 0" type="danger">禁用</el-tag>
+          <el-tag size="small" v-else-if="scope.row.status === -1" type="danger">禁用</el-tag>
         </template>
       </el-table-column>
 
@@ -133,7 +133,7 @@
         class="edit-box">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
 
-        <el-form-item label="用户ID" prop="id">
+        <el-form-item label="用户ID" prop="id" v-if="!this.isAddUser">
           <el-input v-model="ruleForm.id" readonly></el-input>
         </el-form-item>
 
@@ -145,6 +145,14 @@
           <el-input v-model="ruleForm.password"></el-input>
         </el-form-item>
 
+        <el-form-item label="状态" prop="status">
+          <br>
+          <el-radio-group v-model="ruleForm.status">
+            <el-radio :label="1">正常</el-radio>
+            <el-radio :label="-1">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item label="头像" prop="avatar">
           <el-input v-model="ruleForm.avatar"></el-input>
         </el-form-item>
@@ -154,7 +162,10 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')" style="float: right">修改</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')" style="float: right">{{
+              dialogBtnTitle
+            }}
+          </el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -173,10 +184,13 @@ export default {
       ],
       multipleSelection: [],
       editStatus: false,
+      isAddUser: false,
+      dialogBtnTitle: '',
       ruleForm: {
         id: 0,
         username: '',
         password: '',
+        status: 1,
         avatar: '',
         email: '',
       },
@@ -196,6 +210,9 @@ export default {
         email: [
           {required: true, message: '请输入邮箱', trigger: 'blur'},
         ],
+        status: [
+          {required: true, message: '请选择状态', trigger: 'blur'},
+        ]
       }
     }
   },
@@ -227,9 +244,17 @@ export default {
             }
           })
     },
+    addUser() {
+      this.editStatus = true
+      this.isAddUser = true
+      this.resetForm()
+      this.dialogBtnTitle = '添加'
+    },
     editUser(obj) {
       this.ruleForm = JSON.parse(JSON.stringify(obj))
       this.editStatus = true
+      this.isAddUser = false
+      this.dialogBtnTitle = '修改'
     },
     deleteUser(id) {
       this.$axios.post("user/delete/" + id, {}, {
@@ -245,30 +270,50 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post("user/update", {
-            id: this.ruleForm.id,
+
+          let address = this.isAddUser ? 'user/insert' : 'user/update';
+          let data = {
             username: this.ruleForm.username,
             password: this.ruleForm.password,
             email: this.ruleForm.email,
             avatar: this.ruleForm.avatar,
             status: this.ruleForm.status
-          }, {
+          };
+
+          if (!this.isAddUser) {
+            data = {
+              id: this.ruleForm.id,
+              username: this.ruleForm.username,
+              password: this.ruleForm.password,
+              email: this.ruleForm.email,
+              avatar: this.ruleForm.avatar,
+              status: this.ruleForm.status
+            }
+          }
+
+          this.$axios.post(address, data, {
             headers: {
               'authorization': this.$store.getters.getToken,
             }
+          }).then(resp => {
+            this.$message.success(resp.data.message)
+            this.editStatus = false
+            this.getUsers()
           })
-              .then(resp => {
-                this.$message.success(resp.data.message)
-                this.editStatus = false
-                this.getUsers()
-              })
         } else {
           return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.ruleForm = {
+        id: 0,
+        username: '',
+        password: '',
+        avatar: '',
+        status: 1,
+        email: '',
+      }
     },
   },
   created() {

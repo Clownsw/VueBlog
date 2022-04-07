@@ -11,7 +11,7 @@ use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::{
     blog_controller::blog_list,
     other_controller::generate_captcha_code,
-    user_controller::{all_user, user_delete, user_info, user_update},
+    user_controller::{all_user, user_add, user_delete, user_info, user_update},
 };
 use vueblog_common::pojo::status::AppState;
 
@@ -96,6 +96,7 @@ async fn main() -> std::io::Result<()> {
             .service(user_info)
             .service(user_update)
             .service(user_delete)
+            .service(user_add)
     })
     .workers(workers)
     .bind((server_address, server_port))?

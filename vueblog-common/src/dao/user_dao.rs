@@ -1,5 +1,5 @@
-use crate::pojo::user::{SelectUser, UpdateUser};
-use chrono::NaiveDateTime;
+use crate::pojo::user::{InsertUser, SelectUser, UpdateUser};
+use chrono::{NaiveDateTime, Utc};
 use sqlx::mysql::MySqlQueryResult;
 use sqlx::MySqlPool;
 
@@ -87,6 +87,30 @@ pub async fn update_user_last_login_by_id(
         "#,
         time,
         id
+    )
+    .execute(db_pool)
+    .await
+}
+
+/**
+ * 添加一个用户
+ */
+pub async fn insert_user(
+    db_pool: &MySqlPool,
+    insert_user: InsertUser,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            INSERT INTO m_user(username, password, avatar, email, status, created, last_login)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
+        "#,
+        insert_user.username,
+        insert_user.password,
+        insert_user.avatar,
+        insert_user.email,
+        insert_user.status,
+        Utc::now().naive_local(),
+        Utc::now().naive_local(),
     )
     .execute(db_pool)
     .await

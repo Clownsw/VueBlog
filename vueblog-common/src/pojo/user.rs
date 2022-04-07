@@ -96,3 +96,15 @@ pub struct UpdateUser {
     pub password: String,
     pub status: i32,
 }
+
+/**
+ * 添加用户实体
+ */
+#[derive(Debug, Deserialize, Serialize)]
+pub struct InsertUser {
+    pub username: String,
+    pub avatar: String,
+    pub email: String,
+    pub password: String,
+    pub status: i32,
+}

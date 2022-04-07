@@ -22,6 +22,7 @@ router.beforeEach(((to, from, next) => {
                     }
                 })
         } else {
+            // 同步获取用户信息
             let f = async () => {
                 await axios.post('user/info', {}, {
                     headers: {
