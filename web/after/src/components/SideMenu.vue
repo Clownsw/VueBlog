@@ -26,6 +26,13 @@
           </el-menu-item>
         </router-link>
 
+        <router-link :to="{ name: 'SysWord' }">
+          <el-menu-item index="2-2">
+            <i class="el-icon-s-order"></i>
+            <span slot="title">文章管理</span>
+          </el-menu-item>
+        </router-link>
+
         <router-link :to="{ name: 'SysRole' }">
           <el-menu-item index="3-2">
             <i class="el-icon-rank"></i>

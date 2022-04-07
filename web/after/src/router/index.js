@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from "@/views/Home";
 import Login from "@/views/Login";
 import Index from "@/views/Index"
+import Word from "@/views/sys/Word";
 import User from "@/views/sys/User";
 import Role from "@/views/sys/Role";
 import Menu from "@/views/sys/Menu"
@@ -34,6 +35,15 @@ const routes = [
                 component: User,
                 meta: {
                     title: '用户管理',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/words',
+                name: 'SysWord',
+                component: Word,
+                meta: {
+                    title: '文章管理',
                     requireAuth: true
                 }
             },

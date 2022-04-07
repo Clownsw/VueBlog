@@ -2,19 +2,6 @@
   <div>
     <el-form :inline="true">
       <el-form-item>
-        <el-input
-            v-model="searchName"
-            placeholder="名称"
-            clearable
-        >
-        </el-input>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button @click="">搜索</el-button>
-      </el-form-item>
-
-      <el-form-item>
         <el-button type="primary" @click="addUser">新增</el-button>
       </el-form-item>
 
@@ -178,7 +165,6 @@ export default {
   name: "User",
   data() {
     return {
-      searchName: '',
       deleteStatus: true,
       tableData: [
         {}
