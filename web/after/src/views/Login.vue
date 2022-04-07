@@ -90,7 +90,7 @@ export default {
                   });
 
                   setTimeout(() => {
-                    this.$router.push('/sys/index')
+                    this.$router.replace('/sys/index')
                   }, 1500)
                 }
 

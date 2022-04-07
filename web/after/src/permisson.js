@@ -22,17 +22,14 @@ router.beforeEach(((to, from, next) => {
                     }
                 })
         } else {
-
-            if (store.getters.getUser === null || store.getters.getUser === undefined) {
-                axios.post('user/info', {}, {
-                    headers: {
-                        'authorization': token
-                    }
-                }).then(resp => {
-                    store.commit('SET_USER', resp.data.data)
-                })
-            }
-
+            axios.post('user/info', {}, {
+                headers: {
+                    'authorization': token
+                }
+            }).then(resp => {
+                console.log(resp.data.data)
+                store.commit('SET_USER', resp.data.data)
+            })
             next()
         }
     } else {

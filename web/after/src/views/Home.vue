@@ -54,8 +54,13 @@ export default {
       this.$router.push("/login")
     }
   },
-  created() {
+  mounted() {
     this.user = this.$store.getters.getUser
+  },
+  created() {
+    setTimeout(() => {
+      this.user = this.$store.getters.getUser
+    }, 1000)
   }
 }
 </script>

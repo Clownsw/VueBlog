@@ -6,7 +6,6 @@
 export default {
   name: "Index",
   created() {
-    console.log("index")
   }
 }
 </script>

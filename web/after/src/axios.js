@@ -8,11 +8,9 @@ axios.interceptors.response.use(response => {
     return response;
 }, error => {
 
-    let data = error.response;
     let msg = error.response.data.message;
 
     Message.error(msg)
 
-    // store.commit('REMOVE_INFO');
     return Promise.reject(error);
 })
