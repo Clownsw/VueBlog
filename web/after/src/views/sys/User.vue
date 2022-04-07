@@ -281,14 +281,7 @@ export default {
           };
 
           if (!this.isAddUser) {
-            data = {
-              id: this.ruleForm.id,
-              username: this.ruleForm.username,
-              password: this.ruleForm.password,
-              email: this.ruleForm.email,
-              avatar: this.ruleForm.avatar,
-              status: this.ruleForm.status
-            }
+            data.id = this.ruleForm.id
           }
 
           this.$axios.post(address, data, {
