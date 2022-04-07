@@ -61,8 +61,28 @@ where
 /**
  * 返回一个200状态码的响应对象
  */
+pub async fn build_response_ok_data<T>(data: T) -> HttpResponse<String>
+where
+    T: Serialize,
+{
+    build_response_ok_all(Some(data), String::from(error_util::SUCCESS)).await
+}
+
+/**
+ * 返回一个200状态码的响应对象
+ */
 pub async fn build_response_ok_message(message: String) -> HttpResponse<String> {
     build_response_ok_all::<()>(None, message).await
+}
+
+/**
+ * 返回一个200状态码的响应对象
+ */
+pub async fn build_response_ok_data_message<T>(data: T, message: String) -> HttpResponse<String>
+where
+    T: Serialize,
+{
+    build_response_ok_all(Some(data), message).await
 }
 
 pub async fn build_response_fail_all<T>(data: Option<T>, message: String) -> HttpResponse<String>
@@ -79,6 +99,19 @@ where
  */
 pub async fn build_response_baq_request_message(message: String) -> HttpResponse<String> {
     build_response_fail_all::<()>(None, message).await
+}
+
+/**
+ * 返回一个400错误码响应对象
+ */
+pub async fn build_response_baq_request_data_message<T>(
+    data: T,
+    message: String,
+) -> HttpResponse<String>
+where
+    T: Serialize,
+{
+    build_response_fail_all(Some(data), message).await
 }
 
 /**

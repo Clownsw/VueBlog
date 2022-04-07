@@ -1,7 +1,7 @@
 use crate::{
     config::global_config,
-    pojo::{captcha::ResultCaptcha, msg::ResultMsg, status::AppState},
-    util::{common_util::to_json_string, error_util, redis_util},
+    pojo::{captcha::ResultCaptcha, status::AppState},
+    util::{common_util::build_response_ok_data, redis_util},
 };
 use actix_web::{get, web, Responder};
 use captcha_rust::Captcha;
@@ -31,13 +31,9 @@ pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder 
     .await;
 
     // 将验证码返回
-    to_json_string(&ResultMsg::<ResultCaptcha>::success_all(
-        200,
-        Some(String::from(error_util::SUCCESS)),
-        Some(ResultCaptcha {
-            id: result,
-            base64_url: code.base_img,
-        }),
-    ))
+    build_response_ok_data(ResultCaptcha {
+        id: result,
+        base64_url: code.base_img,
+    })
     .await
 }
