@@ -128,6 +128,7 @@
     <el-dialog
         title="编辑"
         :visible.sync="editStatus"
+        top="8vh"
         width="25%"
         center
         class="edit-box">
