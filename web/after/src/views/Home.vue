@@ -58,9 +58,7 @@ export default {
     this.user = this.$store.getters.getUser
   },
   created() {
-    setTimeout(() => {
-      this.user = this.$store.getters.getUser
-    }, 1000)
+    this.user = this.$store.getters.getUser
   }
 }
 </script>

@@ -22,15 +22,19 @@ router.beforeEach(((to, from, next) => {
                     }
                 })
         } else {
-            axios.post('user/info', {}, {
-                headers: {
-                    'authorization': token
-                }
-            }).then(resp => {
-                console.log(resp.data.data)
-                store.commit('SET_USER', resp.data.data)
+            let f = async () => {
+                await axios.post('user/info', {}, {
+                    headers: {
+                        'authorization': token
+                    }
+                }).then(resp => {
+                    store.commit('SET_USER', resp.data.data)
+                })
+            }
+
+            f().then(() => {
+                next()
             })
-            next()
         }
     } else {
         next()
