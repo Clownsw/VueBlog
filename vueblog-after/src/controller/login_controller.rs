@@ -2,7 +2,7 @@ use actix_web::{post, web, HttpRequest, Responder};
 use chrono::Utc;
 use log::{error, info};
 use vueblog_common::{
-    dao::user_dao::get_by_name_and_passwd,
+    dao::user_dao::{get_by_name_and_passwd, update_user_last_login_by_id},
     pojo::{
         claims::Claims,
         status::AppState,
@@ -16,6 +16,7 @@ use vueblog_common::{
         error_util,
         jwt_util::{get_token_default_token_user, sign_token_default},
         redis_util,
+        sql_util::sql_run_is_success,
     },
 };
 
@@ -71,6 +72,18 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
                         login_user.username,
                         login_user.password
                     );
+
+                    // 更新最后登录时间
+                    if sql_run_is_success(
+                        update_user_last_login_by_id(&data.db_pool, v.id, Utc::now().naive_local())
+                            .await,
+                    )
+                    .await
+                    {
+                        info!("更新 id={}, 最后登录时间成功!", v.id);
+                    } else {
+                        error!("更新 id={}, 最后登录时间失败!", v.id)
+                    }
 
                     println!("query_user = {:?}", v);
                     let token_user = TokenUser::from_select_user(v.clone());

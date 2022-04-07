@@ -169,16 +169,7 @@ export default {
       searchName: '',
       deleteStatus: true,
       tableData: [
-        {
-          id: 1,
-          username: "xiaoxiao",
-          avatar: "https://avatars.githubusercontent.com/u/28394742",
-          email: "msmliexx1@gmail.com",
-          password: "123123",
-          status: 1,
-          create_time: "2022-03-29 21:23:55",
-          last_login_time: "2022-03-29 21:24:00",
-        }
+        {}
       ],
       multipleSelection: [],
       editStatus: false,
@@ -229,6 +220,11 @@ export default {
       })
           .then(resp => {
             this.tableData = resp.data.data
+
+            for (let i = 0; i < this.tableData.length; i++) {
+              this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
+              this.tableData[i].last_login = new Date(this.tableData[i].last_login).toLocaleString()
+            }
           })
     },
     editUser(obj) {

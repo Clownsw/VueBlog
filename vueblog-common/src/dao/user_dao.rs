@@ -1,4 +1,5 @@
 use crate::pojo::user::{SelectUser, UpdateUser};
+use chrono::NaiveDateTime;
 use sqlx::mysql::MySqlQueryResult;
 use sqlx::MySqlPool;
 
@@ -67,6 +68,25 @@ pub async fn update_by_id(
         update_user.avatar,
         update_user.status,
         update_user.id,
+    )
+    .execute(db_pool)
+    .await
+}
+
+/**
+ * 通过用户ID修改用户最后登陆时间
+ */
+pub async fn update_user_last_login_by_id(
+    db_pool: &MySqlPool,
+    id: i64,
+    time: NaiveDateTime,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+        UPDATE m_user SET last_login = ? WHERE id = ?
+        "#,
+        time,
+        id
     )
     .execute(db_pool)
     .await

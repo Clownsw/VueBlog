@@ -11,9 +11,8 @@ axios.interceptors.response.use(response => {
     let data = error.response;
     let msg = error.response.data.message;
 
-    if (data.status === 404 || data.status === 403) {
-        Message.error(msg)
-    }
+    Message.error(msg)
+
     // store.commit('REMOVE_INFO');
     return Promise.reject(error);
 })
