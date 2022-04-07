@@ -11,7 +11,6 @@
 
 <script>
 import Header from "@/components/Header";
-import {ElMessage, ElMessageBox} from 'element-plus'
 
 export default {
   name: "BlogDetail",
@@ -31,7 +30,7 @@ export default {
     if (blogId !== undefined) {
       this.$axios.get("blog/" + blogId).then((resp) => {
         if (resp.status === 200) {
-          this.blog = resp.data;
+          this.blog = resp.data.data;
           document.title = this.blog.title + "  -  Smilex' Blog";
 
           if (this.$store.getters.getUserInfo != null) {

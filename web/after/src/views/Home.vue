@@ -55,6 +55,7 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.getters.getUser)
     this.user = this.$store.getters.getUser
   }
 }

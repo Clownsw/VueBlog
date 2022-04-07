@@ -1,8 +1,8 @@
 use actix_web::{get, web, Responder};
 use vueblog_common::{
     dao::blog_dao::get_by_id,
-    pojo::{msg::ResultMsg, status::AppState},
-    util::common_util::to_json_string,
+    pojo::status::AppState,
+    util::common_util::{build_response_baq_request_message, build_response_ok_data},
     util::error_util,
 };
 
@@ -14,12 +14,9 @@ pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> imp
     let id = path.into_inner();
 
     match get_by_id(&data.db_pool, id).await {
-        Ok(v) => to_json_string(&v).await,
+        Ok(v) => build_response_ok_data(v).await,
         Err(_) => {
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::BLOG_HAS_DELETE,
-            ))))
-            .await
+            build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
         }
     }
 }

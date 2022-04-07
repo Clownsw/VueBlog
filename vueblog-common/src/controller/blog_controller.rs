@@ -2,10 +2,9 @@ use crate::{
     dao::blog_dao::{select_all_count, select_all_limit},
     pojo::{
         blog::{LimitBlogs, SelectBlog},
-        msg::ResultMsg,
         status::AppState,
     },
-    util::error_util,
+    util::common_util::{build_response_ok_data, build_response_ok_message},
 };
 use actix_web::{get, web, HttpRequest, Responder};
 
@@ -31,12 +30,14 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
     let counts = select_all_count(&data.db_pool).await.unwrap();
 
     match blogs {
-        Ok(v) => serde_json::to_string(&ResultMsg::<LimitBlogs<SelectBlog>>::success_all(
-            200,
-            Some(String::from(error_util::SUCCESS)),
-            Some(LimitBlogs::from_unknown_datas(counts[0].count, current, v)),
-        ))
-        .unwrap(),
-        Err(_) => String::from("null"),
+        Ok(v) => {
+            build_response_ok_data::<LimitBlogs<SelectBlog>>(LimitBlogs::from_unknown_datas(
+                counts[0].count,
+                current,
+                v,
+            ))
+            .await
+        }
+        Err(_) => build_response_ok_message(String::from("null")).await,
     }
 }

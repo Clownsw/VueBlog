@@ -4,11 +4,12 @@ use vueblog_common::{
     dao::blog_dao::{add_blog, delete_blog_by_id, get_by_id, update_blog_by_id},
     pojo::{
         blog::{InsertBlog, RequestBlog, UpdateBlog},
-        msg::ResultMsg,
         status::AppState,
     },
     util::{
-        common_util::to_json_string, error_util, login_util::is_login_return,
+        common_util::{build_response_baq_request_message, build_response_ok_message},
+        error_util,
+        login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
@@ -26,7 +27,7 @@ pub async fn blog_delete(
 
     let (user, error_str) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_str {
-        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
+        return build_response_baq_request_message(v).await;
     }
 
     let user = user.unwrap();
@@ -36,23 +37,14 @@ pub async fn blog_delete(
             // 如果文章的创建者, 不是当前传入的token的用户, 直接返回错误信息
             if v.user_id == user.id {
                 if sql_run_is_success(delete_blog_by_id(&data.db_pool, id).await).await {
-                    return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-                        error_util::SUCCESS,
-                    ))))
-                    .await;
+                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
                 }
             }
 
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::NOT_REQUEST_ACCESS,
-            ))))
-            .await
+            build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS)).await
         }
         Err(_) => {
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::BLOG_HAS_DELETE,
-            ))))
-            .await
+            build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
         }
     }
 }
@@ -68,7 +60,7 @@ pub async fn blog_edit(
 ) -> impl Responder {
     let (user, error_str) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_str {
-        return to_json_string(&ResultMsg::<()>::fail_msg(Some(v))).await;
+        return build_response_baq_request_message(v).await;
     }
 
     let user = user.unwrap();
@@ -83,9 +75,9 @@ pub async fn blog_edit(
                     Ok(v2) => {
                         // 没有权限编辑
                         if v2.user_id != user.id {
-                            return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                            return build_response_baq_request_message(String::from(
                                 error_util::NOT_EDIT_ACCESS,
-                            ))))
+                            ))
                             .await;
                         }
 
@@ -99,22 +91,18 @@ pub async fn blog_edit(
                         if sql_run_is_success(update_blog_by_id(&data.db_pool, update_blog).await)
                             .await
                         {
-                            return to_json_string(&ResultMsg::<()>::success_message(Some(
-                                String::from(error_util::SUCCESS),
-                            )))
-                            .await;
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
                         }
 
-                        return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                            error_util::ERROR,
-                        ))))
-                        .await;
+                        return build_response_baq_request_message(String::from(error_util::ERROR))
+                            .await;
                     }
                     Err(_) => {
                         // 找不到这个文章
-                        return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
+                        return build_response_baq_request_message(String::from(
                             error_util::BLOG_HAS_DELETE,
-                        ))))
+                        ))
                         .await;
                     }
                 }
@@ -130,23 +118,14 @@ pub async fn blog_edit(
                 };
 
                 if sql_run_is_success(add_blog(&data.db_pool, insert_blog).await).await {
-                    return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-                        error_util::SUCCESS,
-                    ))))
-                    .await;
+                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
                 }
 
-                return to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                    error_util::SUCCESS,
-                ))))
-                .await;
+                return build_response_baq_request_message(String::from(error_util::SUCCESS)).await;
             }
         }
         Err(_) => {
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::INCOMPLETE_REQUEST,
-            ))))
-            .await
+            build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
         }
     }
 }

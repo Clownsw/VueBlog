@@ -1,16 +1,18 @@
-use actix_web::{http::StatusCode, post, web, HttpRequest, Responder};
+use actix_web::{post, web, HttpRequest, Responder};
 use chrono::Utc;
 use log::{error, info};
 use vueblog_common::{
     dao::user_dao::get_by_name_and_passwd,
     pojo::{
         claims::Claims,
-        msg::ResultMsg,
         status::AppState,
         user::{LoginUser, ResponseUser, TokenUser},
     },
     util::{
-        common_util::{build_http_response_json, sign_captcha_code, to_json_string},
+        common_util::{
+            build_response_baq_request_message, build_response_ok_data, build_response_ok_message,
+            sign_captcha_code,
+        },
         error_util,
         jwt_util::{get_token_default_token_user, sign_token_default},
         redis_util,
@@ -31,14 +33,10 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
             login_user = v;
         }
         Err(_) => {
-            return build_http_response_json(StatusCode::BAD_REQUEST)
-                .await
-                .set_body(
-                    to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                        error_util::NOT_FOUND_USERNAME_OR_PASSWORD,
-                    ))))
-                    .await,
-                );
+            return build_response_baq_request_message(String::from(
+                error_util::NOT_FOUND_USERNAME_OR_PASSWORD,
+            ))
+            .await;
         }
     };
 
@@ -80,24 +78,13 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
 
                     let response_user = ResponseUser::from_select_user(token, v);
 
-                    return build_http_response_json(StatusCode::OK).await.set_body(
-                        to_json_string(&ResultMsg::<ResponseUser>::success_all(
-                            200,
-                            Some(String::from(error_util::SUCCESS)),
-                            Some(response_user),
-                        ))
-                        .await,
-                    );
+                    return build_response_ok_data(response_user).await;
                 }
 
-                build_http_response_json(StatusCode::FORBIDDEN)
-                    .await
-                    .set_body(
-                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                            error_util::USER_STATUS_UNAVAILABLE,
-                        ))))
-                        .await,
-                    )
+                build_response_baq_request_message(String::from(
+                    error_util::USER_STATUS_UNAVAILABLE,
+                ))
+                .await
             }
             // 找不到直接返回相关错误提示
             Err(_) => {
@@ -108,25 +95,14 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
                     login_user.password
                 );
 
-                build_http_response_json(StatusCode::NOT_FOUND)
-                    .await
-                    .set_body(
-                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                            error_util::ERROR_USERNAME_OR_PASSWORD,
-                        ))))
-                        .await,
-                    )
+                build_response_baq_request_message(String::from(
+                    error_util::ERROR_USERNAME_OR_PASSWORD,
+                ))
+                .await
             }
         }
     } else {
-        build_http_response_json(StatusCode::NOT_FOUND)
-            .await
-            .set_body(
-                to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                    error_util::ERROR_CAPTCHA_CODE,
-                ))))
-                .await,
-            )
+        build_response_baq_request_message(String::from(error_util::ERROR_CAPTCHA_CODE)).await
     }
 }
 
@@ -138,17 +114,11 @@ pub async fn sign_token(body: String) -> impl Responder {
     match sign_token_default::<Claims<TokenUser>>(body.as_str()).await {
         Ok(v) => {
             if v.claims.exp > Utc::now().timestamp_millis() as usize {
-                return to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-                    error_util::SUCCESS,
-                ))))
-                .await;
+                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
             }
         }
         Err(_) => {}
     }
 
-    to_json_string(&ResultMsg::<()>::success_message(Some(String::from(
-        error_util::NOT_REQUEST_ACCESS,
-    ))))
-    .await
+    build_response_ok_message(String::from(error_util::NOT_REQUEST_ACCESS)).await
 }
