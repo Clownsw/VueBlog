@@ -19,7 +19,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-popconfirm title="这是确定批量删除吗?" @confirm="">
+        <el-popconfirm title="这是确定批量删除吗?" @confirm="deleteUsers">
           <el-button type="danger" slot="reference" :disabled="deleteStatus">批量删除</el-button>
         </el-popconfirm>
       </el-form-item>
@@ -228,6 +228,8 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+
+      this.deleteStatus = this.multipleSelection.length <= 0;
     },
     getUsers() {
       this.$axios.post("user/all", {}, {
@@ -266,6 +268,24 @@ export default {
             this.$message.success(resp.data.message)
             this.getUsers()
           })
+    },
+    deleteUsers() {
+      let ids = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        ids.push(this.multipleSelection[i].id)
+      }
+      console.log(ids)
+
+      this.$axios.post("user/deletes/", ids, {
+        headers: {
+          'authorization': this.$store.getters.getToken,
+        }
+      }).then(resp => {
+        this.$message.success(resp.data.message)
+        this.editStatus = false
+        this.getUsers()
+      })
+
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {

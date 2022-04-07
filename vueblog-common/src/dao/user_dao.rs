@@ -1,4 +1,5 @@
 use crate::pojo::user::{InsertUser, SelectUser, UpdateUser};
+use crate::util::sql_util::build_what_sql_by_num;
 use chrono::{NaiveDateTime, Utc};
 use sqlx::mysql::MySqlQueryResult;
 use sqlx::MySqlPool;
@@ -128,4 +129,24 @@ pub async fn delete_by_id(db_pool: &MySqlPool, id: i64) -> Result<MySqlQueryResu
     )
     .execute(db_pool)
     .await
+}
+
+/**
+ * 通过一组用户ID删除用户
+ */
+pub async fn delete_by_ids(
+    db_pool: &MySqlPool,
+    ids: Vec<i64>,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    let query = format!("DELETE FROM m_user WHERE id IN ({})", {
+        build_what_sql_by_num(ids.len()).await
+    });
+
+    let mut q = sqlx::query::<sqlx::MySql>(query.as_str());
+
+    for id in ids {
+        q = q.bind(id);
+    }
+
+    q.execute(db_pool).await
 }

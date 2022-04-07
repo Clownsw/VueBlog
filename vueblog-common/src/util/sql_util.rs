@@ -15,3 +15,10 @@ pub async fn sql_run_is_success(result: Result<MySqlQueryResult, sqlx::Error>) -
 
     false
 }
+
+/**
+ * 生成问号
+ */
+pub async fn build_what_sql_by_num(n: usize) -> String {
+    (0..n).map(|_| "?").collect::<Vec<&str>>().join(",")
+}
