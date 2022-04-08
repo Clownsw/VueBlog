@@ -76,6 +76,7 @@
       <el-table-column
           prop="created"
           label="创建时间"
+          width="230"
           show-overflow-tooltip
           align="center">
       </el-table-column>
@@ -83,6 +84,7 @@
       <el-table-column
           prop="last_login"
           label="最后登录时间"
+          width="230"
           show-overflow-tooltip
           align="center">
       </el-table-column>
@@ -90,6 +92,7 @@
       <el-table-column
           prop="action"
           label="操作"
+          width="200"
           show-overflow-tooltip
           align="center">
         <template slot-scope="scope">
@@ -166,9 +169,7 @@ export default {
   data() {
     return {
       deleteStatus: true,
-      tableData: [
-        {}
-      ],
+      tableData: [{}],
       multipleSelection: [],
       editStatus: false,
       isAddUser: false,

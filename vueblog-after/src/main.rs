@@ -9,7 +9,7 @@ use sqlx::{MySqlPool, Pool};
 use controller::blog_controller::{blog_delete, blog_edit};
 use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::{
-    blog_controller::blog_list,
+    blog_controller::{blog_list, blog_removes},
     other_controller::generate_captcha_code,
     user_controller::{all_user, user_add, user_delete, user_deletes, user_info, user_update},
 };
@@ -98,6 +98,7 @@ async fn main() -> std::io::Result<()> {
             .service(user_delete)
             .service(user_add)
             .service(user_deletes)
+            .service(blog_removes)
     })
     .workers(workers)
     .bind((server_address, server_port))?

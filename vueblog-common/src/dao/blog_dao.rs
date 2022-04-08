@@ -1,4 +1,7 @@
-use crate::pojo::blog::{InsertBlog, SelectBlog, SelectCountBlog, UpdateBlog};
+use crate::{
+    pojo::blog::{InsertBlog, SelectBlog, SelectCountBlog, UpdateBlog},
+    util::sql_util::build_what_sql_by_num,
+};
 use sqlx::mysql::{MySqlPool, MySqlQueryResult};
 
 /**
@@ -117,4 +120,25 @@ pub async fn delete_blog_by_id(
     )
     .execute(db_pool)
     .await
+}
+
+/**
+ * 通过ID批量删除博文
+ */
+pub async fn delete_by_ids(
+    db_pool: &MySqlPool,
+    ids: Vec<i64>,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    let query = format!(
+        "DELETE FROM m_blog WHERE id in({})",
+        build_what_sql_by_num(ids.len()).await
+    );
+
+    let mut q = sqlx::query::<sqlx::MySql>(query.as_str());
+
+    for id in ids {
+        q = q.bind(id);
+    }
+
+    q.execute(db_pool).await
 }
