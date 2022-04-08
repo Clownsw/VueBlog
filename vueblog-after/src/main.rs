@@ -1,15 +1,12 @@
-pub mod controller;
-
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
-use controller::blog_controller::{blog_delete, blog_edit};
-use controller::login_controller::{login, sign_token};
 use vueblog_common::controller::{
-    blog_controller::{blog_list, blog_removes},
+    blog_controller::{blog_delete, blog_edit, blog_list, blog_removes},
+    login_controller::{login, sign_token},
     other_controller::generate_captcha_code,
     user_controller::{all_user, user_add, user_delete, user_deletes, user_info, user_update},
 };
