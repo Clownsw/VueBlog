@@ -31,6 +31,13 @@ router.beforeEach(((to, from, next) => {
                 }).then(resp => {
                     store.commit('SET_USER', resp.data.data)
                 })
+                    .catch(_ => {
+                        localStorage.clear()
+                        sessionStorage.clear()
+                        next({
+                            path: '/login'
+                        })
+                    })
             }
 
             f().then(() => {

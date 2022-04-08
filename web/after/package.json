@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^0.26.1",
     "element-ui": "^2.15.6",
+    "mavon-editor": "^2.10.4",
     "vue": "^2.6.14",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
