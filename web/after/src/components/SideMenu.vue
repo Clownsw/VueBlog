@@ -32,20 +32,6 @@
             <span slot="title">文章管理</span>
           </el-menu-item>
         </router-link>
-
-        <router-link :to="{ name: 'SysRole' }">
-          <el-menu-item index="3-2">
-            <i class="el-icon-rank"></i>
-            <span slot="title">角色管理</span>
-          </el-menu-item>
-        </router-link>
-
-        <router-link :to="{ name: 'SysMenu' }">
-          <el-menu-item index="3-3">
-            <i class="el-icon-setting"></i>
-            <span slot="title">菜单管理</span>
-          </el-menu-item>
-        </router-link>
       </el-submenu>
 
       <el-submenu index="4">

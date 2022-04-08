@@ -6,8 +6,6 @@ import Index from "@/views/Index"
 import Word from "@/views/sys/Word";
 import EditWord from "@/views/sys/EditWord";
 import User from "@/views/sys/User";
-import Role from "@/views/sys/Role";
-import Menu from "@/views/sys/Menu"
 
 Vue.use(VueRouter)
 
@@ -54,24 +52,6 @@ const routes = [
                 component: EditWord,
                 meta: {
                     title: '编辑文章',
-                    requireAuth: true
-                }
-            },
-            {
-                path: '/sys/roles',
-                name: 'SysRole',
-                component: Role,
-                meta: {
-                    title: '角色管理',
-                    requireAuth: true
-                }
-            },
-            {
-                path: '/sys/menus',
-                name: 'SysMenu',
-                component: Menu,
-                meta: {
-                    title: '菜单管理',
                     requireAuth: true
                 }
             },
