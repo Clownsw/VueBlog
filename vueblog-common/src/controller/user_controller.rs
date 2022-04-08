@@ -1,7 +1,5 @@
 use crate::{
-    dao::user_dao::{
-        delete_by_id, delete_by_ids, get_by_id, insert_user, select_all_user, update_by_id,
-    },
+    dao::user_dao::{delete_by_ids, get_by_id, insert_user, select_all_user, update_by_id},
     pojo::{
         status::AppState,
         user::{InsertUser, ResponseUser, SelectUser, UpdateUser},
@@ -17,7 +15,6 @@ use crate::{
     },
 };
 use actix_web::{get, post, web, HttpRequest, Responder};
-use log::info;
 
 /**
  * 获取所有用户并序列化为JSON返回
@@ -112,30 +109,6 @@ pub async fn user_add(body: String, req: HttpRequest, data: web::Data<AppState>)
 }
 
 /**
- * 删除用户
- */
-#[post("/user/delete/{id}")]
-pub async fn user_delete(
-    path: web::Path<i64>,
-    req: HttpRequest,
-    data: web::Data<AppState>,
-) -> impl Responder {
-    let id = path.into_inner();
-
-    // 验证用户是否登录
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
-
-    if sql_run_is_success(delete_by_id(&data.db_pool, id).await).await {
-        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-    }
-
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
-}
-
-/**
  * 批量删除用户
  */
 #[post("/user/deletes/")]
@@ -144,9 +117,6 @@ pub async fn user_deletes(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-
-    info!("来啦!");
-    
     let ids: Vec<i64> = serde_json::from_str(body.as_str()).unwrap();
 
     // 验证用户是否登录
