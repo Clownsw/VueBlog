@@ -1,7 +1,6 @@
 use crate::{
     dao::blog_dao::{
-        add_blog, delete_blog_by_id, delete_by_ids, get_by_id, select_all_count, select_all_limit,
-        update_blog_by_id,
+        add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit, update_blog_by_id,
     },
     pojo::{
         blog::{InsertBlog, LimitBlogs, RequestBlog, SelectBlog, UpdateBlog},
@@ -62,42 +61,6 @@ pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> imp
 
     match get_by_id(&data.db_pool, id).await {
         Ok(v) => build_response_ok_data(v).await,
-        Err(_) => {
-            build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
-        }
-    }
-}
-
-
-/**
- * 删除文章
- */
-#[post("/blog/remove/{id}")]
-pub async fn blog_delete(
-    path: web::Path<i64>,
-    req: HttpRequest,
-    data: web::Data<AppState>,
-) -> impl Responder {
-    let id = path.into_inner();
-
-    let (user, error_str) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_str {
-        return build_response_baq_request_message(v).await;
-    }
-
-    let user = user.unwrap();
-
-    match get_by_id(&data.db_pool, id).await {
-        Ok(v) => {
-            // 如果文章的创建者, 不是当前传入的token的用户, 直接返回错误信息
-            if v.user_id == user.id {
-                if sql_run_is_success(delete_blog_by_id(&data.db_pool, id).await).await {
-                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-                }
-            }
-
-            build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS)).await
-        }
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
         }
@@ -188,8 +151,8 @@ pub async fn blog_edit(
 /**
  * 批量删除博文
  */
-#[post("/blog/removes/")]
-pub async fn blog_removes(
+#[post("/blog/deletes/")]
+pub async fn blog_deletes(
     body: String,
     req: HttpRequest,
     data: web::Data<AppState>,

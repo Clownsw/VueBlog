@@ -5,7 +5,7 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::{
-    blog_controller::{blog_delete, blog_edit, blog_list, blog_removes},
+    blog_controller::{blog_deletes, blog_edit, blog_list},
     login_controller::{login, sign_token},
     other_controller::generate_captcha_code,
     user_controller::{all_user, user_add, user_delete, user_deletes, user_info, user_update},
@@ -84,7 +84,6 @@ async fn main() -> std::io::Result<()> {
                 redis_pool: Some(redis_client.clone()),
             }))
             .service(blog_list)
-            .service(blog_delete)
             .service(blog_edit)
             .service(login)
             .service(sign_token)
@@ -95,7 +94,7 @@ async fn main() -> std::io::Result<()> {
             .service(user_delete)
             .service(user_add)
             .service(user_deletes)
-            .service(blog_removes)
+            .service(blog_deletes)
     })
     .workers(workers)
     .bind((server_address, server_port))?

@@ -19,7 +19,7 @@
       </el-form-item>
 
       <el-form-item>
-        <el-popconfirm title="这是确定批量删除吗?" @confirm="deleteBlogs">
+        <el-popconfirm title="这是确定批量删除吗?" @confirm="deleteBlogs(null)">
           <el-button type="danger" slot="reference" :disabled="deleteStatus">批量删除</el-button>
         </el-popconfirm>
       </el-form-item>
@@ -151,26 +151,22 @@ export default {
           })
     },
     deleteBlog(id) {
-      console.log(id)
-      this.$axios.post("blog/remove/" + id, {}, {
-        headers: {
-          'authorization': this.$store.getters.getToken
-        }
-      })
-          .then(resp => {
-            this.$message.success(resp.data.message)
-            this.getBlogs()
-          })
-    },
-    deleteBlogs() {
       let ids = []
-      for (let i = 0; i < this.multipleSelection.length; i++) {
-        ids.push(this.multipleSelection[i].id)
+      ids.push(id)
+      this.deleteBlogs(ids)
+    },
+    deleteBlogs(_ids) {
+      let ids = []
+      if (_ids === null) {
+        for (let i = 0; i < this.multipleSelection.length; i++) {
+          ids.push(this.multipleSelection[i].id)
+        }
+      } else {
+        ids = _ids
       }
-      console.log(ids)
 
       if (ids.length > 0) {
-        this.$axios.post("blog/removes/", ids, {
+        this.$axios.post("blog/deletes/", ids, {
           headers: {
             'authorization': this.$store.getters.getToken
           }

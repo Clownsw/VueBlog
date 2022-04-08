@@ -106,23 +106,6 @@ pub async fn update_blog_by_id(
 }
 
 /**
- * 通过ID删除博文
- */
-pub async fn delete_blog_by_id(
-    db_pool: &MySqlPool,
-    id: i64,
-) -> Result<MySqlQueryResult, sqlx::Error> {
-    sqlx::query!(
-        r#"
-            DELETE FROM m_blog WHERE id = ?
-        "#,
-        id
-    )
-    .execute(db_pool)
-    .await
-}
-
-/**
  * 通过ID批量删除博文
  */
 pub async fn delete_by_ids(
