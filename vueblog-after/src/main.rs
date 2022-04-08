@@ -5,7 +5,7 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::{
-    blog_controller::{blog_deletes, blog_edit, blog_list},
+    blog_controller::{blog_deletes, blog_detail, blog_edit, blog_list},
     default_controller::not_found_page,
     login_controller::{login, sign_token},
     other_controller::generate_captcha_code,
@@ -86,6 +86,7 @@ async fn main() -> std::io::Result<()> {
             }))
             .service(blog_list)
             .service(blog_edit)
+            .service(blog_detail)
             .service(login)
             .service(sign_token)
             .service(generate_captcha_code)

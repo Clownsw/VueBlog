@@ -90,15 +90,7 @@ pub async fn blog_edit(
             // 编辑
             if let Some(id) = v.id {
                 match get_by_id(&data.db_pool, id).await {
-                    Ok(v2) => {
-                        // 没有权限编辑
-                        if v2.user_id != user.id {
-                            return build_response_baq_request_message(String::from(
-                                error_util::NOT_EDIT_ACCESS,
-                            ))
-                            .await;
-                        }
-
+                    Ok(_) => {
                         let update_blog = UpdateBlog {
                             id: v.id.unwrap(),
                             title: v.title,
