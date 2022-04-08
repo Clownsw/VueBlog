@@ -1,11 +1,12 @@
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer};
+use actix_web::{guard, web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::{
     blog_controller::{blog_deletes, blog_edit, blog_list},
+    default_controller::not_found_page,
     login_controller::{login, sign_token},
     other_controller::generate_captcha_code,
     user_controller::{all_user, user_add, user_deletes, user_info, user_update},
@@ -94,6 +95,11 @@ async fn main() -> std::io::Result<()> {
             .service(user_add)
             .service(user_deletes)
             .service(blog_deletes)
+            .default_service(
+                web::route()
+                    .guard(guard::Not(guard::Get()))
+                    .to(not_found_page),
+            )
     })
     .workers(workers)
     .bind((server_address, server_port))?

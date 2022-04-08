@@ -123,7 +123,6 @@ export default {
       searchName: '',
       deleteStatus: true,
       tableData: [],
-      addDialogStatus: false,
       multipleSelection: [],
     }
   },
@@ -142,13 +141,13 @@ export default {
           });
     },
     addBlog() {
-      this.addDialogStatus = true
+      this.editWord(0)
     },
     getBlogs() {
       this.$axios.get("blogs")
           .then(resp => {
             this.tableData = resp.data.data.datas
-            
+
             for (let i = 0; i < this.tableData.length; i++) {
               this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
             }

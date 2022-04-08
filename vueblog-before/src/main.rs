@@ -1,9 +1,12 @@
 use actix_cors::Cors;
-use actix_web::{web, App, HttpServer};
+use actix_web::{guard, web, App, HttpServer};
 use log::info;
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
-    controller::blog_controller::{blog_detail, blog_list},
+    controller::{
+        blog_controller::{blog_detail, blog_list},
+        default_controller::not_found_page,
+    },
     pojo::status::AppState,
 };
 
@@ -61,6 +64,11 @@ async fn main() -> std::io::Result<()> {
             }))
             .service(blog_list)
             .service(blog_detail)
+            .default_service(
+                web::route()
+                    .guard(guard::Not(guard::Get()))
+                    .to(not_found_page),
+            )
     })
     .workers(workers)
     .bind((server_address, server_port))?

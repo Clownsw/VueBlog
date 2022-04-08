@@ -9,7 +9,7 @@ export default {
   name: "EditWord",
   data() {
     return {
-      id: -1,
+      id: -1,   // -1 表示不正确, 0 表示新增博文, > 0表示修改博文
     }
   },
   created() {
