@@ -4,6 +4,7 @@ import Home from "@/views/Home";
 import Login from "@/views/Login";
 import Index from "@/views/Index"
 import Word from "@/views/sys/Word";
+import EditWord from "@/views/sys/EditWord";
 import User from "@/views/sys/User";
 import Role from "@/views/sys/Role";
 import Menu from "@/views/sys/Menu"
@@ -44,6 +45,15 @@ const routes = [
                 component: Word,
                 meta: {
                     title: '文章管理',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/word/edit/:id(\\d+)',
+                name: 'SysEditWord',
+                component: EditWord,
+                meta: {
+                    title: '编辑文章',
                     requireAuth: true
                 }
             },

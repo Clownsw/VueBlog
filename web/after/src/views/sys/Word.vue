@@ -96,7 +96,7 @@
           show-overflow-tooltip
           align="center">
         <template slot-scope="scope">
-          <el-button type="info" @click="">编辑</el-button>
+          <el-button type="info" @click="editWord(scope.row.id)">编辑</el-button>
 
           <el-popconfirm
               confirm-button-text='删除'
@@ -148,7 +148,14 @@ export default {
       this.$axios.get("blogs")
           .then(resp => {
             this.tableData = resp.data.data.datas
+            
+            for (let i = 0; i < this.tableData.length; i++) {
+              this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
+            }
           })
+    },
+    editWord(id) {
+      this.$router.push("/sys/word/edit/" + id)
     },
     deleteBlog(id) {
       let ids = []
