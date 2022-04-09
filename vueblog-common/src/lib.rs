@@ -4,6 +4,9 @@ pub mod dao;
 pub mod pojo;
 pub mod util;
 
+#[macro_use]
+extern crate lazy_static;
+
 #[cfg(test)]
 mod tests {
     #[test]

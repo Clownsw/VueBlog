@@ -1,5 +1,8 @@
+use std::sync::{Arc, Mutex};
+
 // 验证码长度
 pub const CAPTCHA_CODE_NUM: usize = 5;
 
-// JWT KEY
-pub const JWT_KEY: &str = "@fav)3nYBAV(Dve%xtXjc%5s8pk#YeqpVjHaGmXg";
+lazy_static! {
+    pub static ref KEY: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
+}

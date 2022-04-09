@@ -1,5 +1,5 @@
 use crate::{
-    config::global_config::JWT_KEY,
+    config::global_config::KEY,
     pojo::{claims::Claims, user::TokenUser},
 };
 use chrono::{Duration, Utc};
@@ -14,7 +14,7 @@ use serde::{de::DeserializeOwned, Serialize};
 pub async fn get_token_default<T: Serialize>(
     claims: T,
 ) -> Result<String, jsonwebtoken::errors::Error> {
-    let jwt_key_clone = JWT_KEY.clone();
+    let jwt_key_clone = (*KEY.clone().lock().unwrap()).clone();
 
     let token = encode(
         &Header::default(),
@@ -32,7 +32,7 @@ pub async fn sign_token_default<T>(token: &str) -> Result<TokenData<T>, jsonwebt
 where
     T: DeserializeOwned,
 {
-    let jwt_key_clone = JWT_KEY.clone();
+    let jwt_key_clone = (*KEY.clone().lock().unwrap()).clone();
 
     let token_message = decode(
         token,

@@ -3064,6 +3064,7 @@ dependencies = [
  "captcha_rust",
  "chrono",
  "jsonwebtoken",
+ "lazy_static",
  "log",
  "redis",
  "redis-async-pool",
