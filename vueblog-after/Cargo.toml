@@ -9,14 +9,10 @@ actix-web =  { version = "4", features = ["actix-web-codegen", "compress-brotli"
 actix-cors = "0.6.1"
 log = "0.4"
 pretty_env_logger = "0.4"
-chrono = { version = "0.4", features = ["serde"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 dotenv = "0.15.0"
 tokio = { version = "1", features = ["full"] }
 sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "runtime-actix-native-tls"] }
 redis = { version = "0.17.0", features = ["tokio-comp"] }
 redis-async-pool = "0.2.4"
-jsonwebtoken = "8.0.1"
 
 vueblog-common = { path = "../vueblog-common" }
