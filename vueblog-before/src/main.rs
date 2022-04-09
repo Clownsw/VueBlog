@@ -29,7 +29,7 @@ async fn init() -> (String, u16, usize, MySqlPool) {
     pretty_env_logger::init_custom_env("VUEBLOG_BEFORE_LOG_LEVEL");
 
     // HTTP worker 个数
-    let workers = std::env::var("VUEBLOG_AFTER_WORKERS")
+    let workers = std::env::var("VUEBLOG_BEFORE_WORKERS")
         .unwrap()
         .parse::<usize>()
         .unwrap();
