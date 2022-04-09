@@ -14,7 +14,7 @@ use serde::{de::DeserializeOwned, Serialize};
 pub async fn get_token_default<T: Serialize>(
     claims: T,
 ) -> Result<String, jsonwebtoken::errors::Error> {
-    let jwt_key_clone = (*KEY.clone().lock().unwrap()).clone();
+    let jwt_key_clone = (*KEY.lock().unwrap()).clone();
 
     let token = encode(
         &Header::default(),
@@ -32,7 +32,7 @@ pub async fn sign_token_default<T>(token: &str) -> Result<TokenData<T>, jsonwebt
 where
     T: DeserializeOwned,
 {
-    let jwt_key_clone = (*KEY.clone().lock().unwrap()).clone();
+    let jwt_key_clone = (*KEY.lock().unwrap()).clone();
 
     let token_message = decode(
         token,
