@@ -27,7 +27,11 @@ export default {
   data() {
     return {
       id: -1,   // -1 表示不正确, 0 表示新增博文, > 0表示修改博文
-      blog: {},
+      blog: {
+        title: '',
+        description: '',
+        content: '',
+      },
       rules: {
         title: [
           {required: true, message: '请输入博文名称', trigger: 'blur'},
@@ -53,8 +57,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.id === 0) {
-
+          if (this.id == 0) {
+            this.addBlog()
           } else {
             this.updateBlog();
           }
@@ -81,14 +85,33 @@ export default {
             this.$message.success(resp.data.message)
           })
     },
+    addBlog() {
+      let obj = {
+        user_id: this.$store.getters.getUser.id,
+        title: this.blog.title,
+        description: this.blog.description,
+        content: this.blog.content
+      }
+      this.$axios.post("blog/edit", obj, {
+        headers: {
+          'authorization': this.$store.getters.getToken
+        }
+      })
+          .then(resp => {
+            this.$message.success(resp.data.message)
+          })
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
   },
   created() {
     this.id = this.$route.params.id
-    this.buttonName = this.id === 0 ? '新增' : '修改'
-    this.getBlogInfo(this.id)
+    console.log(this.id)
+    this.buttonName = this.id == 0 ? '新增' : '修改'
+    if (this.id > 0) {
+      this.getBlogInfo(this.id)
+    }
   }
 }
 </script>
