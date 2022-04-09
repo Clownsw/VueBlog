@@ -7,9 +7,20 @@ router.beforeEach(((to, from, next) => {
         document.title = to.meta.title
     }
 
-    if (to.matched.some(record => record.meta.requireAuth)) {
+    const token = localStorage.getItem("token")
 
-        const token = localStorage.getItem("token")
+    // 如果已经登录则直接跳转到后台
+    if (to.fullPath === '/login') {
+        let f = async () => {
+            await axios.post("token", token)
+                .then(_ => {
+                    next("/sys/index")
+                })
+        }
+        f().then(() => {})
+    }
+
+    if (to.matched.some(record => record.meta.requireAuth)) {
 
         if (!token) {
             axios.post("token", token)
