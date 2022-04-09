@@ -6,6 +6,7 @@ use vueblog_common::{
     controller::{
         blog_controller::{blog_detail, blog_list},
         default_controller::not_found_page,
+        friend_controller::friend_all,
     },
     pojo::status::AppState,
 };
@@ -64,6 +65,7 @@ async fn main() -> std::io::Result<()> {
             }))
             .service(blog_list)
             .service(blog_detail)
+            .service(friend_all)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))
