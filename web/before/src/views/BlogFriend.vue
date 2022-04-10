@@ -3,63 +3,13 @@
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-friends">
 
-      <a :href="item.href" v-for="item in friends">
+      <a :href="item.href" target="_blank" v-for="item in friends">
         <div class="image">
           <img :src="item.avatar" alt="">
         </div>
         <div class="content">
           <h4>{{ item.name }}</h4>
           <p>{{ item.description }}</p>
-        </div>
-      </a>
-
-      <a href="#">
-        <div class="image">
-          <img src="https://cdn.jsdelivr.net/gh/tdrme/tdrme.github.io@master/20210504090204404.png" alt="">
-        </div>
-        <div class="content">
-          <h4>SuiNian's Blog</h4>
-          <p>你歪头眯眼一笑 我便沉溺无法逃离</p>
-        </div>
-      </a>
-
-      <a href="#">
-        <div class="image">
-          <img src="https://cdn.jsdelivr.net/gh/tdrme/tdrme.github.io@master/20210504090204404.png" alt="">
-        </div>
-        <div class="content">
-          <h4>SuiNian's Blog</h4>
-          <p>你歪头眯眼一笑 我便沉溺无法逃离</p>
-        </div>
-      </a>
-
-      <a href="#">
-        <div class="image">
-          <img src="https://cdn.jsdelivr.net/gh/tdrme/tdrme.github.io@master/20210504090204404.png" alt="">
-        </div>
-        <div class="content">
-          <h4>SuiNian's Blog</h4>
-          <p>你歪头眯眼一笑 我便沉溺无法逃离</p>
-        </div>
-      </a>
-
-      <a href="#">
-        <div class="image">
-          <img src="https://cdn.jsdelivr.net/gh/tdrme/tdrme.github.io@master/20210504090204404.png" alt="">
-        </div>
-        <div class="content">
-          <h4>SuiNian's Blog</h4>
-          <p>你歪头眯眼一笑 我便沉溺无法逃离</p>
-        </div>
-      </a>
-
-      <a href="#">
-        <div class="image">
-          <img src="https://cdn.jsdelivr.net/gh/tdrme/tdrme.github.io@master/20210504090204404.png" alt="">
-        </div>
-        <div class="content">
-          <h4>SuiNian's Blog</h4>
-          <p>你歪头眯眼一笑 我便沉溺无法逃离</p>
         </div>
       </a>
     </div>

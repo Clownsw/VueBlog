@@ -32,6 +32,20 @@
             <span slot="title">文章管理</span>
           </el-menu-item>
         </router-link>
+
+        <router-link :to="{ name: 'SysFriend' }">
+          <el-menu-item index="2-3">
+            <i class="el-icon-s-order"></i>
+            <span slot="title">友链管理</span>
+          </el-menu-item>
+        </router-link>
+
+        <router-link :to="{ name: 'SysMe' }">
+          <el-menu-item index="2-4">
+            <i class="el-icon-document"></i>
+            <span slot="title">关于我</span>
+          </el-menu-item>
+        </router-link>
       </el-submenu>
 
       <el-submenu index="4">

@@ -1,6 +1,7 @@
 use crate::pojo::friend::{InsertFriend, SelectFriend, UpdateFriend};
+use crate::util::sql_util::build_what_sql_by_num;
 use sqlx::mysql::MySqlQueryResult;
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool};
 
 /**
  * 查询所有友联
@@ -59,15 +60,22 @@ pub async fn update_friend(
 }
 
 /**
- * 删除一个友联通过ID
+ * 批量删除友链
  */
-pub async fn delete_by_id(db_pool: &MySqlPool, id: i64) -> Result<MySqlQueryResult, sqlx::Error> {
-    sqlx::query!(
-        r#"
-            DELETE FROM m_friend WHERE id = ?
-        "#,
-        id
-    )
-    .execute(db_pool)
-    .await
+pub async fn delete_by_ids(
+    db_pool: &MySqlPool,
+    ids: Vec<i64>,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    let query = format!(
+        "DELETE FROM m_friend WHERE id in({})",
+        build_what_sql_by_num(ids.len()).await
+    );
+
+    let mut q = sqlx::query::<MySql>(query.as_str());
+
+    for i in ids {
+        q = q.bind(i);
+    }
+
+    q.execute(db_pool).await
 }

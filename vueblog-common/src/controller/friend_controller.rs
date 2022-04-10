@@ -1,5 +1,5 @@
 use crate::{
-    dao::friend_dao::{delete_by_id, insert_friend, select_all, update_friend},
+    dao::friend_dao::{delete_by_ids, insert_friend, select_all, update_friend},
     pojo::{
         friend::{InsertFriend, UpdateFriend},
         status::AppState,
@@ -84,11 +84,11 @@ pub async fn friend_update(
 }
 
 /**
- * 删除一个友联
+ * 批量删除友链
  */
-#[post("/friend/delete/{id}")]
-pub async fn friend_delete(
-    path: web::Path<i64>,
+#[post("/friend/deletes")]
+pub async fn friend_deletes(
+    body: String,
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
@@ -99,13 +99,11 @@ pub async fn friend_delete(
             .await;
     }
 
-    let id = path.into_inner();
-
-    if id > 0 {
-        if sql_run_is_success(delete_by_id(&data.db_pool, id).await).await {
+    if let Ok(v) = serde_json::from_str::<Vec<i64>>(body.as_str()) {
+        if sql_run_is_success(delete_by_ids(&data.db_pool, v).await).await {
             return build_response_ok_message(String::from(error_util::SUCCESS)).await;
         }
     }
 
-    build_response_baq_request().await
+    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
 }

@@ -5,7 +5,9 @@ import Login from "@/views/Login";
 import Index from "@/views/Index"
 import Word from "@/views/sys/Word";
 import EditWord from "@/views/sys/EditWord";
+import EditMe from "@/views/sys/EditMe";
 import User from "@/views/sys/User";
+import Friend from "@/views/sys/Friend";
 
 Vue.use(VueRouter)
 
@@ -43,6 +45,24 @@ const routes = [
                 component: Word,
                 meta: {
                     title: '文章管理',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/friend',
+                name: 'SysFriend',
+                component: Friend,
+                meta: {
+                    title: '友链管理',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/me/edit',
+                name: 'SysMe',
+                component: EditMe,
+                meta: {
+                    title: '关于我',
                     requireAuth: true
                 }
             },

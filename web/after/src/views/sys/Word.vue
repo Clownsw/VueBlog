@@ -77,18 +77,6 @@
           align="center">
       </el-table-column>
 
-      <!--      <el-table-column-->
-      <!--          prop="status"-->
-      <!--          label="状态"-->
-      <!--          width="100"-->
-      <!--          show-overflow-tooltip-->
-      <!--          align="center">-->
-      <!--        <template slot-scope="scope">-->
-      <!--          <el-tag size="small" v-if="scope.row.status === 1" type="success">正常</el-tag>-->
-      <!--          <el-tag size="small" v-else-if="scope.row.status === -1" type="danger">禁用</el-tag>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-
       <el-table-column
           prop="action"
           label="操作"
@@ -129,7 +117,6 @@ export default {
   methods: {
     handleSelectionChange(val) {
       this.multipleSelection = val;
-
       this.deleteStatus = this.multipleSelection.length <= 0;
     },
     handleClose(done) {

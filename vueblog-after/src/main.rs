@@ -9,7 +9,7 @@ use vueblog_common::{
     controller::{
         blog_controller::{blog_deletes, blog_detail, blog_edit, blog_list},
         default_controller::not_found_page,
-        friend_controller::{friend_add, friend_all, friend_delete, friend_update},
+        friend_controller::{friend_add, friend_all, friend_deletes, friend_update},
         login_controller::{login, sign_token},
         other_controller::generate_captcha_code,
         system_controller::{system_info, system_update},
@@ -115,7 +115,7 @@ async fn main() -> std::io::Result<()> {
             .service(user_deletes)
             .service(friend_add)
             .service(friend_all)
-            .service(friend_delete)
+            .service(friend_deletes)
             .service(friend_update)
             .service(system_info)
             .service(system_update)
