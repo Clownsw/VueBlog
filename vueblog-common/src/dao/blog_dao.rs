@@ -8,9 +8,12 @@ use sqlx::mysql::{MySqlPool, MySqlQueryResult};
  * 查询所有文章个数
  */
 pub async fn select_all_count(db_pool: &MySqlPool) -> Result<Vec<SelectCountBlog>, sqlx::Error> {
-    sqlx::query_as!(SelectCountBlog, r#"SELECT COUNT(*) as count FROM m_blog"#)
-        .fetch_all(db_pool)
-        .await
+    sqlx::query_as!(
+        SelectCountBlog,
+        r#"SELECT COUNT(*) as count FROM m_blog WHERE id != 99999"#
+    )
+    .fetch_all(db_pool)
+    .await
 }
 
 /**
@@ -20,7 +23,7 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectBlog>, sqlx::Er
     sqlx::query_as!(
         SelectBlog,
         r#"
-            SELECT * FROM m_blog
+            SELECT * FROM m_blog WHERE id != 99999
         "#
     )
     .fetch_all(db_pool)
@@ -38,7 +41,7 @@ pub async fn select_all_limit(
     sqlx::query_as!(
         SelectBlog,
         r#"
-            SELECT * FROM m_blog ORDER BY created DESC LIMIT ?, ?
+            SELECT * FROM m_blog WHERE id != 99999 ORDER BY created DESC LIMIT ?, ?
         "#,
         limit,
         size
