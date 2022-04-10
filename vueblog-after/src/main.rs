@@ -12,6 +12,7 @@ use vueblog_common::{
         friend_controller::{friend_add, friend_all, friend_delete, friend_update},
         login_controller::{login, sign_token},
         other_controller::generate_captcha_code,
+        system_controller::{system_info, system_update},
         user_controller::{all_user, user_add, user_deletes, user_info, user_update},
     },
     pojo::status::AppState,
@@ -116,6 +117,8 @@ async fn main() -> std::io::Result<()> {
             .service(friend_all)
             .service(friend_delete)
             .service(friend_update)
+            .service(system_info)
+            .service(system_update)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

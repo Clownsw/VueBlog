@@ -4,4 +4,5 @@ pub mod claims;
 pub mod friend;
 pub mod msg;
 pub mod status;
+pub mod system;
 pub mod user;
