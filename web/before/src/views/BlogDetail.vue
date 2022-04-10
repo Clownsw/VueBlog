@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
       <el-divider/>
@@ -18,6 +18,7 @@ export default {
     return {
       blog: {},
       onShow: false,
+      systemInfo: {},
     };
   },
   methods: {
@@ -26,12 +27,14 @@ export default {
     Header,
   },
   created() {
+    this.systemInfo = this.$store.getters.getSystemInfo
+
     let blogId = this.$route.params.blogId;
     if (blogId !== undefined) {
       this.$axios.get("blog/" + blogId).then((resp) => {
         if (resp.status === 200) {
           this.blog = resp.data.data;
-          document.title = this.blog.title + "  -  Smilex' Blog";
+          document.title = this.blog.title + ' - ' + this.systemInfo.title;
 
           if (this.$store.getters.getUserInfo != null) {
             if (this.blog.user_id === this.$store.getters.getUserInfo.id) {

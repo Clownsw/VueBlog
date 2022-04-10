@@ -26,6 +26,7 @@ VMdPreview.use(githubTheme, {
 });
 
 import './axios'
+import './interceptor'
 
 let app = createApp(App)
 app.use(store)
@@ -34,6 +35,6 @@ app.use(store)
     .use(ElementPlus)
     .use(VMdPreview)
     .mount('#app')
-	
+
 app.config.productionTip = false
 app.config.globalProperties.$axios = axios

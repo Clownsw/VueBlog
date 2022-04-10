@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header :welcome="systemInfo.welcome"></Header>
     <el-timeline>
       <el-timeline-item v-for="item in blogs.data" :timestamp="parseStrToDate(item.created)" placement="top">
         <el-card>
@@ -39,7 +39,8 @@ export default {
         pages: 1,
         size: 0,
         data: []
-      }
+      },
+      systemInfo: {},
     }
   },
   methods: {
@@ -60,6 +61,8 @@ export default {
   created() {
     document.title = 'Smilex Blog'
     this.page(1)
+    this.systemInfo = this.$store.getters.getSystemInfo
+    document.title = this.systemInfo.title
   }
 }
 </script>

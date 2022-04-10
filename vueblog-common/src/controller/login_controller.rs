@@ -43,7 +43,7 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
     };
 
     println!("login_user={:?}", login_user);
-    let mut async_conn = data.redis_pool.as_ref().unwrap().get().await.unwrap();
+    let mut async_conn = data.redis_pool.get().await.unwrap();
 
     // 验证验证码正确性
     if sign_captcha_code(

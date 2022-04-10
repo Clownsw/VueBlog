@@ -1,6 +1,6 @@
 <template>
   <div class="m-content">
-    <h3>欢迎来到Smilex博客</h3>
+    <h3>{{ welcome }}</h3>
     <div class="m-action">
       <span>
         <el-link href="/blogs">文章</el-link>
@@ -20,6 +20,9 @@
 <script>
 export default {
   name: "Header",
+  props: {
+    welcome: '',
+  }
 }
 </script>
 

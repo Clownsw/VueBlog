@@ -21,7 +21,7 @@ pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder 
     let result = hasher.result_str();
 
     // 将验证码保存在redis, TTL为60秒
-    let mut async_conn = data.redis_pool.as_ref().unwrap().get().await.unwrap();
+    let mut async_conn = data.redis_pool.get().await.unwrap();
     redis_util::set_and_ttl(
         &mut async_conn,
         result.clone(),

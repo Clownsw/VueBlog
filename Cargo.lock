@@ -3051,6 +3051,8 @@ dependencies = [
  "dotenv",
  "log",
  "pretty_env_logger",
+ "redis",
+ "redis-async-pool",
  "sqlx",
  "tokio 1.17.0",
  "vueblog-common",

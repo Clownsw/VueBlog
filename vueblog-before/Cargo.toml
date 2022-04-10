@@ -13,5 +13,7 @@ pretty_env_logger = "0.4"
 dotenv = "0.15.0"
 tokio = { version = "1", features = ["full"] }
 sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "runtime-actix-native-tls"] }
+redis = { version = "0.17.0", features = ["tokio-comp"] }
+redis-async-pool = "0.2.4"
 
 vueblog-common = { path = "../vueblog-common" }

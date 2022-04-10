@@ -25,8 +25,9 @@ pub async fn update_system_info(
 ) -> Result<MySqlQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
-            UPDATE m_system SET title = ?, description = ? WHERE id = ?
+            UPDATE m_system SET welcome = ?, title = ?, description = ? WHERE id = ?
         "#,
+        update_system.welcome,
         update_system.title,
         update_system.description,
         update_system.id,

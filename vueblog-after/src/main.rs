@@ -99,7 +99,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Cors::permissive())
             .app_data(web::Data::new(AppState {
                 db_pool: db_pool.clone(),
-                redis_pool: Some(redis_client.clone()),
+                redis_pool: redis_client.clone(),
             }))
             .service(blog_list)
             .service(blog_edit)

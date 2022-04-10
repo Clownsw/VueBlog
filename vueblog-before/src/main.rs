@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{guard, web, App, HttpServer};
 use log::info;
+use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
     controller::{
@@ -21,9 +22,25 @@ async fn make_db_pool() -> MySqlPool {
 }
 
 /**
+ * 初始化redis客户端
+ */
+async fn make_redis_client() -> RedisPool {
+    let redis_url = std::env::var("REDIS_URL").unwrap();
+    let redis_pool_num = std::env::var("REDIS_POOL_NUM")
+        .unwrap()
+        .parse::<usize>()
+        .unwrap();
+
+    RedisPool::new(
+        RedisConnectionManager::new(redis::Client::open(redis_url).unwrap(), true, None),
+        redis_pool_num,
+    )
+}
+
+/**
  * 初始化
  */
-async fn init() -> (String, u16, usize, MySqlPool) {
+async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
     // 加载.env
     dotenv::dotenv().ok();
 
@@ -39,6 +56,9 @@ async fn init() -> (String, u16, usize, MySqlPool) {
     // 数据库连接池
     let db_pool = make_db_pool().await;
 
+    // redis客户端
+    let redis_client = make_redis_client().await;
+
     // 服务地址
     let server_address = std::env::var("VUEBLOG_BEFORE_URL").unwrap();
 
@@ -48,12 +68,12 @@ async fn init() -> (String, u16, usize, MySqlPool) {
         .parse::<u16>()
         .unwrap();
 
-    (server_address, server_port, workers, db_pool)
+    (server_address, server_port, workers, db_pool, redis_client)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let (server_address, server_port, workers, db_pool) = init().await;
+    let (server_address, server_port, workers, db_pool, redis_client) = init().await;
 
     info!("URL: http://{}:{}/", server_address.as_str(), server_port);
 
@@ -62,7 +82,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Cors::permissive())
             .app_data(web::Data::new(AppState {
                 db_pool: db_pool.clone(),
-                redis_pool: None,
+                redis_pool: redis_client.clone(),
             }))
             .service(blog_list)
             .service(blog_detail)

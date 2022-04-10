@@ -6,5 +6,5 @@ use sqlx::mysql::MySqlPool;
  */
 pub struct AppState {
     pub db_pool: MySqlPool,
-    pub redis_pool: Option<RedisPool>,
+    pub redis_pool: RedisPool,
 }

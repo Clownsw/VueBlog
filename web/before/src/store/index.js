@@ -3,7 +3,8 @@ import {createStore} from 'vuex'
 export default createStore({
     state: {
         token: localStorage.getItem('token'),
-        userInfo: JSON.parse(sessionStorage.getItem('userInfo'))
+        userInfo: JSON.parse(sessionStorage.getItem('userInfo')),
+        systemInfo: JSON.parse(sessionStorage.getItem('systemInfo'))
     },
     getters: {
         getUserInfo: state => {
@@ -11,6 +12,9 @@ export default createStore({
         },
         getToken: state => {
             return state.token
+        },
+        getSystemInfo: state => {
+            return state.systemInfo
         }
     },
     mutations: {
@@ -21,6 +25,10 @@ export default createStore({
         SET_USER_INFO: (state, userInfo) => {
             state.userInfo = userInfo
             sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
+        },
+        SET_SYSTEM_INFO: (state, payload) => {
+            state.systemInfo = payload
+            sessionStorage.setItem('systemInfo', JSON.stringify(payload))
         },
         REMOVE_INFO: (state) => {
             state.token = ''
