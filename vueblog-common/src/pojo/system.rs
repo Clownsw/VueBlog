@@ -8,7 +8,7 @@ pub struct SelectSystem {
     pub description: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct UpdateSystem {
     pub id: i32,
     pub welcome: String,

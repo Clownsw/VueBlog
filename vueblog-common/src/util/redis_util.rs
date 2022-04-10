@@ -56,3 +56,15 @@ pub async fn delete<'a, K: ToRedisArgs + Send + Sync + 'a>(
         Err(_) => false,
     }
 }
+
+/**
+ * 更新redis中的数据
+ */
+pub async fn update<'a, K, V>(conn: &mut Object<RedisConnection, RedisError>, k: K, v: V)
+where
+    K: ToRedisArgs + Send + Sync + Clone + 'a,
+    V: ToRedisArgs + Send + Sync + 'a,
+{
+    delete(conn, k.clone()).await;
+    set(conn, k, v).await;
+}

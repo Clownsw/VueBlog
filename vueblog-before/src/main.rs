@@ -5,7 +5,7 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
     controller::{
-        blog_controller::{blog_detail, blog_list},
+        blog_controller::{blog_detail, blog_list, blog_me},
         default_controller::not_found_page,
         friend_controller::friend_all,
         system_controller::system_info,
@@ -85,6 +85,7 @@ async fn main() -> std::io::Result<()> {
                 redis_pool: redis_client.clone(),
             }))
             .service(blog_list)
+            .service(blog_me)
             .service(blog_detail)
             .service(friend_all)
             .service(system_info)

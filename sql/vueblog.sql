@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 10/04/2022 11:18:55
+ Date: 10/04/2022 14:01:43
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,7 @@ CREATE TABLE `m_blog`  (
   `created` datetime(0) NOT NULL,
   `status` tinyint(4) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_blog
@@ -48,6 +48,7 @@ INSERT INTO `m_blog` VALUES (11, 1, '测试文章3', '测试文章3', '测试文
 INSERT INTO `m_blog` VALUES (12, 1, '测试文章4', '测试文章4', '测试文章4', '2022-04-01 12:25:06', 0);
 INSERT INTO `m_blog` VALUES (13, 1, '测试文章5', '测试文章5', '测试文章5', '2022-04-01 12:25:29', 0);
 INSERT INTO `m_blog` VALUES (14, 1, '测试md', '测试md', '# Hello\n## 你好\n### Hi\n#### 嗨', '2022-04-01 12:26:18', 0);
+INSERT INTO `m_blog` VALUES (99999, 1, '我', '我', '# 一个神秘的人\n', '2022-04-10 13:38:22', 1);
 
 -- ----------------------------
 -- Table structure for m_friend
@@ -66,7 +67,6 @@ CREATE TABLE `m_friend`  (
 -- Records of m_friend
 -- ----------------------------
 INSERT INTO `m_friend` VALUES (1, 'Smile\' Blog', '一个神秘的博客', 'https://blog.areyou.ml/', 'https://avatars.githubusercontent.com/u/28394742');
-INSERT INTO `m_friend` VALUES (2, '测试名称', '测试描述', 'https://example.com/', '');
 
 -- ----------------------------
 -- Table structure for m_system
@@ -74,6 +74,7 @@ INSERT INTO `m_friend` VALUES (2, '测试名称', '测试描述', 'https://examp
 DROP TABLE IF EXISTS `m_system`;
 CREATE TABLE `m_system`  (
   `id` int(11) NOT NULL,
+  `welcome` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -82,7 +83,7 @@ CREATE TABLE `m_system`  (
 -- ----------------------------
 -- Records of m_system
 -- ----------------------------
-INSERT INTO `m_system` VALUES (1, 'Smile\' Blog', '一个神秘的博客');
+INSERT INTO `m_system` VALUES (1, '欢迎来到Smilex博客', 'Smile\' Blog', '一个神秘的博客');
 
 -- ----------------------------
 -- Table structure for m_user

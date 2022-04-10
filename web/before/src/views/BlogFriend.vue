@@ -107,12 +107,13 @@ export default {
 a {
   flex: 1;
   display: inline-block;
+  box-shadow: 5px 5px 12px #8aa1f9;
   box-sizing: border-box;
   min-width: 250px;
   height: 160px;
-  margin: 5px;
+  margin: 10px;
   padding: 10px;
-  background-color: red;
+  background-color: #adb4f5;
   border-radius: 10px;
   text-decoration: none;
   overflow: hidden;

@@ -60,7 +60,12 @@ pub async fn system_update(
 
     match serde_json::from_str::<UpdateSystem>(body.as_str()) {
         Ok(v) => {
-            if sql_run_is_success(update_system_info(&data.db_pool, v).await).await {
+            if sql_run_is_success(update_system_info(&data.db_pool, v.clone()).await).await {
+                let mut async_conn = data.redis_pool.get().await.unwrap();
+
+                // 刷新redis中的system_info
+                redis_util::update(&mut async_conn, "system_info", to_json_string(&v).await).await;
+
                 return build_response_ok_message(String::from(error_util::SUCCESS)).await;
             }
         }
