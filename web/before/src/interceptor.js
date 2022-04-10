@@ -13,6 +13,7 @@ router.beforeEach(((to, from, next) => {
         f().then(() => {
             next()
         })
+    } else {
+        next()
     }
-    next()
 }))

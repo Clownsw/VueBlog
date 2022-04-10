@@ -59,10 +59,9 @@ export default {
     },
   },
   created() {
-    document.title = 'Smilex Blog'
-    this.page(1)
     this.systemInfo = this.$store.getters.getSystemInfo
     document.title = this.systemInfo.title
+    this.page(1)
   }
 }
 </script>
