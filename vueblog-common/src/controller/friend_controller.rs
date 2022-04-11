@@ -1,7 +1,11 @@
 use crate::{
-    dao::friend_dao::{delete_by_ids, insert_friend, select_all, update_friend},
+    config::global_config::PAGE_LIMIT_NUM,
+    dao::friend_dao::{
+        delete_by_ids, insert_friend, select_all, select_all_count, select_all_limit, update_friend,
+    },
     pojo::{
         friend::{InsertFriend, UpdateFriend},
+        limit::Limit,
         status::AppState,
     },
     util::{
@@ -15,6 +19,7 @@ use crate::{
     },
 };
 use actix_web::{get, post, web, HttpRequest, Responder};
+use qstring::QString;
 
 /**
  * 获取所有友联信息
@@ -24,6 +29,40 @@ pub async fn friend_all(data: web::Data<AppState>) -> impl Responder {
     match select_all(&data.db_pool).await {
         Ok(v) => build_response_ok_data(v).await,
         Err(_) => build_response_baq_request().await,
+    }
+}
+
+/**
+ * 分页获取友联信息
+ */
+#[get("/friend/limit")]
+pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    let mut current = 1;
+
+    let qs = QString::from(req.query_string());
+
+    if let Some(v) = qs.get("currentPage") {
+        if let Ok(v) = v.parse::<i64>() {
+            current = v;
+        }
+    }
+
+    let friends = select_all_limit(
+        &data.db_pool,
+        (current - 1) * PAGE_LIMIT_NUM,
+        PAGE_LIMIT_NUM,
+    )
+    .await;
+
+    let counts = select_all_count(&data.db_pool).await.unwrap();
+
+    match friends {
+        Ok(v) => {
+            build_response_ok_data(Limit::from_unknown_datas(counts[0].count, current, v)).await
+        }
+        Err(_) => {
+            build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+        }
     }
 }
 

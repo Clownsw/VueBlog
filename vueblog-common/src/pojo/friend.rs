@@ -25,3 +25,8 @@ pub struct UpdateFriend {
     pub href: String,
     pub avatar: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct SelectCountFriend {
+    pub count: i64,
+}

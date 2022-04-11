@@ -129,6 +129,18 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <div class="limit">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="size"
+          :currnet-page="current"
+          :total="total"
+          @current-change=getFriends
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -142,6 +154,10 @@ export default {
       dialogStatus: false,
       dialogTitle: '',
       isAdd: true,
+      total: 0,
+      size: 0,
+      current: 1,
+      pages: 0,
       tableData: [],
       multipleSelection: [],
       ruleForm: {
@@ -193,7 +209,7 @@ export default {
           }).then(resp => {
             this.$message.success(resp.data.message)
             this.dialogStatus = false
-            this.getFriends()
+            this.getFriends(this.current)
           })
         } else {
           return false;
@@ -236,21 +252,30 @@ export default {
         }
       }).then(resp => {
         this.$message.success(resp.data.message)
-        this.getFriends()
+        console.log(this.current)
+        this.getFriends(this.current)
       })
     },
-    getFriends() {
-      this.$axios.get("friends").then(resp => {
-        this.tableData = resp.data.data
+    getFriends(currentPage) {
+      this.$axios.get("friend/limit?currentPage=" + currentPage).then(resp => {
+        this.total = resp.data.data.total
+        this.size = resp.data.data.size
+        this.pages = resp.data.data.pages
+        this.current = resp.data.data.current
+        this.tableData = resp.data.data.datas
       })
     }
   },
   created() {
-    this.getFriends()
+    this.getFriends(1)
   }
 }
 </script>
 
 <style scoped>
-
+.limit {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
 </style>

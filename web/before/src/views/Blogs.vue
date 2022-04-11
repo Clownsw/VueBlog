@@ -14,12 +14,14 @@
       </el-timeline-item>
     </el-timeline>
 
-    <el-pagination background layout="prev, pager, next"
-                   :total="blogs.total"
-                   :current-page="blogs.currentPage"
-                   :page-size="blogs.size"
-                   @current-change=page
-                   class="m-page"/>
+    <div class="limit">
+      <el-pagination background layout="prev, pager, next"
+                     :total="blogs.total"
+                     :current-page="blogs.currentPage"
+                     :page-size="blogs.size"
+                     @current-change=page
+                     class="m-page"/>
+    </div>
   </div>
 </template>
 
@@ -71,5 +73,10 @@ export default {
   margin: 0 auto;
   text-align: center;
   max-width: 40%;
+}
+
+.limit {
+  display: flex;
+  justify-content: center;
 }
 </style>

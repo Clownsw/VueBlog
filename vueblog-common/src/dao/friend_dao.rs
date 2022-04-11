@@ -1,4 +1,4 @@
-use crate::pojo::friend::{InsertFriend, SelectFriend, UpdateFriend};
+use crate::pojo::friend::{InsertFriend, SelectCountFriend, SelectFriend, UpdateFriend};
 use crate::util::sql_util::build_what_sql_by_num;
 use sqlx::mysql::MySqlQueryResult;
 use sqlx::{MySql, MySqlPool};
@@ -12,6 +12,38 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectFriend>, sqlx::
         r#"
             SELECT * FROM m_friend
         "#
+    )
+    .fetch_all(db_pool)
+    .await
+}
+
+/**
+ * 查询所有友联个数
+ */
+pub async fn select_all_count(db_pool: &MySqlPool) -> Result<Vec<SelectCountFriend>, sqlx::Error> {
+    sqlx::query_as!(
+        SelectCountFriend,
+        r#"SELECT COUNT(*) as count FROM m_friend"#
+    )
+    .fetch_all(db_pool)
+    .await
+}
+
+/**
+ * 分页查询查询所有友联
+ */
+pub async fn select_all_limit(
+    db_pool: &MySqlPool,
+    limit: i64,
+    size: i64,
+) -> Result<Vec<SelectFriend>, sqlx::Error> {
+    sqlx::query_as!(
+        SelectFriend,
+        r#"
+            SELECT * FROM m_friend LIMIT ?, ?
+        "#,
+        limit,
+        size
     )
     .fetch_all(db_pool)
     .await

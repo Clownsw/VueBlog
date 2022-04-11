@@ -1,9 +1,11 @@
 use crate::{
+    config::global_config::PAGE_LIMIT_NUM,
     dao::blog_dao::{
         add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit, update_blog_by_id,
     },
     pojo::{
-        blog::{InsertBlog, LimitBlogs, RequestBlog, SelectBlog, UpdateBlog},
+        blog::{InsertBlog, RequestBlog, UpdateBlog},
+        limit::Limit,
         status::AppState,
     },
     util::{
@@ -17,6 +19,7 @@ use crate::{
 };
 use actix_web::{get, post, web, HttpRequest, Responder};
 use chrono::Utc;
+use qstring::QString;
 
 /**
  * 所有文章
@@ -25,28 +28,25 @@ use chrono::Utc;
 pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
     let mut current: i64 = 1;
 
-    let _tmp: Vec<&str> = req.query_string().split("=").collect();
+    let qs = QString::from(req.query_string());
 
-    if _tmp.len() >= 2 {
-        match _tmp[1].parse::<i64>() {
-            Ok(v) => {
-                current = v;
-            }
-            Err(_) => {}
+    if let Some(v) = qs.get("currentPage") {
+        if let Ok(v) = v.parse::<i64>() {
+            current = v;
         }
     }
 
-    let blogs = select_all_limit(&data.db_pool, (current - 1) * 5, 5).await;
+    let blogs = select_all_limit(
+        &data.db_pool,
+        (current - 1) * PAGE_LIMIT_NUM,
+        PAGE_LIMIT_NUM,
+    )
+    .await;
     let counts = select_all_count(&data.db_pool).await.unwrap();
 
     match blogs {
         Ok(v) => {
-            build_response_ok_data::<LimitBlogs<SelectBlog>>(LimitBlogs::from_unknown_datas(
-                counts[0].count,
-                current,
-                v,
-            ))
-            .await
+            build_response_ok_data(Limit::from_unknown_datas(counts[0].count, current, v)).await
         }
         Err(_) => build_response_ok_message(String::from("null")).await,
     }

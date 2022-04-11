@@ -91,7 +91,7 @@
               cancel-button-text='取消'
               icon="el-icon-info"
               icon-color="red"
-              title="您确定要删除该用户吗？"
+              title="您确定要删除该文章吗？"
               style="margin-left: 5px"
               @confirm="deleteBlog(scope.row.id)"
           >
@@ -100,6 +100,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="limit">
+      <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="size"
+          :currnet-page="current"
+          :total="total"
+          @current-change=getBlogs
+      >
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -110,6 +122,10 @@ export default {
     return {
       searchName: '',
       deleteStatus: true,
+      total: 0,
+      size: 0,
+      current: 1,
+      pages: 0,
       tableData: [],
       multipleSelection: [],
     }
@@ -130,9 +146,13 @@ export default {
     addBlog() {
       this.editWord(0)
     },
-    getBlogs() {
-      this.$axios.get("blogs")
+    getBlogs(currentPage) {
+      this.$axios.get("blogs?currentPage=" + currentPage)
           .then(resp => {
+            this.total = resp.data.data.total
+            this.size = resp.data.data.size
+            this.pages = resp.data.data.pages
+            this.current = resp.data.data.current
             this.tableData = resp.data.data.datas
 
             for (let i = 0; i < this.tableData.length; i++) {
@@ -166,7 +186,7 @@ export default {
         })
             .then(resp => {
               this.$message.success(resp.data.message)
-              this.getBlogs()
+              this.getBlogs(this.current)
             })
       } else {
         this.$message.error('请先选择要删除的数据!')
@@ -174,11 +194,15 @@ export default {
     }
   },
   created() {
-    this.getBlogs()
+    this.getBlogs(1)
   }
 }
 </script>
 
 <style scoped>
-
+.limit {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
 </style>
