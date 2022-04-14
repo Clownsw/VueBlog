@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 10/04/2022 14:01:43
+ Date: 14/04/2022 14:46:20
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,7 @@ CREATE TABLE `m_blog`  (
   `created` datetime(0) NOT NULL,
   `status` tinyint(4) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_blog
@@ -48,7 +48,21 @@ INSERT INTO `m_blog` VALUES (11, 1, '测试文章3', '测试文章3', '测试文
 INSERT INTO `m_blog` VALUES (12, 1, '测试文章4', '测试文章4', '测试文章4', '2022-04-01 12:25:06', 0);
 INSERT INTO `m_blog` VALUES (13, 1, '测试文章5', '测试文章5', '测试文章5', '2022-04-01 12:25:29', 0);
 INSERT INTO `m_blog` VALUES (14, 1, '测试md', '测试md', '# Hello\n## 你好\n### Hi\n#### 嗨', '2022-04-01 12:26:18', 0);
-INSERT INTO `m_blog` VALUES (99999, 1, '我', '我', '# 一个神秘的人\n', '2022-04-10 13:38:22', 1);
+
+-- ----------------------------
+-- Table structure for m_blogtag
+-- ----------------------------
+DROP TABLE IF EXISTS `m_blogtag`;
+CREATE TABLE `m_blogtag`  (
+  `blogId` bigint(20) NOT NULL,
+  `tagId` bigint(20) NOT NULL,
+  PRIMARY KEY (`blogId`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_blogtag
+-- ----------------------------
+INSERT INTO `m_blogtag` VALUES (1, 1);
 
 -- ----------------------------
 -- Table structure for m_friend
@@ -86,6 +100,21 @@ CREATE TABLE `m_system`  (
 INSERT INTO `m_system` VALUES (1, '欢迎来到Smilex博客', 'Smile\' Blog', '一个神秘的博客');
 
 -- ----------------------------
+-- Table structure for m_tag
+-- ----------------------------
+DROP TABLE IF EXISTS `m_tag`;
+CREATE TABLE `m_tag`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_tag
+-- ----------------------------
+INSERT INTO `m_tag` VALUES (1, '牛劈');
+
+-- ----------------------------
 -- Table structure for m_user
 -- ----------------------------
 DROP TABLE IF EXISTS `m_user`;
@@ -104,7 +133,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-04-09 10:55:53');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-04-07 10:03:24');
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;
