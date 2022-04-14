@@ -7,3 +7,4 @@ pub mod msg;
 pub mod status;
 pub mod system;
 pub mod user;
+pub mod tag;

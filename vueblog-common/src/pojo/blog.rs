@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /**
  * m_blog实体
  */
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct SelectBlog {
     pub id: i64,
     pub user_id: i64,

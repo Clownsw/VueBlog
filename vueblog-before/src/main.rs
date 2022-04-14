@@ -9,6 +9,7 @@ use vueblog_common::{
         default_controller::not_found_page,
         friend_controller::friend_all,
         system_controller::system_info,
+        tag_controller::tags_blog,
     },
     pojo::status::AppState,
 };
@@ -89,6 +90,7 @@ async fn main() -> std::io::Result<()> {
             .service(blog_detail)
             .service(friend_all)
             .service(system_info)
+            .service(tags_blog)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

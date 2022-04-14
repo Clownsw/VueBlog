@@ -8,7 +8,7 @@
 export default {
   name: "EditMe",
   created() {
-    this.$router.push("/sys/word/edit/99999")
+    this.$router.push("/sys/word/edit/1")
   }
 }
 </script>
