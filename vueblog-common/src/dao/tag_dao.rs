@@ -13,7 +13,6 @@ pub async fn select_all_by_blog_id(
         Tag,
         r#"
             SELECT
-                m_tag.id,
                 m_tag.`name` 
             FROM
                 m_tag

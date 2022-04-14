@@ -10,6 +10,10 @@
             </router-link>
           </h4>
           <p>{{ item.description }}</p>
+
+          <el-tag v-for="tag in item.tags" style="margin: 3px 10px 3px 0">
+            {{ tag.name }}
+          </el-tag>
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -54,6 +58,16 @@ export default {
             this.blogs.pages = resp.data.data.pages
             this.blogs.total = resp.data.data.total
             this.blogs.size = resp.data.data.size
+
+            for (let i = 0; i < this.blogs.data.length; i++) {
+              this.getBlogTags(i, this.blogs.data[i].id)
+            }
+          })
+    },
+    getBlogTags(index, id) {
+      this.$axios.get("tag/" + id)
+          .then(resp => {
+            this.blogs.data[index].tags = resp.data.data
           })
     },
     parseStrToDate(str) {
@@ -78,5 +92,9 @@ export default {
 .limit {
   display: flex;
   justify-content: center;
+}
+
+a {
+  text-decoration: none;
 }
 </style>
