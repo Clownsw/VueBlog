@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 14/04/2022 14:46:20
+ Date: 14/04/2022 21:49:16
 */
 
 SET NAMES utf8mb4;
@@ -55,14 +55,14 @@ INSERT INTO `m_blog` VALUES (14, 1, '测试md', '测试md', '# Hello\n## 你好\
 DROP TABLE IF EXISTS `m_blogtag`;
 CREATE TABLE `m_blogtag`  (
   `blogId` bigint(20) NOT NULL,
-  `tagId` bigint(20) NOT NULL,
-  PRIMARY KEY (`blogId`) USING BTREE
+  `tagId` bigint(20) NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_blogtag
 -- ----------------------------
 INSERT INTO `m_blogtag` VALUES (1, 1);
+INSERT INTO `m_blogtag` VALUES (1, 2);
 
 -- ----------------------------
 -- Table structure for m_friend
@@ -75,7 +75,7 @@ CREATE TABLE `m_friend`  (
   `href` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '链接地址',
   `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '头像地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_friend
@@ -107,12 +107,14 @@ CREATE TABLE `m_tag`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_tag
 -- ----------------------------
 INSERT INTO `m_tag` VALUES (1, '牛劈');
+INSERT INTO `m_tag` VALUES (2, '哈哈');
+INSERT INTO `m_tag` VALUES (4, '测试');
 
 -- ----------------------------
 -- Table structure for m_user
@@ -133,7 +135,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-04-07 10:03:24');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-04-14 11:45:53');
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

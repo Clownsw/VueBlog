@@ -33,31 +33,26 @@
           </el-menu-item>
         </router-link>
 
-        <router-link :to="{ name: 'SysFriend' }">
+        <router-link :to="{ name: 'SysTag' }">
           <el-menu-item index="2-3">
-            <i class="el-icon-s-order"></i>
+            <i class="el-icon-coin"></i>
+            <span slot="title">标签管理</span>
+          </el-menu-item>
+        </router-link>
+
+        <router-link :to="{ name: 'SysFriend' }">
+          <el-menu-item index="2-4">
+            <i class="el-icon-paperclip"></i>
             <span slot="title">友链管理</span>
           </el-menu-item>
         </router-link>
 
         <router-link :to="{ name: 'SysMe' }">
-          <el-menu-item index="2-4">
-            <i class="el-icon-document"></i>
+          <el-menu-item index="2-5">
+            <i class="el-icon-thumb"></i>
             <span slot="title">关于我</span>
           </el-menu-item>
         </router-link>
-      </el-submenu>
-
-      <el-submenu index="4">
-        <template slot="title">
-          <i class="el-icon-setting"></i>
-          <span>系统工具</span>
-        </template>
-
-        <el-menu-item index="4-1">
-          <i class="el-icon-s-cooperation"></i>
-          <span slot="title">数字字典</span>
-        </el-menu-item>
       </el-submenu>
     </el-menu>
   </el-row>

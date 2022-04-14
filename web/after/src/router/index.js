@@ -8,6 +8,7 @@ import EditWord from "@/views/sys/EditWord";
 import EditMe from "@/views/sys/EditMe";
 import User from "@/views/sys/User";
 import Friend from "@/views/sys/Friend";
+import Tag from "@/views/sys/Tag"
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,15 @@ const routes = [
                 component: Word,
                 meta: {
                     title: '文章管理',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/tags',
+                name: 'SysTag',
+                component: Tag,
+                meta: {
+                    title: '标签管理',
                     requireAuth: true
                 }
             },
