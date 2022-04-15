@@ -7,6 +7,7 @@ use crate::{
         blog::{InsertBlog, RequestBlog, UpdateBlog},
         limit::Limit,
         status::AppState,
+        tag::SelectTag,
     },
     util::{
         common_util::{
@@ -86,6 +87,25 @@ pub async fn blog_edit(
     match serde_json::from_str::<RequestBlog>(body.as_str()) {
         Ok(v) => {
             println!("{:?}", v);
+
+            let clone_v = v.clone();
+
+            // id == -1
+            let mut a: Vec<SelectTag> = vec![];
+
+            // id != -1
+            let mut b: Vec<SelectTag> = vec![];
+
+            for item in clone_v.tag {
+                if item.id == -1 {
+                    a.push(item.clone());
+                } else {
+                    b.push(item.clone());
+                }
+            }
+
+            println!("{:?}", a);
+            println!("{:?}", b);
 
             // 编辑
             if let Some(id) = v.id {

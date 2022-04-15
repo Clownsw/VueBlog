@@ -1,11 +1,14 @@
 use crate::{
     dao::{
         blog_tag_dao::delete_all_blog_by_tag_id,
-        tag_dao::{delete_by_id, insert_tag, select_all, select_all_by_blog_id, update_by_id},
+        tag_dao::{
+            delete_by_id, insert_tag, select_all, select_all_by_blog_id, select_id_by_name,
+            update_by_id,
+        },
     },
     pojo::{
         status::AppState,
-        tag::{InsertTag, UpdateTag},
+        tag::{InsertTag, SelectTag, UpdateTag},
     },
     util::{
         common_util::{
@@ -110,5 +113,37 @@ pub async fn tags_blog(path: web::Path<i64>, data: web::Data<AppState>) -> impl 
     match select_all_by_blog_id(&data.db_pool, id).await {
         Ok(v) => build_response_ok_data(v).await,
         Err(_) => build_response_baq_request().await,
+    }
+}
+
+/**
+ * 获取标签名称
+ */
+#[get("/tag/id/{name}")]
+pub async fn tag_id_by_name(path: web::Path<String>, data: web::Data<AppState>) -> impl Responder {
+    let name = path.into_inner();
+
+    match select_id_by_name(&data.db_pool, name).await {
+        Ok(v) => build_response_ok_data(v).await,
+        _ => {
+            build_response_ok_data(SelectTag {
+                id: -1,
+                name: String::new(),
+            })
+            .await
+        }
+    }
+}
+
+/**
+ * 标签是否存在
+ */
+#[get("/tag/exist/{name}")]
+pub async fn tag_is_exist(path: web::Path<String>, data: web::Data<AppState>) -> impl Responder {
+    let name = path.into_inner();
+
+    match select_id_by_name(&data.db_pool, name).await {
+        Ok(_) => build_response_ok_data(true).await,
+        _ => build_response_ok_data(false).await,
     }
 }

@@ -1,6 +1,5 @@
+use crate::pojo::tag::{InsertTag, SelectBlogOther, SelectTag, UpdateTag};
 use sqlx::{mysql::MySqlQueryResult, MySqlPool};
-
-use crate::pojo::tag::{InsertTag, SelectTag, Tag, UpdateTag};
 
 /**
  * 查询所有标签
@@ -72,12 +71,13 @@ pub async fn delete_by_id(db_pool: &MySqlPool, id: i64) -> Result<MySqlQueryResu
 pub async fn select_all_by_blog_id(
     db_pool: &MySqlPool,
     blog_id: i64,
-) -> Result<Vec<Tag>, sqlx::Error> {
+) -> Result<Vec<SelectBlogOther>, sqlx::Error> {
     sqlx::query_as!(
-        Tag,
+        SelectBlogOther,
         r#"
             SELECT
-                m_tag.`name` 
+                m_tag.id as id,
+                m_tag.`name` as name
             FROM
                 m_tag
                 RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = ? ) AS r ON m_tag.id = r.tagId
@@ -85,5 +85,23 @@ pub async fn select_all_by_blog_id(
         blog_id
     )
     .fetch_all(db_pool)
+    .await
+}
+
+/**
+ * 通过标签名称查询ID
+ */
+pub async fn select_id_by_name(
+    db_pool: &MySqlPool,
+    name: String,
+) -> Result<SelectTag, sqlx::Error> {
+    sqlx::query_as!(
+        SelectTag,
+        r#"
+            SELECT * FROM m_tag WHERE name = ?
+        "#,
+        name
+    )
+    .fetch_one(db_pool)
     .await
 }

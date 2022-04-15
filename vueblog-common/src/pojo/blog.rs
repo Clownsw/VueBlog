@@ -1,10 +1,11 @@
+use super::tag::SelectTag;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 /**
  * m_blog实体
  */
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SelectBlog {
     pub id: i64,
     pub user_id: i64,
@@ -26,13 +27,14 @@ pub struct SelectCountBlog {
 /**
  * 请求博文实体
  */
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct RequestBlog {
     pub id: Option<i64>,
     pub user_id: i64,
     pub title: String,
     pub description: String,
     pub content: String,
+    pub tag: Vec<SelectTag>,
 }
 
 /**

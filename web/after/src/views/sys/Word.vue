@@ -42,7 +42,7 @@
       <el-table-column
           prop="id"
           label="ID"
-          width="50"
+          width="100"
           align="center">
       </el-table-column>
 
@@ -158,6 +158,8 @@ export default {
             for (let i = 0; i < this.tableData.length; i++) {
               this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
             }
+
+            this.updateAllBlogTag()
           })
     },
     editWord(id) {
@@ -191,7 +193,17 @@ export default {
       } else {
         this.$message.error('请先选择要删除的数据!')
       }
-    }
+    },
+    updateAllBlogTag() {
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.getBlogTags(i, this.tableData[i].id)
+      }
+    },
+    getBlogTags(i, id) {
+      this.$axios.get("tag/" + id).then(resp => {
+        this.tableData[i].tag = resp.data.data
+      })
+    },
   },
   created() {
     this.getBlogs(1)
@@ -204,5 +216,9 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 8px;
+}
+
+span {
+  margin-right: 5px;
 }
 </style>
