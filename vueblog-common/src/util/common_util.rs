@@ -43,6 +43,33 @@ pub async fn sign_captcha_code(
 }
 
 /**
+ * 获取删除和新增向量
+ */
+pub async fn get_del_and_add_vec<T>(a: Vec<T>, b: Vec<T>) -> (Vec<T>, Vec<T>)
+where
+    T: PartialEq + Copy,
+{
+    let mut del: Vec<T> = vec![];
+    let mut add: Vec<T> = vec![];
+
+    // del
+    for item_a in &a {
+        if !b.contains(item_a) {
+            del.push(*item_a);
+        }
+    }
+
+    // add
+    for item_b in &b {
+        if !a.contains(item_b) {
+            add.push(*item_b);
+        }
+    }
+
+    (del, add)
+}
+
+/**
  * 转换到JSON字符串
  */
 pub async fn to_json_string<T: ?Sized + Serialize>(data: &T) -> String {

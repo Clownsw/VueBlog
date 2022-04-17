@@ -5,7 +5,8 @@ use crate::{
             add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit,
             select_by_title, update_blog_by_id,
         },
-        blog_tag_dao::{add_blog_tag_by_ids, delete_all_by_blog_id},
+        blog_tag_dao::{add_blog_tag_by_ids, delete_blog_tag_by_tag_ids},
+        tag_dao::select_all_by_blog_id,
     },
     pojo::{
         blog::{InsertBlog, RequestBlog, UpdateBlog},
@@ -15,6 +16,7 @@ use crate::{
     util::{
         common_util::{
             build_response_baq_request_message, build_response_ok_data, build_response_ok_message,
+            get_del_and_add_vec,
         },
         error_util,
         login_util::is_login_return,
@@ -96,20 +98,43 @@ pub async fn blog_edit(
                 match get_by_id(&data.db_pool, id).await {
                     Ok(_) => {
                         if v.tag.len() > 0 {
-                            sql_run_is_success(
-                                delete_all_by_blog_id(&data.db_pool, v.id.unwrap()).await,
-                            )
-                            .await;
+                            match select_all_by_blog_id(&data.db_pool, id).await {
+                                Ok(v2) => {
+                                    let old_ids: Vec<i64> =
+                                        v2.iter().map(|item| item.id.unwrap()).collect();
 
-                            if !sql_run_is_success(
-                                add_blog_tag_by_ids(&data.db_pool, v.id.unwrap(), ids).await,
-                            )
-                            .await
-                            {
-                                return build_response_baq_request_message(String::from(
-                                    error_util::ERROR_UNKNOWN,
-                                ))
-                                .await;
+                                    println!("old_ids: {:?}", old_ids);
+
+                                    let (dels, adds) = get_del_and_add_vec(old_ids, ids).await;
+                                    let mut result: Vec<bool> = vec![];
+
+                                    if dels.len() > 0 {
+                                        result.push(
+                                            sql_run_is_success(
+                                                delete_blog_tag_by_tag_ids(&data.db_pool, id, dels)
+                                                    .await,
+                                            )
+                                            .await,
+                                        );
+                                    } else if adds.len() > 0 {
+                                        result.push(
+                                            sql_run_is_success(
+                                                add_blog_tag_by_ids(&data.db_pool, id, adds).await,
+                                            )
+                                            .await,
+                                        );
+                                    }
+
+                                    for r in result {
+                                        if !r {
+                                            return build_response_baq_request_message(
+                                                String::from(error_util::ERROR),
+                                            )
+                                            .await;
+                                        }
+                                    }
+                                }
+                                _ => {}
                             }
                         }
 
