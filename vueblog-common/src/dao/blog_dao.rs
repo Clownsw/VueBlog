@@ -66,6 +66,24 @@ pub async fn get_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlog, 
 }
 
 /**
+ * 通过名称查询文章
+ */
+pub async fn select_by_title(
+    db_pool: &MySqlPool,
+    title: String,
+) -> Result<SelectBlog, sqlx::Error> {
+    sqlx::query_as!(
+        SelectBlog,
+        r#"
+            SELECT * FROM m_blog WHERE title = ?
+        "#,
+        title
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
+/**
  * 添加一个博文
  */
 pub async fn add_blog(

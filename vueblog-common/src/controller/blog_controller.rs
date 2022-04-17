@@ -3,7 +3,7 @@ use crate::{
     dao::{
         blog_dao::{
             add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit,
-            update_blog_by_id,
+            select_by_title, update_blog_by_id,
         },
         blog_tag_dao::{add_blog_tag_by_ids, delete_all_by_blog_id},
     },
@@ -89,41 +89,42 @@ pub async fn blog_edit(
 
     match serde_json::from_str::<RequestBlog>(body.as_str()) {
         Ok(v) => {
+            let ids = v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
+
             // 编辑
             if let Some(id) = v.id {
                 match get_by_id(&data.db_pool, id).await {
                     Ok(_) => {
-                        let clone_v = v.clone();
-                        if clone_v.tag.len() > 0 {
+                        if v.tag.len() > 0 {
                             sql_run_is_success(
-                                delete_all_by_blog_id(&data.db_pool, clone_v.id.unwrap()).await,
+                                delete_all_by_blog_id(&data.db_pool, v.id.unwrap()).await,
                             )
                             .await;
 
-                            let ids = clone_v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
-                            if sql_run_is_success(
-                                add_blog_tag_by_ids(&data.db_pool, clone_v.id.unwrap(), ids).await,
+                            if !sql_run_is_success(
+                                add_blog_tag_by_ids(&data.db_pool, v.id.unwrap(), ids).await,
                             )
                             .await
                             {
-                                let update_blog = UpdateBlog {
-                                    id: v.id.unwrap(),
-                                    title: v.title,
-                                    content: v.content,
-                                    description: v.description,
-                                };
-
-                                if sql_run_is_success(
-                                    update_blog_by_id(&data.db_pool, update_blog).await,
-                                )
-                                .await
-                                {
-                                    return build_response_ok_message(String::from(
-                                        error_util::SUCCESS,
-                                    ))
-                                    .await;
-                                }
+                                return build_response_baq_request_message(String::from(
+                                    error_util::ERROR_UNKNOWN,
+                                ))
+                                .await;
                             }
+                        }
+
+                        let update_blog = UpdateBlog {
+                            id: v.id.unwrap(),
+                            title: v.title,
+                            content: v.content,
+                            description: v.description,
+                        };
+
+                        if sql_run_is_success(update_blog_by_id(&data.db_pool, update_blog).await)
+                            .await
+                        {
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
                         }
 
                         return build_response_baq_request_message(String::from(error_util::ERROR))
@@ -139,6 +140,8 @@ pub async fn blog_edit(
                 }
             } else {
                 // 添加
+                let title = v.title.clone();
+
                 let insert_blog = InsertBlog {
                     user_id: user.id,
                     title: v.title,
@@ -149,7 +152,15 @@ pub async fn blog_edit(
                 };
 
                 if sql_run_is_success(add_blog(&data.db_pool, insert_blog).await).await {
-                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    if let Ok(v2) = select_by_title(&data.db_pool, title).await {
+                        if v.tag.len() > 0 {
+                            sql_run_is_success(
+                                add_blog_tag_by_ids(&data.db_pool, v2.id, ids).await,
+                            )
+                            .await;
+                        }
+                        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    }
                 }
 
                 return build_response_baq_request_message(String::from(error_util::SUCCESS)).await;
@@ -187,7 +198,7 @@ pub async fn blog_deletes(
  */
 #[get("/blog/me")]
 pub async fn blog_me(data: web::Data<AppState>) -> impl Responder {
-    match get_by_id(&data.db_pool, 99999 as i64).await {
+    match get_by_id(&data.db_pool, 1 as i64).await {
         Ok(v) => build_response_ok_data(v).await,
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
