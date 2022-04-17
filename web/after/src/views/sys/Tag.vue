@@ -141,11 +141,11 @@ export default {
 <style scoped>
 
 .tags {
-  width: 1200px;
   margin: 0 auto;
 }
 
 .tags span {
+  margin-bottom: 10px;
   margin-right: 10px;
   cursor: pointer;
 }

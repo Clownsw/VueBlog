@@ -1,13 +1,16 @@
 use crate::{
     config::global_config::PAGE_LIMIT_NUM,
-    dao::blog_dao::{
-        add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit, update_blog_by_id,
+    dao::{
+        blog_dao::{
+            add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit,
+            update_blog_by_id,
+        },
+        blog_tag_dao::{add_blog_tag_by_ids, delete_all_by_blog_id},
     },
     pojo::{
         blog::{InsertBlog, RequestBlog, UpdateBlog},
         limit::Limit,
         status::AppState,
-        tag::SelectTag,
     },
     util::{
         common_util::{
@@ -86,43 +89,41 @@ pub async fn blog_edit(
 
     match serde_json::from_str::<RequestBlog>(body.as_str()) {
         Ok(v) => {
-            println!("{:?}", v);
-
-            let clone_v = v.clone();
-
-            // id == -1
-            let mut a: Vec<SelectTag> = vec![];
-
-            // id != -1
-            let mut b: Vec<SelectTag> = vec![];
-
-            for item in clone_v.tag {
-                if item.id == -1 {
-                    a.push(item.clone());
-                } else {
-                    b.push(item.clone());
-                }
-            }
-
-            println!("{:?}", a);
-            println!("{:?}", b);
-
             // 编辑
             if let Some(id) = v.id {
                 match get_by_id(&data.db_pool, id).await {
                     Ok(_) => {
-                        let update_blog = UpdateBlog {
-                            id: v.id.unwrap(),
-                            title: v.title,
-                            content: v.content,
-                            description: v.description,
-                        };
+                        let clone_v = v.clone();
+                        if clone_v.tag.len() > 0 {
+                            sql_run_is_success(
+                                delete_all_by_blog_id(&data.db_pool, clone_v.id.unwrap()).await,
+                            )
+                            .await;
 
-                        if sql_run_is_success(update_blog_by_id(&data.db_pool, update_blog).await)
+                            let ids = clone_v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
+                            if sql_run_is_success(
+                                add_blog_tag_by_ids(&data.db_pool, clone_v.id.unwrap(), ids).await,
+                            )
                             .await
-                        {
-                            return build_response_ok_message(String::from(error_util::SUCCESS))
-                                .await;
+                            {
+                                let update_blog = UpdateBlog {
+                                    id: v.id.unwrap(),
+                                    title: v.title,
+                                    content: v.content,
+                                    description: v.description,
+                                };
+
+                                if sql_run_is_success(
+                                    update_blog_by_id(&data.db_pool, update_blog).await,
+                                )
+                                .await
+                                {
+                                    return build_response_ok_message(String::from(
+                                        error_util::SUCCESS,
+                                    ))
+                                    .await;
+                                }
+                            }
                         }
 
                         return build_response_baq_request_message(String::from(error_util::ERROR))
