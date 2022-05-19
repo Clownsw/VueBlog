@@ -3,7 +3,7 @@ use crate::{
     config::global_config,
     pojo::{msg::ResultMsg, user::SelectUser},
 };
-use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder};
+use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder, Responder};
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use serde::Serialize;
@@ -146,6 +146,21 @@ where
  */
 pub async fn build_response_baq_request() -> HttpResponse<String> {
     build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+}
+
+/**
+ * 登录拦截(AOP)
+ *
+ * 用户登录 → 登录成功 -> 继续
+ *         ↓
+ *         返回登录错误
+ */
+pub async fn security_interceptor_aop<F, T, K>(f: F) -> impl Responder
+where
+    F: Fn(Option<K>) -> Pin<Box<dyn Future<Output = T>>>,
+    T: Responder,
+{
+    f(None).await
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T

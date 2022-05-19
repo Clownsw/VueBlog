@@ -1,13 +1,14 @@
 use crate::{
     dao::user_dao::{delete_by_ids, get_by_id, insert_user, select_all_user, update_by_id},
     pojo::{
+        other::Void,
         status::AppState,
         user::{InsertUser, ResponseUser, SelectUser, UpdateUser},
     },
     util::{
         common_util::{
             build_response_baq_request_message, build_response_ok_data,
-            build_response_ok_data_message, build_response_ok_message,
+            build_response_ok_data_message, build_response_ok_message, security_interceptor_aop,
         },
         error_util,
         login_util::is_login_return,
@@ -21,6 +22,11 @@ use actix_web::{get, post, web, HttpRequest, Responder};
  */
 #[post("/user/all")]
 pub async fn all_user(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    let _ = security_interceptor_aop::<_, _, Void>(|_| {
+        Box::pin(async { build_response_baq_request_message(String::from("aabbcc")).await })
+    })
+    .await;
+
     let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
     if let Some(v) = error_msg {
         return build_response_baq_request_message(v).await;
