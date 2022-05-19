@@ -1,17 +1,16 @@
 use crate::{
     dao::system_dao::{select_system_info, update_system_info},
     pojo::{
+        other::Void,
         status::AppState,
         system::{SelectSystem, UpdateSystem},
     },
     util::{
         common_util::{
             build_response_baq_request_message, build_response_ok_data, build_response_ok_message,
-            to_json_string,
+            security_interceptor_aop, to_json_string,
         },
-        error_util,
-        login_util::is_login_return,
-        redis_util,
+        error_util, redis_util,
         sql_util::sql_run_is_success,
     },
 };
@@ -51,26 +50,43 @@ pub async fn system_update(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let redis_pool_clone = app_state.redis_pool.clone();
+            let body = body.unwrap();
 
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+            Box::pin(async move {
+                match serde_json::from_str::<UpdateSystem>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(update_system_info(&db_pool_clone, v.clone()).await)
+                            .await
+                        {
+                            let mut async_conn = redis_pool_clone.get().await.unwrap();
 
-    match serde_json::from_str::<UpdateSystem>(body.as_str()) {
-        Ok(v) => {
-            if sql_run_is_success(update_system_info(&data.db_pool, v.clone()).await).await {
-                let mut async_conn = data.redis_pool.get().await.unwrap();
+                            // 刷新redis中的system_info
+                            redis_util::update(
+                                &mut async_conn,
+                                "system_info",
+                                to_json_string(&v).await,
+                            )
+                            .await;
 
-                // 刷新redis中的system_info
-                redis_util::update(&mut async_conn, "system_info", to_json_string(&v).await).await;
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
+                        }
+                    }
+                    Err(_) => {}
+                }
 
-                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-            }
-        }
-        Err(_) => {}
-    }
-
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
+                    .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }

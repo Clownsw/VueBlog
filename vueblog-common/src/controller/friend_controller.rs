@@ -6,15 +6,15 @@ use crate::{
     pojo::{
         friend::{InsertFriend, UpdateFriend},
         limit::Limit,
+        other::Void,
         status::AppState,
     },
     util::{
         common_util::{
             build_response_baq_request, build_response_baq_request_message, build_response_ok_data,
-            build_response_ok_message,
+            build_response_ok_message, security_interceptor_aop,
         },
         error_util,
-        login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
@@ -75,23 +75,31 @@ pub async fn friend_add(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+            Box::pin(async move {
+                match serde_json::from_str::<InsertFriend>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(insert_friend(&db_pool_clone, v).await).await {
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
+                        }
+                    }
+                    Err(_) => {}
+                }
 
-    match serde_json::from_str::<InsertFriend>(body.as_str()) {
-        Ok(v) => {
-            if sql_run_is_success(insert_friend(&data.db_pool, v).await).await {
-                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-            }
-        }
-        Err(_) => {}
-    }
-
-    build_response_baq_request().await
+                build_response_baq_request().await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -103,23 +111,31 @@ pub async fn friend_update(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+            Box::pin(async move {
+                match serde_json::from_str::<UpdateFriend>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(update_friend(&db_pool_clone, v).await).await {
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
+                        }
+                    }
+                    Err(_) => {}
+                }
 
-    match serde_json::from_str::<UpdateFriend>(body.as_str()) {
-        Ok(v) => {
-            if sql_run_is_success(update_friend(&data.db_pool, v).await).await {
-                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-            }
-        }
-        Err(_) => {}
-    }
-
-    build_response_baq_request().await
+                build_response_baq_request().await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -131,18 +147,26 @@ pub async fn friend_deletes(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+            Box::pin(async move {
+                if let Ok(v) = serde_json::from_str::<Vec<i64>>(body.as_str()) {
+                    if sql_run_is_success(delete_by_ids(&db_pool_clone, v).await).await {
+                        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    }
+                }
 
-    if let Ok(v) = serde_json::from_str::<Vec<i64>>(body.as_str()) {
-        if sql_run_is_success(delete_by_ids(&data.db_pool, v).await).await {
-            return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-        }
-    }
-
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
+                    .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }

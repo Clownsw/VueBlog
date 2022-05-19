@@ -11,7 +11,6 @@ use crate::{
             build_response_ok_data_message, build_response_ok_message, security_interceptor_aop,
         },
         error_util,
-        login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
@@ -22,19 +21,21 @@ use actix_web::{get, post, web, HttpRequest, Responder};
  */
 #[post("/user/all")]
 pub async fn all_user(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    let _ = security_interceptor_aop::<_, _, Void>(|_| {
-        Box::pin(async { build_response_baq_request_message(String::from("aabbcc")).await })
-    })
-    .await;
+    security_interceptor_aop::<_, Void>(
+        move |app_state, _, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
 
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
-
-    let all_user = select_all_user(&data.db_pool).await.unwrap();
-
-    build_response_ok_data::<Vec<SelectUser>>(all_user).await
+            Box::pin(async move {
+                let all_user = select_all_user(&db_pool_clone).await.unwrap();
+                build_response_ok_data::<Vec<SelectUser>>(all_user).await
+            })
+        },
+        &req,
+        &data,
+        None,
+        None,
+    )
+    .await
 }
 
 /**
@@ -42,25 +43,32 @@ pub async fn all_user(req: HttpRequest, data: web::Data<AppState>) -> impl Respo
  */
 #[post("/user/info")]
 pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    let (user, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
+    security_interceptor_aop::<_, Void>(
+        move |app_state, _, _, user| {
+            let db_pool_clone = app_state.db_pool.clone();
 
-    let user = user.unwrap();
-
-    match get_by_id(&data.db_pool, user.id).await {
-        Ok(v) => {
-            build_response_ok_data_message::<ResponseUser>(
-                ResponseUser::from_select_user(String::new(), v),
-                String::from(error_util::SUCCESS),
-            )
-            .await
-        }
-        Err(_) => {
-            build_response_baq_request_message(String::from(error_util::NOT_FOUND_USER)).await
-        }
-    }
+            Box::pin(async move {
+                match get_by_id(&db_pool_clone, user.id).await {
+                    Ok(v) => {
+                        build_response_ok_data_message::<ResponseUser>(
+                            ResponseUser::from_select_user(String::new(), v),
+                            String::from(error_util::SUCCESS),
+                        )
+                        .await
+                    }
+                    Err(_) => {
+                        build_response_baq_request_message(String::from(error_util::NOT_FOUND_USER))
+                            .await
+                    }
+                }
+            })
+        },
+        &req,
+        &data,
+        None,
+        None,
+    )
+    .await
 }
 
 /**
@@ -72,23 +80,33 @@ pub async fn user_update(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    // 验证用户是否登录
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    // 序列化JSON, 如果失败直接返回400
-    match serde_json::from_str::<UpdateUser>(body.as_str()) {
-        Ok(v) => {
-            if sql_run_is_success(update_by_id(&data.db_pool, v).await).await {
-                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-            }
-        }
-        Err(_) => {}
-    }
+            Box::pin(async move {
+                // 序列化JSON, 如果失败直接返回400
+                match serde_json::from_str::<UpdateUser>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(update_by_id(&db_pool_clone, v).await).await {
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
+                        }
+                    }
+                    Err(_) => {}
+                }
 
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
+                    .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -96,22 +114,32 @@ pub async fn user_update(
  */
 #[post("/user/insert")]
 pub async fn user_add(body: String, req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    // 验证用户是否登录
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    match serde_json::from_str::<InsertUser>(body.as_str()) {
-        Ok(v) => {
-            if sql_run_is_success(insert_user(&data.db_pool, v).await).await {
-                return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-            }
-        }
-        Err(_) => {}
-    }
+            Box::pin(async move {
+                match serde_json::from_str::<InsertUser>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(insert_user(&db_pool_clone, v).await).await {
+                            return build_response_ok_message(String::from(error_util::SUCCESS))
+                                .await;
+                        }
+                    }
+                    Err(_) => {}
+                }
 
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
+                    .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -123,29 +151,38 @@ pub async fn user_deletes(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let ids: Vec<i64> = serde_json::from_str(body.as_str()).unwrap();
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    // 验证用户是否登录
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
+            Box::pin(async move {
+                let ids: Vec<i64> = serde_json::from_str(body.as_str()).unwrap();
 
-    if sql_run_is_success(delete_by_ids(&data.db_pool, ids).await).await {
-        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-    }
+                if sql_run_is_success(delete_by_ids(&db_pool_clone, ids).await).await {
+                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                }
 
-    build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
+                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
+                    .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 #[get("/user/index")]
 pub async fn index(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    let (user, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(v) = error_msg {
-        return build_response_baq_request_message(v).await;
-    }
-
-    let user = user.unwrap();
-
-    build_response_ok_data(user).await
+    security_interceptor_aop::<_, Void>(
+        move |_, _, _, user| Box::pin(async move { build_response_ok_data(user).await }),
+        &req,
+        &data,
+        None,
+        None,
+    )
+    .await
 }

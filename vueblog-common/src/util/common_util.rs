@@ -1,9 +1,9 @@
-use super::{error_util, redis_util};
+use super::{error_util, login_util::is_login_return, redis_util};
 use crate::{
     config::global_config,
-    pojo::{msg::ResultMsg, user::SelectUser},
+    pojo::{msg::ResultMsg, status::AppState, user::SelectUser},
 };
-use actix_web::{http::StatusCode, HttpResponse, HttpResponseBuilder, Responder};
+use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse, HttpResponseBuilder, Responder};
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use serde::Serialize;
@@ -155,12 +155,28 @@ pub async fn build_response_baq_request() -> HttpResponse<String> {
  *         ↓
  *         返回登录错误
  */
-pub async fn security_interceptor_aop<F, T, K>(f: F) -> impl Responder
+pub async fn security_interceptor_aop<F, T>(
+    f: F,
+    req: &HttpRequest,
+    app_state: &web::Data<AppState>,
+    body: Option<String>,
+    data: Option<T>,
+) -> impl Responder
 where
-    F: Fn(Option<K>) -> Pin<Box<dyn Future<Output = T>>>,
-    T: Responder,
+    F: Fn(
+        &web::Data<AppState>,
+        Option<String>,
+        Option<T>,
+        SelectUser,
+    ) -> Pin<Box<dyn Future<Output = HttpResponse<String>>>>,
 {
-    f(None).await
+    // 验证用户是否登录
+    let (user, error_msg) = is_login_return(req, &app_state.db_pool).await;
+    if let Some(v) = error_msg {
+        return build_response_baq_request_message(v).await;
+    }
+
+    f(app_state, body, data, user.unwrap()).await
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T

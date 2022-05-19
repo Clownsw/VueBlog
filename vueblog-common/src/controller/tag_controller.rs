@@ -7,16 +7,16 @@ use crate::{
         },
     },
     pojo::{
+        other::Void,
         status::AppState,
         tag::{InsertTag, SelectTag, UpdateTag},
     },
     util::{
         common_util::{
-            build_response_baq_request, build_response_baq_request_message, build_response_ok_data,
-            build_response_ok_message,
+            build_response_baq_request, build_response_ok_data, build_response_ok_message,
+            security_interceptor_aop,
         },
         error_util,
-        login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
@@ -42,19 +42,27 @@ pub async fn tag_update(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    if let Ok(v) = serde_json::from_str::<UpdateTag>(body.as_str()) {
-        if sql_run_is_success(update_by_id(&data.db_pool, v).await).await {
-            return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-        }
-    }
+            Box::pin(async move {
+                if let Ok(v) = serde_json::from_str::<UpdateTag>(body.as_str()) {
+                    if sql_run_is_success(update_by_id(&db_pool_clone, v).await).await {
+                        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    }
+                }
 
-    build_response_baq_request().await
+                build_response_baq_request().await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -62,19 +70,27 @@ pub async fn tag_update(
  */
 #[post("/tag/add")]
 pub async fn tag_add(body: String, req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
 
-    if let Ok(v) = serde_json::from_str::<InsertTag>(body.as_str()) {
-        if sql_run_is_success(insert_tag(&data.db_pool, v).await).await {
-            return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-        }
-    }
+            Box::pin(async move {
+                if let Ok(v) = serde_json::from_str::<InsertTag>(body.as_str()) {
+                    if sql_run_is_success(insert_tag(&db_pool_clone, v).await).await {
+                        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    }
+                }
 
-    build_response_baq_request().await
+                build_response_baq_request().await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
 }
 
 /**
@@ -86,21 +102,28 @@ pub async fn tag_delete(
     req: HttpRequest,
     data: web::Data<AppState>,
 ) -> impl Responder {
-    let (_, error_msg) = is_login_return(&req, &data.db_pool).await;
-    if let Some(_) = error_msg {
-        return build_response_baq_request_message(String::from(error_util::NOT_REQUEST_ACCESS))
-            .await;
-    }
+    security_interceptor_aop::<_, web::Path<i64>>(
+        move |app_state, _, path, _| {
+            let db_pool_clone = app_state.db_pool.clone();
 
-    let id = path.into_inner();
+            Box::pin(async move {
+                let id = path.unwrap().into_inner();
 
-    sql_run_is_success(delete_all_blog_by_tag_id(&data.db_pool, id).await).await;
+                sql_run_is_success(delete_all_blog_by_tag_id(&db_pool_clone, id).await).await;
 
-    if sql_run_is_success(delete_by_id(&data.db_pool, id).await).await {
-        return build_response_ok_message(String::from(error_util::SUCCESS)).await;
-    }
+                if sql_run_is_success(delete_by_id(&db_pool_clone, id).await).await {
+                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                }
 
-    build_response_baq_request().await
+                build_response_baq_request().await
+            })
+        },
+        &req,
+        &data,
+        None,
+        Some(path),
+    )
+    .await
 }
 
 /**
