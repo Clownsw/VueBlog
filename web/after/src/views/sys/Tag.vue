@@ -1,6 +1,6 @@
 <template>
   <div class="m_tag">
-    <div class="tags clearfix" style="margin-top: 20px">
+    <div class="tags clearfix" style="margin-top: 20px; display: flex; justify-content: center;">
       <el-card class="box-card" style="margin-right: 10px; max-width: 600px; float: left">
         <div slot="header" class="clearfix">
           <span>所有标签</span>
@@ -13,7 +13,7 @@
         </div>
       </el-card>
 
-      <el-card class="box-card" style="max-width: 600px">
+      <el-card class="box-card" style="max-width: 600px; min-width: 450px;">
         <div slot="header" class="clearfix">
           <span>添加标签</span>
           <el-button style="float: right; padding: 3px 0" type="text" @click="returnEdit">返回新增</el-button>
@@ -24,8 +24,10 @@
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
 
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">{{ formBtnName }}</el-button>
+          <el-form-item class="tag-dlalog" style="margin-left: 0; text-align: center;">
+            <el-button type="primary" @click="submitForm('ruleForm')">
+              {{ formBtnName }}
+            </el-button>
             <el-button type="danger" v-show="delBtnStatus" @click="deleteForm">删除</el-button>
           </el-form-item>
         </el-form>
@@ -148,5 +150,9 @@ export default {
   margin-bottom: 10px;
   margin-right: 10px;
   cursor: pointer;
+}
+
+.tag-dlalog ::v-deep .el-form-item__content {
+  margin-left: 0 !important;
 }
 </style>

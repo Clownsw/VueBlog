@@ -5,7 +5,7 @@
     </el-aside>
     <el-container>
       <el-header>
-        <strong>VueAdmin后台管理系统</strong>
+        <strong>VueBlog后台管理系统</strong>
         <div class="header-avatar">
           <el-avatar :src="user.avatar"></el-avatar>
 

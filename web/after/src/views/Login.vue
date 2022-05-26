@@ -2,7 +2,7 @@
   <el-row type="flex" class="row-bg" justify="center">
     <el-col :md="6" :lg="7">
       <div class="grid-content bg-purple">
-        <h2>欢迎来到VueAdmin管理系统</h2>
+        <h2>欢迎来到VueBlog管理系统</h2>
         <el-image src="https://avatars.githubusercontent.com/u/28394742?v=4" style="width: 200px;"></el-image>
         <p>博客地址: blog.areyou.ml</p>
       </div>
