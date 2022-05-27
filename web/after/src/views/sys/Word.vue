@@ -55,6 +55,14 @@
       </el-table-column>
 
       <el-table-column
+          prop="sort.name"
+          label="分类"
+          width="100"
+          show-overflow-tooltip
+          align="center">
+      </el-table-column>
+
+      <el-table-column
           prop="title"
           label="标题"
           width="350"
@@ -158,8 +166,6 @@ export default {
             for (let i = 0; i < this.tableData.length; i++) {
               this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
             }
-
-            this.updateAllBlogTag()
           })
     },
     editWord(id) {
@@ -192,11 +198,6 @@ export default {
             })
       } else {
         this.$message.error('请先选择要删除的数据!')
-      }
-    },
-    updateAllBlogTag() {
-      for (let i = 0; i < this.tableData.length; i++) {
-        this.getBlogTags(i, this.tableData[i].id)
       }
     },
     getBlogTags(i, id) {

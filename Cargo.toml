@@ -5,8 +5,17 @@ members = [
 	"vueblog-before"
 ]
 
+[profile.dev]
+opt-level = 1
+codegen-units = 1
+overflow-checks = true
+
 [profile.release]
 lto = true
 strip = true
 debug = false
+opt-level = 'z'
+overflow-checks = false
+
+[profile.dev.package.sqlx-macros]
 opt-level = 3

@@ -5,9 +5,10 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
     controller::{
-        blog_controller::{blog_detail, blog_list, blog_me},
+        blog_controller::{blog_detail, blog_list, blog_me, blog_sort_list},
         default_controller::not_found_page,
         friend_controller::friend_all,
+        sort_controlller::sort_list,
         system_controller::system_info,
         tag_controller::tags_blog,
     },
@@ -88,9 +89,11 @@ async fn main() -> std::io::Result<()> {
             .service(blog_list)
             .service(blog_me)
             .service(blog_detail)
+            .service(blog_sort_list)
             .service(friend_all)
             .service(system_info)
             .service(tags_blog)
+            .service(sort_list)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

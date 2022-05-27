@@ -12,6 +12,7 @@ use vueblog_common::{
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
         other_controller::generate_captcha_code,
+        sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
         system_controller::{system_info, system_update},
         tag_controller::{
             tag_add, tag_all, tag_delete, tag_id_by_name, tag_is_exist, tag_update, tags_blog,
@@ -130,6 +131,10 @@ async fn main() -> std::io::Result<()> {
             .service(tags_blog)
             .service(tag_id_by_name)
             .service(tag_is_exist)
+            .service(sort_list)
+            .service(sort_remove)
+            .service(sort_add)
+            .service(sort_update)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

@@ -6,13 +6,11 @@ use crate::{
     dao::user_dao::get_by_id,
     pojo::{
         claims::Claims,
-        msg::ResultMsg,
         user::{SelectUser, TokenUser},
     },
 };
 
 use super::{
-    common_util::to_json_string,
     error_util,
     jwt_util::{is_token_expried, sign_token_default},
 };
@@ -61,24 +59,11 @@ pub async fn is_login_return(
 
                 return (
                     None,
-                    Some(
-                        to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                            error_util::USER_STATUS_UNAVAILABLE,
-                        ))))
-                        .await,
-                    ),
+                    Some(String::from(error_util::USER_STATUS_UNAVAILABLE)),
                 );
             }
         }
     }
 
-    (
-        None,
-        Some(
-            to_json_string(&ResultMsg::<()>::fail_msg(Some(String::from(
-                error_util::NOT_REQUEST_ACCESS,
-            ))))
-            .await,
-        ),
-    )
+    (None, Some(String::from(error_util::NOT_REQUEST_ACCESS)))
 }

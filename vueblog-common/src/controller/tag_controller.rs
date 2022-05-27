@@ -109,8 +109,10 @@ pub async fn tag_delete(
             Box::pin(async move {
                 let id = path.unwrap().into_inner();
 
+                // 如果有博客使用这个标签, 则先删除该记录
                 sql_run_is_success(delete_all_blog_by_tag_id(&db_pool_clone, id).await).await;
 
+                // 删除标签
                 if sql_run_is_success(delete_by_id(&db_pool_clone, id).await).await {
                     return build_response_ok_message(String::from(error_util::SUCCESS)).await;
                 }

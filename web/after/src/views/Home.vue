@@ -15,8 +15,9 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>
-                <el-link>个人中心</el-link>
+                个人中心
               </el-dropdown-item>
+
               <el-dropdown-item @click.native="logout" style="text-align: center">
                 退出
               </el-dropdown-item>

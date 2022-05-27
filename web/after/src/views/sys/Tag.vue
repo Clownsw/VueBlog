@@ -1,6 +1,7 @@
 <template>
   <div class="m_tag">
-    <div class="tags clearfix" style="margin-top: 20px; display: flex; justify-content: center;">
+    <div class="tags clearfix"
+         style="margin-top: 20px; display: flex; justify-content: center; align-items: flex-start;">
       <el-card class="box-card" style="margin-right: 10px; max-width: 600px; float: left">
         <div slot="header" class="clearfix">
           <span>所有标签</span>
@@ -122,6 +123,7 @@ export default {
 
         // 刷新
         this.getTags()
+        this.returnEdit()
       })
     },
     resetForm(formName) {

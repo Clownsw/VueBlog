@@ -1,22 +1,27 @@
 <template>
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
-    <el-timeline>
-      <el-timeline-item v-for="item in blogs.data" :timestamp="parseStrToDate(item.created)" placement="top">
-        <el-card>
-          <h4>
-            <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
-              {{ item.title }}
-            </router-link>
-          </h4>
-          <p>{{ item.description }}</p>
+    <el-card v-for="item in blogs.data" style="margin-bottom: 10px">
+      <h3 class="blog-title">
+        <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
+          {{ item.title }}
+        </router-link>
+      </h3>
+      <p class="blog-description">{{ item.description }}</p>
 
-          <el-tag v-for="tag in item.tags" style="margin: 3px 10px 3px 0">
-            {{ tag.name }}
-          </el-tag>
-        </el-card>
-      </el-timeline-item>
-    </el-timeline>
+      <el-tag v-for="tag in item.tags" style="margin: 3px 10px 3px 0">
+        {{ tag.name }}
+      </el-tag>
+
+      <div>
+        <p class="blog-footer" style="display: inline-block">{{ parseStrToDate(item.created) }}</p>
+
+        <router-link :to="{ name: 'BlogsId', params: { id: item.sort.id } }"
+                     class="blog-footer" style="float: right">
+          {{ item.sort.name }}
+        </router-link>
+      </div>
+    </el-card>
 
     <div class="limit">
       <el-pagination background layout="prev, pager, next"
@@ -47,27 +52,21 @@ export default {
         data: []
       },
       systemInfo: {},
+      sortId: null,
     }
   },
   methods: {
     page(currentPage) {
-      this.$axios.get("blogs?currentPage=" + currentPage)
+      let url = this.sortId !== null
+          ? "/blogs/sort/list?currentPage=" + currentPage + '&sortId=' + this.sortId
+          : "/blogs?currentPage=" + currentPage
+      this.$axios.get(url)
           .then(resp => {
             this.blogs.data = resp.data.data.datas
             this.blogs.currentPage = resp.data.data.currentPage
             this.blogs.pages = resp.data.data.pages
             this.blogs.total = resp.data.data.total
             this.blogs.size = resp.data.data.size
-
-            for (let i = 0; i < this.blogs.data.length; i++) {
-              this.getBlogTags(i, this.blogs.data[i].id)
-            }
-          })
-    },
-    getBlogTags(index, id) {
-      this.$axios.get("tag/" + id)
-          .then(resp => {
-            this.blogs.data[index].tags = resp.data.data
           })
     },
     parseStrToDate(str) {
@@ -77,6 +76,9 @@ export default {
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo
     document.title = this.systemInfo.title
+
+    this.sortId = this.$route.params.id === undefined ? null : this.$route.params.id
+
     this.page(1)
   }
 }
@@ -96,5 +98,20 @@ export default {
 
 a {
   text-decoration: none;
+}
+
+.blog-title ::v-deep a {
+  color: #303133;
+}
+
+.blog-description {
+  color: #a0a3a8;
+}
+
+.blog-footer {
+  font-size: 13px;
+  color: #a0a3a8;
+  margin-block-start: 1em;
+  margin-block-end: 0;
 }
 </style>
