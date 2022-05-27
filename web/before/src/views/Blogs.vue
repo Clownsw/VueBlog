@@ -9,9 +9,11 @@
       </h3>
       <p class="blog-description">{{ item.description }}</p>
 
-      <el-tag v-for="tag in item.tags" style="margin: 3px 10px 3px 0">
-        {{ tag.name }}
-      </el-tag>
+      <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags">
+        <el-tag style="margin: 3px 10px 3px 0">
+          {{ tag.name }}
+        </el-tag>
+      </router-link>
 
       <div>
         <p class="blog-footer" style="display: inline-block">{{ parseStrToDate(item.created) }}</p>
@@ -53,13 +55,16 @@ export default {
       },
       systemInfo: {},
       sortId: null,
+      tagId: null,
     }
   },
   methods: {
     page(currentPage) {
       let url = this.sortId !== null
           ? "/blogs/sort/list?currentPage=" + currentPage + '&sortId=' + this.sortId
-          : "/blogs?currentPage=" + currentPage
+          : this.tagId !== null
+              ? "/blogs/tag/list?currentPage=" + currentPage + '&tagId=' + this.tagId
+              : "/blogs?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
             this.blogs.data = resp.data.data.datas
@@ -78,6 +83,7 @@ export default {
     document.title = this.systemInfo.title
 
     this.sortId = this.$route.params.id === undefined ? null : this.$route.params.id
+    this.tagId = this.$route.params.tagId === undefined ? null : this.$route.params.tagId
 
     this.page(1)
   }
@@ -92,6 +98,7 @@ export default {
 }
 
 .limit {
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }

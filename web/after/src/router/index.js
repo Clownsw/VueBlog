@@ -10,6 +10,7 @@ import User from "@/views/sys/User";
 import Friend from "@/views/sys/Friend";
 import Tag from "@/views/sys/Tag"
 import Sort from "@/views/sys/Sort";
+import EditSystem from "@/views/sys/EditSystem";
 
 Vue.use(VueRouter)
 
@@ -78,11 +79,20 @@ const routes = [
                 }
             },
             {
-                path: '/sys/me/edit',
+                path: '/sys/me',
                 name: 'SysMe',
                 component: EditMe,
                 meta: {
                     title: '关于我',
+                    requireAuth: true
+                }
+            },
+            {
+                path: '/sys/system',
+                name: 'SysSystem',
+                component: EditSystem,
+                meta: {
+                    title: '系统管理',
                     requireAuth: true
                 }
             },

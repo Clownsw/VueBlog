@@ -5,11 +5,12 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
     controller::{
-        blog_controller::{blog_detail, blog_list, blog_me, blog_sort_list},
+        blog_controller::{blog_detail, blog_list, blog_sort_list, blog_tag_list},
         default_controller::not_found_page,
         friend_controller::friend_all,
+        me_controller::me,
         sort_controlller::sort_list,
-        system_controller::system_info,
+        system_controller::{page_footer, system_info},
         tag_controller::tags_blog,
     },
     pojo::status::AppState,
@@ -87,11 +88,13 @@ async fn main() -> std::io::Result<()> {
                 redis_pool: redis_client.clone(),
             }))
             .service(blog_list)
-            .service(blog_me)
             .service(blog_detail)
             .service(blog_sort_list)
+            .service(blog_tag_list)
+            .service(me)
             .service(friend_all)
             .service(system_info)
+            .service(page_footer)
             .service(tags_blog)
             .service(sort_list)
             .default_service(

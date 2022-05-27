@@ -4,6 +4,14 @@
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
 
+      <div class="tags" style="text-align: center; margin-top: 5px;">
+        <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in blog.tags">
+          <el-tag style="margin: 3px 10px 3px 0">
+            {{ tag.name }}
+          </el-tag>
+        </router-link>
+      </div>
+
       <div style="display: flex; justify-content: center">
         <p class="blog-description" style="display: inline-block; margin-right: 10px">{{
             parseStrToDate(blog.created)
@@ -17,18 +25,23 @@
 
       <el-divider/>
 
-      <v-md-preview class="blog-body" :text="blog.content"/>
-
-      <div class="tags">
-        <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
-          {{ item.name }}
-        </el-tag>
-      </div>
+      <mavon-editor ref="markdown"
+                    :subfield="false"
+                    :editable="false"
+                    :defaultOpen="'preview'"
+                    :toolbarsFlag="false"
+                    :boxShadow="true"
+                    :code-style="'github-dark'"
+                    class="blog-body"
+                    v-model="blog.content"/>
     </div>
+
+    <Valine/>
   </div>
 </template>
 
 <script>
+import Valine from "@/components/Valine";
 import Header from "@/components/Header";
 
 export default {
@@ -53,6 +66,7 @@ export default {
   },
   components: {
     Header,
+    Valine
   },
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo
@@ -115,5 +129,13 @@ a {
 .blog-body ::v-deep blockquote {
   margin: 0 !important;
   padding: 0.3em 1em;
+}
+
+.blog-body ::v-deep pre {
+  padding: 0;
+}
+
+.blog-body ::v-deep .hljs {
+  padding: 12px;
 }
 </style>

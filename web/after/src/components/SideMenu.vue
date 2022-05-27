@@ -54,8 +54,15 @@
           </el-menu-item>
         </router-link>
 
+        <router-link :to="{ name: 'SysSystem' }">
+          <el-menu-item index="/sys/system">
+            <i class="el-icon-setting"></i>
+            <span slot="title">系统管理</span>
+          </el-menu-item>
+        </router-link>
+
         <router-link :to="{ name: 'SysMe' }">
-          <el-menu-item index="/sys/word/edit/1">
+          <el-menu-item index="/sys/me">
             <i class="el-icon-thumb"></i>
             <span slot="title">关于我</span>
           </el-menu-item>

@@ -3,6 +3,7 @@ pub mod captcha;
 pub mod claims;
 pub mod friend;
 pub mod limit;
+pub mod me;
 pub mod msg;
 pub mod other;
 pub mod sort;

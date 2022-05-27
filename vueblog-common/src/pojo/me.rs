@@ -1,14 +1,15 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
-pub struct Void {}
-
 #[derive(Serialize, Deserialize, Clone)]
-pub struct SelectPageFooter {
+pub struct SelectMe {
+    pub id: i64,
+    pub title: String,
     pub content: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct UpdatePageFooter {
+pub struct UpdateMe {
+    pub id: i64,
+    pub title: String,
     pub content: String,
 }
