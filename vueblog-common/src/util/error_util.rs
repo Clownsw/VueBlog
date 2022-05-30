@@ -1,5 +1,6 @@
 pub const SUCCESS: &str = "执行成功!";
 pub const ERROR: &str = "执行失败!";
+pub const ERROR_REQUEST_PARAM: &str = "错误的请求参数";
 
 pub const NOT_REQUEST_ACCESS: &str = "无权限访问!";
 pub const NOT_EDIT_ACCESS: &str = "无权限编辑!";

@@ -6,8 +6,13 @@ use crate::{
 use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse, HttpResponseBuilder, Responder};
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
+use rustc_hash::FxHashMap;
 use serde::Serialize;
-use std::{future::Future, pin::Pin};
+use sqlx::{
+    mysql::{MySqlColumn, MySqlRow},
+    Column, MySqlPool, Row,
+};
+use std::{future::Future, pin::Pin, str::FromStr};
 
 /**
  * 创建一个响应对象_json
@@ -177,6 +182,69 @@ where
     }
 
     f(app_state, body, data, user.unwrap()).await
+}
+
+pub fn columns_to_map(columns: &[MySqlColumn]) -> FxHashMap<&str, usize> {
+    let mut map = FxHashMap::default();
+
+    let mut i = 0;
+    for item in columns {
+        map.insert(item.name(), i);
+        i += 1;
+    }
+
+    map
+}
+
+pub fn parse_sql_row_string<T, F: Fn(String) -> T>(
+    row: &MySqlRow,
+    map: &FxHashMap<&str, usize>,
+    name: &str,
+    f: F,
+) -> Option<T> {
+    match map.get(name) {
+        Some(v) => {
+            if let Some(v) = row.get::<Option<String>, _>(*v) {
+                return Some(f(v));
+            }
+        }
+        _ => {}
+    }
+    None
+}
+
+pub fn parse_string_to_parse_vec<T: FromStr>(s: String) -> Vec<T>
+where
+    <T as FromStr>::Err: std::fmt::Debug,
+{
+    s.split(",")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|item| item.parse::<T>().unwrap())
+        .collect::<Vec<T>>()
+}
+
+pub fn parse_string_to_string_vec(s: String) -> Vec<String> {
+    s.split(",")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|item| String::from(*item))
+        .collect::<Vec<String>>()
+}
+
+pub async fn like_table_async_run<
+    T,
+    E,
+    F: Fn(T, &MySqlPool) -> Pin<Box<dyn Future<Output = T>>>,
+>(
+    f: F,
+    result: Result<T, E>,
+    db_pool: &MySqlPool,
+) -> Result<T, E> {
+    match result {
+        Ok(v) => Ok(f(v, db_pool).await),
+        Err(err) => Err(err),
+    }
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T

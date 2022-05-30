@@ -3,8 +3,22 @@
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
+
+      <div style="display: flex; justify-content: center">
+        <p class="blog-description" style="display: inline-block; margin-right: 10px">{{
+            parseStrToDate(blog.created)
+          }}</p>
+
+        <router-link :to="{ name: 'BlogsId', params: { id: blog.sort.id } }"
+                     class="blog-description">
+          {{ blog.sort.name }}
+        </router-link>
+      </div>
+
       <el-divider/>
-      <v-md-preview :text="blog.content"></v-md-preview>
+
+      <v-md-preview class="blog-body" :text="blog.content"/>
+
       <div class="tags">
         <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
           {{ item.name }}
@@ -21,18 +35,20 @@ export default {
   name: "BlogDetail",
   data() {
     return {
-      blog: {},
+      blog: {
+        sort: {
+          id: 0
+        },
+        name: ''
+      },
       tags: [],
       onShow: false,
       systemInfo: {},
     };
   },
   methods: {
-    getBlogTags(id) {
-      this.$axios.get("tag/" + id)
-          .then(resp => {
-            this.tags = resp.data.data
-          })
+    parseStrToDate(str) {
+      return new Date(str).toLocaleString()
     },
   },
   components: {
@@ -43,10 +59,11 @@ export default {
 
     let blogId = this.$route.params.blogId;
     if (blogId !== undefined) {
-      this.getBlogTags(blogId)
       this.$axios.get("blog/" + blogId).then((resp) => {
         if (resp.status === 200) {
           this.blog = resp.data.data;
+          this.tags = resp.data.data.tags
+
           document.title = this.blog.title + ' - ' + this.systemInfo.title;
 
           if (this.$store.getters.getUserInfo != null) {
@@ -77,9 +94,26 @@ export default {
 .m-blog-title {
   margin: 0 auto;
   display: table;
+  color: #303133;
 }
 
 .tags {
   padding: 0 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.blog-description {
+  font-size: 13px;
+  color: #a0a3a8;
+  margin-block-start: 1em;
+  margin-block-end: 0;
+}
+
+.blog-body ::v-deep blockquote {
+  margin: 0 !important;
+  padding: 0.3em 1em;
 }
 </style>

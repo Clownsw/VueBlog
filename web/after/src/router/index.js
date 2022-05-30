@@ -9,6 +9,7 @@ import EditMe from "@/views/sys/EditMe";
 import User from "@/views/sys/User";
 import Friend from "@/views/sys/Friend";
 import Tag from "@/views/sys/Tag"
+import Sort from "@/views/sys/Sort";
 
 Vue.use(VueRouter)
 
@@ -59,6 +60,15 @@ const routes = [
                 }
             },
             {
+                path: '/sys/sorts',
+                name: 'SysSort',
+                component: Sort,
+                meta: {
+                    title: '分类管理',
+                    requireAuth: true
+                }
+            },
+            {
                 path: '/sys/friend',
                 name: 'SysFriend',
                 component: Friend,
@@ -84,7 +94,7 @@ const routes = [
                     title: '编辑文章',
                     requireAuth: true
                 }
-            },
+            }
         ]
     },
     {

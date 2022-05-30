@@ -9,6 +9,12 @@
         <el-input v-model="blog.description"></el-input>
       </el-form-item>
 
+      <el-form-item label="博文分类" prop="sort">
+        <el-select v-model="blog.sort.id" placeholder="请选择">
+          <el-option v-for="s in sorts" :label="s.name" :value="s.id"></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="博客标签" prop="content">
         <el-tag
             :key="tag.name"
@@ -55,6 +61,9 @@ export default {
         title: '',
         description: '',
         content: '',
+        sort: {
+          id: null
+        }
       },
       rules: {
         title: [
@@ -67,9 +76,13 @@ export default {
         content: [
           {required: true, message: '请输入博文内容', trigger: 'blur'},
         ],
+        sort: [
+          {required: true, message: '请选择分类', trigger: 'blur'},
+        ]
       },
       buttonName: '',
       tags: [],
+      sorts: [],
       inputVisible: false,
       inputValue: ''
     }
@@ -79,7 +92,13 @@ export default {
       this.$axios.get("blog/" + id)
           .then(resp => {
             this.blog = resp.data.data
+            this.tags = resp.data.data.tags
           })
+    },
+    getAllSort() {
+      this.$axios.get("/sort/list").then(resp => {
+        this.sorts = resp.data.data
+      })
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -98,6 +117,7 @@ export default {
       let obj = {
         id: this.blog.id,
         user_id: this.blog.user_id,
+        sort_id: this.blog.sort.id,
         title: this.blog.title,
         description: this.blog.description,
         content: this.blog.content,
@@ -117,6 +137,7 @@ export default {
       let obj = {
         user_id: this.$store.getters.getUser.id,
         title: this.blog.title,
+        sort_id: this.blog.sort.id,
         description: this.blog.description,
         content: this.blog.content,
         tag: this.tags,
@@ -128,6 +149,10 @@ export default {
       })
           .then(resp => {
             this.$message.success(resp.data.message)
+
+            setTimeout(() => {
+              this.$router.push('/sys/words')
+            }, 1000)
           })
     },
     resetForm(formName) {
@@ -208,7 +233,7 @@ export default {
     if (this.id > 0) {
       this.getBlogInfo(this.id)
     }
-    this.getBlogTags(this.id)
+    this.getAllSort()
   }
 }
 </script>

@@ -11,13 +11,15 @@ router.beforeEach(((to, from, next) => {
 
     // 如果已经登录则直接跳转到后台
     if (to.fullPath === '/login') {
-        let f = async () => {
-            await axios.post("token", token)
-                .then(_ => {
-                    next("/sys/index")
-                })
+        if (token) {
+            let f = async () => {
+                await axios.post("token", token)
+                    .then(_ => {
+                        next("/sys/index")
+                    })
+            }
+            f().then(() => {})
         }
-        f().then(() => {})
     }
 
     if (to.matched.some(record => record.meta.requireAuth)) {

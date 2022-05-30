@@ -18,6 +18,11 @@ const routes = [
         component: Blogs,
     },
     {
+        path: '/blogs/sort/:id(\\d+)',
+        name: 'BlogsId',
+        component: Blogs,
+    },
+    {
         path: '/blog/:blogId(\\d+)',
         name: 'BlogDetail',
         component: BlogDetail

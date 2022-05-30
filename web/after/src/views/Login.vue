@@ -16,7 +16,7 @@
 
     <el-col :md="6" :lg="7">
       <div class="grid-content bg-purple" style="padding-right: 130px">
-        <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="100px" @keyup.enter.native="submitForm('loginForm')" class="demo-ruleForm">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="loginForm.username"></el-input>
           </el-form-item>

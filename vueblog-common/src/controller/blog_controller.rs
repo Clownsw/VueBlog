@@ -2,14 +2,15 @@ use crate::{
     config::global_config::PAGE_LIMIT_NUM,
     dao::{
         blog_dao::{
-            add_blog, delete_by_ids, get_by_id, select_all_count, select_all_limit,
-            select_by_title, update_blog_by_id,
+            add_blog, delete_by_ids, get_by_id, get_by_id_with_sort_and_tag, select_all_count,
+            select_all_limit, select_all_limit_by_sort_id, select_by_title, select_sort_all_count,
+            update_blog_by_id,
         },
         blog_tag_dao::{add_blog_tag_by_ids, delete_blog_tag_by_tag_ids},
         tag_dao::select_all_by_blog_id,
     },
     pojo::{
-        blog::{InsertBlog, RequestBlog, UpdateBlog},
+        blog::{InsertBlog, RequestBlog, SelectBlogSortTag, UpdateBlog},
         limit::Limit,
         other::Void,
         status::AppState,
@@ -65,11 +66,49 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
 pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> impl Responder {
     let id = path.into_inner();
 
-    match get_by_id(&data.db_pool, id).await {
+    match get_by_id_with_sort_and_tag(&data.db_pool, id).await {
         Ok(v) => build_response_ok_data(v).await,
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
         }
+    }
+}
+
+/**
+ * 分页查询指定分类下的所有文章
+ */
+#[get("/blogs/sort/list")]
+pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    let mut current: i64 = 1;
+    let mut sort_id = 1;
+
+    let qs = QString::from(req.query_string());
+
+    if let Some(v) = qs.get("currentPage") {
+        if let Ok(v) = v.parse::<i64>() {
+            current = v;
+        }
+    }
+
+    if let Some(v) = qs.get("sortId") {
+        if let Ok(v) = v.parse::<i32>() {
+            sort_id = v;
+        }
+    }
+
+    let blogs = select_all_limit_by_sort_id(
+        &data.db_pool,
+        (current - 1) * PAGE_LIMIT_NUM,
+        PAGE_LIMIT_NUM,
+        sort_id,
+    )
+    .await;
+    let count = select_sort_all_count(&data.db_pool, sort_id).await.unwrap();
+
+    if let Ok(v) = blogs {
+        build_response_ok_data(Limit::from_unknown_datas(count.count, current, v)).await
+    } else {
+        build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }
 }
 
@@ -151,6 +190,7 @@ pub async fn blog_edit(
 
                                     let update_blog = UpdateBlog {
                                         id: v.id.unwrap(),
+                                        sort_id: v.sort_id,
                                         title: v.title,
                                         content: v.content,
                                         description: v.description,
@@ -186,6 +226,7 @@ pub async fn blog_edit(
 
                             let insert_blog = InsertBlog {
                                 user_id: user.id,
+                                sort_id: v.sort_id,
                                 title: v.title,
                                 description: v.description,
                                 content: v.content,

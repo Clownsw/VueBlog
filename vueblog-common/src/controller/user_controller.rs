@@ -57,8 +57,10 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
                         .await
                     }
                     Err(_) => {
-                        build_response_baq_request_message(String::from(error_util::NOT_FOUND_USER))
-                            .await
+                        build_response_baq_request_message(String::from(
+                            error_util::NOT_REQUEST_ACCESS,
+                        ))
+                        .await
                     }
                 }
             })
