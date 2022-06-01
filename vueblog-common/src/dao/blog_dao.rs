@@ -68,6 +68,7 @@ pub async fn select_all_limit(
                 SELECT
                 blog.*,
                 sort.NAME AS sort_name,
+                sort.order AS sort_order,
                 (
                 SELECT
                     GROUP_CONCAT( `id` ) 
@@ -101,6 +102,7 @@ pub async fn select_all_limit(
 
         blog.sort = Some(SelectSortWithBlog {
             id: row.get(*(map.get("sort_id")).unwrap()),
+            order: row.get(*(map.get("sort_order")).unwrap()),
             name: row.get(*(map.get("sort_name")).unwrap()),
         });
 
@@ -157,6 +159,7 @@ pub async fn get_by_id_with_sort_and_tag(
             SELECT
                 blog.*,
                 sort.NAME AS sort_name,
+                sort.order AS sort_order,
             (
             SELECT
                 GROUP_CONCAT( `id` ) 
@@ -188,6 +191,7 @@ pub async fn get_by_id_with_sort_and_tag(
 
             blog.sort = Some(SelectSortWithBlog {
                 id: row.get(*(map.get("sort_id")).unwrap()),
+                order: row.get(*(map.get("sort_order")).unwrap()),
                 name: row.get(*(map.get("sort_name")).unwrap()),
             });
 
@@ -327,6 +331,7 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
                 SELECT
                 blog.*,
                 sort.NAME AS sort_name,
+                sort.order AS sort_order,
                 (
                 SELECT
                     GROUP_CONCAT( `id` ) 
@@ -363,6 +368,7 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
 
         blog.sort = Some(SelectSortWithBlog {
             id: row.get(*(map.get("sort_id")).unwrap()),
+            order: row.get(*(map.get("sort_order")).unwrap()),
             name: row.get(*(map.get("sort_name")).unwrap()),
         });
 
