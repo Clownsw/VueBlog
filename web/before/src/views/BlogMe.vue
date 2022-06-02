@@ -2,7 +2,7 @@
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-me">
-      <v-md-preview :text="me.content"></v-md-preview>
+      <v-md-preview :text="me.content" />
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     getMe() {
-      this.$axios.get("blog/me")
+      this.$axios.get("me")
           .then(resp => {
             this.me = resp.data.data
           })

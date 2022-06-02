@@ -11,6 +11,7 @@ use vueblog_common::{
         default_controller::not_found_page,
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
+        me_controller::{me, me_update},
         other_controller::generate_captcha_code,
         sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
         system_controller::{system_info, system_update},
@@ -135,6 +136,8 @@ async fn main() -> std::io::Result<()> {
             .service(sort_remove)
             .service(sort_add)
             .service(sort_update)
+            .service(me)
+            .service(me_update)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

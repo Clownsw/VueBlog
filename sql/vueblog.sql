@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 01/06/2022 23:44:43
+ Date: 02/06/2022 12:46:35
 */
 
 SET NAMES utf8mb4;
@@ -36,7 +36,6 @@ CREATE TABLE `m_blog`  (
 -- ----------------------------
 -- Records of m_blog
 -- ----------------------------
-INSERT INTO `m_blog` VALUES (1, 1, 3, '关于我', '关于我', '关于我', '2022-05-31 11:58:50', 0);
 INSERT INTO `m_blog` VALUES (15, 1, 3, 'Hello,World', 'Hello,World', 'Hello,World', '2022-04-17 10:55:09', 0);
 INSERT INTO `m_blog` VALUES (17, 1, 10, '[2022/3/11更新]某联盟换肤工具汉化版-持续更新中...', '某联盟换肤工具汉化版-持续更新中...', '> 本软件仅用于学习，请勿用于非法用途\n> 解释权归本网站所有\n\n# 公告\n## 官方已支持中国服务器\n[R3nzTheCodeGOD](https://github.com/R3nzTheCodeGOD/R3nzSkin/releases/)\n\n## 使用说明\n1. 请勿使用WeGame启动\n2. 进入泉水后注入\n3. 只支持Win7-Win10 2004(及其以下版本)\n\n## 下载地址\n[注入器](https://smlie.lanzoui.com/ilrRsilrtkf)', '2022-05-30 15:30:07', 0);
 INSERT INTO `m_blog` VALUES (18, 1, 1, 'Java快速、小巧、简单易用网络请求库', 'Java快速、小巧、简单易用网络请求库', '# 一个Java快速、小巧、简单易用网络请求库 - req_java\n\n## 优点\n- 快速的\n- 小巧的\n- 简单易用的\n\n# 下载\n#### 开源地址: https://github.com/Clownsw/req_java/\n#### 下载地址: https://github.com/Clownsw/req_java/releases', '2022-05-30 15:33:09', 0);
@@ -97,6 +96,23 @@ CREATE TABLE `m_friend`  (
 -- Records of m_friend
 -- ----------------------------
 INSERT INTO `m_friend` VALUES (1, 'Smile\' Blog', '一个神秘的博客', 'https://blog.areyou.ml/', 'https://avatars.githubusercontent.com/u/28394742');
+
+-- ----------------------------
+-- Table structure for m_other
+-- ----------------------------
+DROP TABLE IF EXISTS `m_other`;
+CREATE TABLE `m_other`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_other
+-- ----------------------------
+INSERT INTO `m_other` VALUES (1, '关于我', '关于我', '关于我');
 
 -- ----------------------------
 -- Table structure for m_sort
