@@ -3,8 +3,8 @@
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
-	  
-	  <div class="tags" style="text-align: center; margin-top: 5px;">
+
+      <div class="tags" style="text-align: center; margin-top: 5px;">
         <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
           {{ item.name }}
         </el-tag>
@@ -23,13 +23,17 @@
 
       <el-divider/>
 
-	  <mavon-editor :subfield="false" :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="blog-body" v-model="blog.content">
-	  </mavon-editor>
+      <mavon-editor :subfield="false" :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="blog-body"
+                    v-model="blog.content">
+      </mavon-editor>
     </div>
+
+    <Valine/>
   </div>
 </template>
 
 <script>
+import Valine from "@/components/Valine";
 import Header from "@/components/Header";
 
 export default {
@@ -54,6 +58,7 @@ export default {
   },
   components: {
     Header,
+    Valine
   },
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo
