@@ -1,4 +1,4 @@
-# vueblog-before
+# before
 
 ## Project setup
 ```

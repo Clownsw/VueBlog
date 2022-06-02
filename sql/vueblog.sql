@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 02/06/2022 12:46:35
+ Date: 02/06/2022 16:34:17
 */
 
 SET NAMES utf8mb4;
@@ -104,7 +104,6 @@ DROP TABLE IF EXISTS `m_other`;
 CREATE TABLE `m_other`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -112,7 +111,7 @@ CREATE TABLE `m_other`  (
 -- ----------------------------
 -- Records of m_other
 -- ----------------------------
-INSERT INTO `m_other` VALUES (1, '关于我', '关于我', '关于我');
+INSERT INTO `m_other` VALUES (1, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n\n\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa');
 
 -- ----------------------------
 -- Table structure for m_sort
