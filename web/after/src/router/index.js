@@ -78,7 +78,7 @@ const routes = [
                 }
             },
             {
-                path: '/sys/me/edit',
+                path: '/sys/me',
                 name: 'SysMe',
                 component: EditMe,
                 meta: {

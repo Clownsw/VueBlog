@@ -303,16 +303,3 @@ pub async fn blog_deletes(
     )
     .await
 }
-
-/**
- * 关于我
- */
-#[get("/blog/me")]
-pub async fn blog_me(data: web::Data<AppState>) -> impl Responder {
-    match get_by_id(&data.db_pool, 1 as i64).await {
-        Ok(v) => build_response_ok_data(v).await,
-        Err(_) => {
-            build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
-        }
-    }
-}

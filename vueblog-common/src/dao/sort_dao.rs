@@ -9,7 +9,7 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectSort>, sqlx::Er
     sqlx::query_as!(
         SelectSort,
         r#"
-            SELECT * FROM m_sort
+            SELECT * FROM m_sort ORDER BY `order` DESC
         "#
     )
     .fetch_all(db_pool)
@@ -42,9 +42,10 @@ pub async fn update_by_id(
 ) -> Result<sqlx::mysql::MySqlQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
-            UPDATE m_sort SET name = ? WHERE id = ?
+            UPDATE m_sort SET name = ?, `order` = ? WHERE id = ?
         "#,
         update_sort.name,
+        update_sort.order,
         update_sort.id
     )
     .execute(db_pool)

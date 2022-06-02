@@ -1,40 +1,25 @@
-import {createApp} from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
-import VueMarkdownEditor from '@kangc/v-md-editor';
-import '@kangc/v-md-editor/lib/style/base-editor.css';
-import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
-import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
-import VMdPreview from '@kangc/v-md-editor/lib/preview';
-import '@kangc/v-md-editor/lib/style/preview.css';
-import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
-import '@kangc/v-md-editor/lib/theme/style/github.css';
-
-import Prism from 'prismjs';
-import hljs from 'highlight.js';
-
-VueMarkdownEditor.use(vuepressTheme, {
-    Prism,
-});
-
-VMdPreview.use(githubTheme, {
-    Hljs: hljs,
-});
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 import './axios'
 import './interceptor'
 
-let app = createApp(App)
-app.use(store)
-    .use(router)
-    .use(VueMarkdownEditor)
-    .use(ElementPlus)
-    .use(VMdPreview)
-    .mount('#app')
+Vue.config.productionTip = false
+Vue.use(ElementUI);
+Vue.use(mavonEditor)
+Vue.prototype.$axios = axios
 
-app.config.productionTip = false
-app.config.globalProperties.$axios = axios
+new Vue({
+    router,
+    store,
+    render: function (h) {
+        return h(App)
+    }
+}).$mount('#app')

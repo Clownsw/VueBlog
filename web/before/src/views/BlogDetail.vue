@@ -4,6 +4,12 @@
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
 
+      <div class="tags" style="text-align: center; margin-top: 5px;">
+        <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
+          {{ item.name }}
+        </el-tag>
+      </div>
+
       <div style="display: flex; justify-content: center">
         <p class="blog-description" style="display: inline-block; margin-right: 10px">{{
             parseStrToDate(blog.created)
@@ -17,13 +23,9 @@
 
       <el-divider/>
 
-      <v-md-preview class="blog-body" :text="blog.content"/>
-
-      <div class="tags">
-        <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
-          {{ item.name }}
-        </el-tag>
-      </div>
+      <mavon-editor :subfield="false" :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="blog-body"
+                    v-model="blog.content">
+      </mavon-editor>
     </div>
   </div>
 </template>

@@ -2,7 +2,8 @@
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-me">
-      <v-md-preview :text="me.content"></v-md-preview>
+	  <mavon-editor :subfield="false" :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="blog-body" v-model="me.content">
+	  </mavon-editor>
     </div>
   </div>
 </template>
@@ -23,7 +24,7 @@ export default {
   },
   methods: {
     getMe() {
-      this.$axios.get("blog/me")
+      this.$axios.get("me")
           .then(resp => {
             this.me = resp.data.data
           })
