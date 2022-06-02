@@ -27,10 +27,13 @@
                     v-model="blog.content">
       </mavon-editor>
     </div>
+
+    <Valine/>
   </div>
 </template>
 
 <script>
+import Valine from "@/components/Valine";
 import Header from "@/components/Header";
 
 export default {
@@ -55,6 +58,7 @@ export default {
   },
   components: {
     Header,
+    Valine
   },
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo
