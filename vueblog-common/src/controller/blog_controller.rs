@@ -3,14 +3,14 @@ use crate::{
     dao::{
         blog_dao::{
             add_blog, delete_by_ids, get_by_id, get_by_id_with_sort_and_tag, select_all_count,
-            select_all_limit, select_all_limit_by_sort_id, select_by_title, select_sort_all_count,
-            update_blog_by_id,
+            select_all_limit, select_all_limit_by_sort_id, select_all_limit_by_tag_id,
+            select_by_title, select_sort_all_count, select_tag_all_count, update_blog_by_id,
         },
         blog_tag_dao::{add_blog_tag_by_ids, delete_blog_tag_by_tag_ids},
         tag_dao::select_all_by_blog_id,
     },
     pojo::{
-        blog::{InsertBlog, RequestBlog, SelectBlogSortTag, UpdateBlog},
+        blog::{InsertBlog, RequestBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog},
         limit::Limit,
         other::Void,
         status::AppState,
@@ -49,7 +49,10 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         PAGE_LIMIT_NUM,
     )
     .await;
-    let counts = select_all_count(&data.db_pool).await.unwrap();
+    let counts = match select_all_count(&data.db_pool).await {
+        Ok(v) => v,
+        _ => Vec::new(),
+    };
 
     match blogs {
         Ok(v) => {
@@ -103,7 +106,51 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
         sort_id,
     )
     .await;
-    let count = select_sort_all_count(&data.db_pool, sort_id).await.unwrap();
+    let count = match select_sort_all_count(&data.db_pool, sort_id).await {
+        Ok(v) => v,
+        _ => SelectCountBlog { count: 0 },
+    };
+
+    if let Ok(v) = blogs {
+        build_response_ok_data(Limit::from_unknown_datas(count.count, current, v)).await
+    } else {
+        build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
+    }
+}
+
+/**
+ * 分页查询指定标签下的所有文章
+ */
+#[get("/blogs/tag/list")]
+pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+    let mut current: i64 = 1;
+    let mut tag_id: i64 = 1;
+
+    let qs = QString::from(req.query_string());
+
+    if let Some(v) = qs.get("currentPage") {
+        if let Ok(v) = v.parse::<i64>() {
+            current = v;
+        }
+    }
+
+    if let Some(v) = qs.get("tagId") {
+        if let Ok(v) = v.parse::<i64>() {
+            tag_id = v;
+        }
+    }
+
+    let blogs = select_all_limit_by_tag_id(
+        &data.db_pool,
+        (current - 1) * PAGE_LIMIT_NUM,
+        PAGE_LIMIT_NUM,
+        tag_id,
+    )
+    .await;
+    let count = match select_tag_all_count(&data.db_pool, tag_id).await {
+        Ok(v) => v,
+        _ => SelectCountBlog { count: 0 },
+    };
 
     if let Ok(v) = blogs {
         build_response_ok_data(Limit::from_unknown_datas(count.count, current, v)).await

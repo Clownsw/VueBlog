@@ -92,6 +92,7 @@ export default {
 }
 
 .limit {
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 }

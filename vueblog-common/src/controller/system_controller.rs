@@ -1,7 +1,10 @@
 use crate::{
-    dao::system_dao::{select_system_info, update_system_info},
+    dao::{
+        other_dao::{select_page_footer, update_page_footer},
+        system_dao::{select_system_info, update_system_info},
+    },
     pojo::{
-        other::Void,
+        other::{UpdatePageFooter, Void},
         status::AppState,
         system::{SelectSystem, UpdateSystem},
     },
@@ -81,6 +84,56 @@ pub async fn system_update(
 
                 build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
                     .await
+            })
+        },
+        &req,
+        &data,
+        Some(body),
+        None,
+    )
+    .await
+}
+
+/**
+ * 获取page footer
+ */
+#[get("/footer")]
+pub async fn page_footer(data: web::Data<AppState>) -> impl Responder {
+    match select_page_footer(&data.db_pool).await {
+        Ok(v) => build_response_ok_data(v).await,
+        _ => build_response_ok_data(String::new()).await,
+    }
+}
+
+/**
+ * 更新page footer
+ */
+#[post("/footer/update")]
+pub async fn page_footer_update(
+    body: String,
+    req: HttpRequest,
+    data: web::Data<AppState>,
+) -> impl Responder {
+    security_interceptor_aop::<_, Void>(
+        move |app_state, body, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            let body = body.unwrap();
+
+            Box::pin(async move {
+                let mut resp =
+                    build_response_baq_request_message(String::from(error_util::ERROR)).await;
+
+                match serde_json::from_str::<UpdatePageFooter>(body.as_str()) {
+                    Ok(v) => {
+                        if sql_run_is_success(update_page_footer(&db_pool_clone, v).await).await {
+                            resp =
+                                build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                        }
+                    }
+                    _ => {}
+                }
+
+                resp
             })
         },
         &req,

@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 02/06/2022 16:34:17
+ Date: 03/06/2022 03:42:09
 */
 
 SET NAMES utf8mb4;
@@ -103,15 +103,17 @@ INSERT INTO `m_friend` VALUES (1, 'Smile\' Blog', '一个神秘的博客', 'http
 DROP TABLE IF EXISTS `m_other`;
 CREATE TABLE `m_other`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `order` tinyint(4) NULL DEFAULT 0,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_other
 -- ----------------------------
-INSERT INTO `m_other` VALUES (1, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n\n\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa');
+INSERT INTO `m_other` VALUES (1, 0, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n\n\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa');
+INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<p>test</p>');
 
 -- ----------------------------
 -- Table structure for m_sort

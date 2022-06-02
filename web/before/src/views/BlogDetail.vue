@@ -23,9 +23,15 @@
 
       <el-divider/>
 
-      <mavon-editor :subfield="false" :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" class="blog-body"
-                    v-model="blog.content">
-      </mavon-editor>
+      <mavon-editor ref="markdown"
+                    :subfield="false"
+                    :editable="false"
+                    :defaultOpen="'preview'"
+                    :toolbarsFlag="false"
+                    :boxShadow="true"
+                    :code-style="'github-dark'"
+                    class="blog-body"
+                    v-model="blog.content" />
     </div>
 
     <Valine/>
@@ -121,5 +127,13 @@ a {
 .blog-body ::v-deep blockquote {
   margin: 0 !important;
   padding: 0.3em 1em;
+}
+
+.blog-body ::v-deep pre {
+  padding: 0;
+}
+
+.blog-body ::v-deep .hljs {
+  padding: 12px;
 }
 </style>

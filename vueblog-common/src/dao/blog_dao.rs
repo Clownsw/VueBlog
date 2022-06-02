@@ -33,9 +33,29 @@ pub async fn select_sort_all_count(db_pool: &MySqlPool, sort_id: i32) -> Result<
     sqlx::query_as!(
         SelectCountBlog,
         r#"
-        SELECT COUNT(*) as count FROM m_blog WHERE id != 1 AND sort_id = ?
+        SELECT COUNT(*) as count FROM m_blog WHERE sort_id = ?
         "#,
         sort_id
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
+/**
+ * 查询指定标签下的所有文章个数
+ */
+pub async fn select_tag_all_count(db_pool: &MySqlPool, tag_id: i64) -> Result<SelectCountBlog, sqlx::Error> {
+    sqlx::query_as!(
+        SelectCountBlog,
+        r#"
+            SELECT DISTINCT
+                blogId AS count 
+            FROM
+                m_blogtag 
+            WHERE
+                tagId = ?
+        "#,
+        tag_id
     )
     .fetch_one(db_pool)
     .await
@@ -359,6 +379,91 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
             "#,
     )
     .bind(sort_id)
+    .bind(limit)
+    .bind(size)
+    .map(|row| {
+        let columns = row.columns();
+        let map = columns_to_map(columns);
+        let mut blog = SelectBlogSortTag::parse_map(&row, &map);
+
+        blog.sort = Some(SelectSortWithBlog {
+            id: row.get(*(map.get("sort_id")).unwrap()),
+            order: row.get(*(map.get("sort_order")).unwrap()),
+            name: row.get(*(map.get("sort_name")).unwrap()),
+        });
+
+        let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
+            v
+        } else {
+            Vec::new()
+        };
+
+        let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
+            v
+        } else {
+            Vec::new()
+        };
+
+        let mut tags = Vec::<SelectBlogOther>::new();
+        let len = ids.len();
+        for i in 0..len {
+            tags.push(SelectBlogOther { 
+                id: Some(*(ids.get(i).unwrap())), 
+                name: Some(names.get(i).unwrap().clone()), 
+            })
+        }
+
+        blog.tags = Some(tags);
+
+        blog
+    })
+    .fetch_all(db_pool)
+    .await
+}
+
+/**
+ * 分页查询指定标签下的所有博文
+ */
+pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i64, tag_id: i64) -> Result<Vec<SelectBlogSortTag>, sqlx::Error> {
+    sqlx::query::<MySql>(
+        r#"
+                SELECT
+                blog.*,
+                sort.NAME AS sort_name,
+                sort.order AS sort_order,
+                (
+                SELECT
+                    GROUP_CONCAT( `id` ) 
+                FROM
+                    m_tag AS tag 
+                WHERE
+                    tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
+                ) AS 'tag_ids',
+                (
+                SELECT
+                    GROUP_CONCAT( `name` ) 
+                FROM
+                    m_tag AS tag 
+                WHERE
+                    tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
+                ) AS 'tag_names' 
+                FROM
+                    m_blog AS blog
+                    LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+                WHERE
+                    blog.id IN (
+                        SELECT DISTINCT
+                            blogId
+                        FROM
+                            m_blogtag
+                        WHERE tagId = ?
+                    )
+                ORDER BY
+                    created DESC 
+                    LIMIT ?, ?
+            "#,
+    )
+    .bind(tag_id)
     .bind(limit)
     .bind(size)
     .map(|row| {
