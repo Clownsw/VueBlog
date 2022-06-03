@@ -5,9 +5,11 @@
       <h1 class="m-blog-title">{{ blog.title }}</h1>
 
       <div class="tags" style="text-align: center; margin-top: 5px;">
-        <el-tag v-for="item in tags" style="margin: 3px 10px 3px 0">
-          {{ item.name }}
-        </el-tag>
+        <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in blog.tags">
+          <el-tag style="margin: 3px 10px 3px 0">
+            {{ tag.name }}
+          </el-tag>
+        </router-link>
       </div>
 
       <div style="display: flex; justify-content: center">
@@ -31,7 +33,7 @@
                     :boxShadow="true"
                     :code-style="'github-dark'"
                     class="blog-body"
-                    v-model="blog.content" />
+                    v-model="blog.content"/>
     </div>
 
     <Valine/>

@@ -49,6 +49,7 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         PAGE_LIMIT_NUM,
     )
     .await;
+    
     let counts = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
         _ => Vec::new(),
@@ -106,6 +107,7 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
         sort_id,
     )
     .await;
+
     let count = match select_sort_all_count(&data.db_pool, sort_id).await {
         Ok(v) => v,
         _ => SelectCountBlog { count: 0 },
@@ -147,6 +149,7 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
         tag_id,
     )
     .await;
+
     let count = match select_tag_all_count(&data.db_pool, tag_id).await {
         Ok(v) => v,
         _ => SelectCountBlog { count: 0 },

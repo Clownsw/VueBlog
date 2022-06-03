@@ -48,8 +48,8 @@ pub async fn select_tag_all_count(db_pool: &MySqlPool, tag_id: i64) -> Result<Se
     sqlx::query_as!(
         SelectCountBlog,
         r#"
-            SELECT DISTINCT
-                blogId AS count 
+            SELECT
+                COUNT( DISTINCT ( blogId ) ) AS count 
             FROM
                 m_blogtag 
             WHERE
