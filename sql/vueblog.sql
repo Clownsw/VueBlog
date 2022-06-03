@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 03/06/2022 13:25:18
+ Date: 03/06/2022 14:27:32
 */
 
 SET NAMES utf8mb4;
@@ -113,7 +113,7 @@ CREATE TABLE `m_other`  (
 -- Records of m_other
 -- ----------------------------
 INSERT INTO `m_other` VALUES (1, 0, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n\n\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa');
-INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<p>test</p>');
+INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<div style=\"text-align: center;margin-top: 20px;margin-bottom:10px;\">\n	<img src=\"https://www.upyun.com/static/img/%E6%A0%B7%E5%BC%8F%E5%9B%BE.7cf927c.png\" style=\"width: 304px;\" />\n<p style=\"margin: 0;font-size: 13px;\">Copyright © 2021-2022 Smilex\'s Blog. All rights reserved.</p>\n<p style=\"margin: 0;font-size: 13px;\">Powered by <a href=\"https://github.com/Clownsw/vueblog\" target=\"_blank\" style=\"color: #409eff;font-weight: bold;text-decoration: none;\">Vueblog</a></p>\n</div>');
 
 -- ----------------------------
 -- Table structure for m_sort
