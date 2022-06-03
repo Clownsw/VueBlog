@@ -10,7 +10,7 @@ use sqlx::{mysql::MySqlRow, Row};
 /**
  * m_blog实体
  */
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SelectBlog {
     pub id: i64,
     pub user_id: i64,

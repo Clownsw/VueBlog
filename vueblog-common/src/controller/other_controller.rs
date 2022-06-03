@@ -1,11 +1,15 @@
 use crate::{
     config::global_config,
     pojo::{captcha::ResultCaptcha, status::AppState},
-    util::{common_util::build_response_ok_data, redis_util},
+    util::{
+        common_util::{build_response_ok_data, build_response_ok_message},
+        error_util, redis_util,
+    },
 };
 use actix_web::{get, web, Responder};
 use captcha_rust::Captcha;
 use crypto::{digest::Digest, sha2::Sha256};
+use sqlx::MySqlPool;
 
 /**
  * 生成验证码
@@ -36,4 +40,30 @@ pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder 
         base64_url: code.base_img,
     })
     .await
+}
+
+#[get("/tran_test")]
+pub async fn transactional_test(data: web::Data<AppState>) -> impl Responder {
+    transaction_manager(&data.db_pool).await;
+
+    build_response_ok_message(String::from(error_util::SUCCESS)).await
+}
+
+pub async fn transaction_manager(db: &MySqlPool) {
+    let s = |db: &MySqlPool| {
+        let db_clone = db.clone();
+
+        Box::pin(async move {
+            let mut tran = db_clone.begin().await.unwrap();
+
+            sqlx::query!("INSERT INTO m_other(`order`, title, content) VALUES(0, 'test', 'test')")
+                .execute(&mut tran)
+                .await
+                .unwrap();
+
+            tran.commit().await.unwrap();
+        })
+    };
+
+    (s(db)).await;
 }

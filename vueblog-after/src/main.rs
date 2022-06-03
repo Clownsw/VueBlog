@@ -12,9 +12,9 @@ use vueblog_common::{
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
         me_controller::{me, me_update},
-        other_controller::generate_captcha_code,
+        other_controller::{generate_captcha_code, transactional_test},
         sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
-        system_controller::{page_footer, page_footer_update, system_info, system_update},
+        system_controller::{page_footer, system_info, system_update},
         tag_controller::{
             tag_add, tag_all, tag_delete, tag_id_by_name, tag_is_exist, tag_update, tags_blog,
         },
@@ -126,7 +126,6 @@ async fn main() -> std::io::Result<()> {
             .service(system_info)
             .service(system_update)
             .service(page_footer)
-            .service(page_footer_update)
             .service(tag_all)
             .service(tag_add)
             .service(tag_delete)
@@ -140,6 +139,7 @@ async fn main() -> std::io::Result<()> {
             .service(sort_update)
             .service(me)
             .service(me_update)
+            .service(transactional_test)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))

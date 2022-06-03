@@ -1,31 +1,27 @@
 use crate::{
     config::global_config::PAGE_LIMIT_NUM,
-    dao::{
-        blog_dao::{
-            add_blog, delete_by_ids, get_by_id, get_by_id_with_sort_and_tag, select_all_count,
-            select_all_limit, select_all_limit_by_sort_id, select_all_limit_by_tag_id,
-            select_by_title, select_sort_all_count, select_tag_all_count, update_blog_by_id,
-        },
-        blog_tag_dao::{add_blog_tag_by_ids, delete_blog_tag_by_tag_ids},
-        tag_dao::select_all_by_blog_id,
+    dao::blog_dao::{
+        delete_by_ids, get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
+        select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
+        select_tag_all_count,
     },
     pojo::{
-        blog::{InsertBlog, RequestBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog},
+        blog::{RequestBlog, SelectBlogSortTag, SelectCountBlog},
         limit::Limit,
         other::Void,
         status::AppState,
     },
+    service::blog_service::{blog_add_service, blog_update_service},
     util::{
         common_util::{
             build_response_baq_request_message, build_response_ok_data, build_response_ok_message,
-            get_del_and_add_vec, security_interceptor_aop,
+            security_interceptor_aop,
         },
         error_util,
         sql_util::sql_run_is_success,
     },
 };
 use actix_web::{get, post, web, HttpRequest, Responder};
-use chrono::Utc;
 use qstring::QString;
 
 /**
@@ -49,7 +45,7 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         PAGE_LIMIT_NUM,
     )
     .await;
-    
+
     let counts = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
         _ => Vec::new(),
@@ -181,130 +177,24 @@ pub async fn blog_edit(
                     Ok(v) => {
                         let ids = v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
 
+                        let mut resp =
+                            build_response_baq_request_message(String::from(error_util::ERROR))
+                                .await;
                         // 编辑
                         if let Some(id) = v.id {
-                            match get_by_id(&db_pool_clone, id).await {
-                                Ok(_) => {
-                                    if v.tag.len() > 0 {
-                                        match select_all_by_blog_id(&db_pool_clone, id).await {
-                                            Ok(v2) => {
-                                                let old_ids: Vec<i64> = v2
-                                                    .iter()
-                                                    .map(|item| item.id.unwrap())
-                                                    .collect();
-
-                                                println!("old_ids: {:?}", old_ids);
-
-                                                let (dels, adds) =
-                                                    get_del_and_add_vec(old_ids, ids).await;
-                                                let mut result: Vec<bool> = vec![];
-
-                                                if dels.len() > 0 {
-                                                    result.push(
-                                                        sql_run_is_success(
-                                                            delete_blog_tag_by_tag_ids(
-                                                                &db_pool_clone,
-                                                                id,
-                                                                dels,
-                                                            )
-                                                            .await,
-                                                        )
-                                                        .await,
-                                                    );
-                                                } else if adds.len() > 0 {
-                                                    result.push(
-                                                        sql_run_is_success(
-                                                            add_blog_tag_by_ids(
-                                                                &db_pool_clone,
-                                                                id,
-                                                                adds,
-                                                            )
-                                                            .await,
-                                                        )
-                                                        .await,
-                                                    );
-                                                }
-
-                                                for r in result {
-                                                    if !r {
-                                                        return build_response_baq_request_message(
-                                                            String::from(error_util::ERROR),
-                                                        )
-                                                        .await;
-                                                    }
-                                                }
-                                            }
-                                            _ => {}
-                                        }
-                                    }
-
-                                    let update_blog = UpdateBlog {
-                                        id: v.id.unwrap(),
-                                        sort_id: v.sort_id,
-                                        title: v.title,
-                                        content: v.content,
-                                        description: v.description,
-                                    };
-
-                                    if sql_run_is_success(
-                                        update_blog_by_id(&db_pool_clone, update_blog).await,
-                                    )
-                                    .await
-                                    {
-                                        return build_response_ok_message(String::from(
-                                            error_util::SUCCESS,
-                                        ))
-                                        .await;
-                                    }
-
-                                    return build_response_baq_request_message(String::from(
-                                        error_util::ERROR,
-                                    ))
+                            if blog_update_service(&db_pool_clone, v, id, ids).await {
+                                resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
-                                }
-                                Err(_) => {
-                                    // 找不到这个文章
-                                    return build_response_baq_request_message(String::from(
-                                        error_util::BLOG_HAS_DELETE,
-                                    ))
-                                    .await;
-                                }
                             }
                         } else {
                             // 添加
-                            let title = v.title.clone();
-
-                            let insert_blog = InsertBlog {
-                                user_id: user.id,
-                                sort_id: v.sort_id,
-                                title: v.title,
-                                description: v.description,
-                                content: v.content,
-                                created: Utc::now().naive_utc(),
-                                status: 0,
-                            };
-
-                            if sql_run_is_success(add_blog(&db_pool_clone, insert_blog).await).await
-                            {
-                                if let Ok(v2) = select_by_title(&db_pool_clone, title).await {
-                                    if v.tag.len() > 0 {
-                                        sql_run_is_success(
-                                            add_blog_tag_by_ids(&db_pool_clone, v2.id, ids).await,
-                                        )
-                                        .await;
-                                    }
-                                    return build_response_ok_message(String::from(
-                                        error_util::SUCCESS,
-                                    ))
+                            if blog_add_service(&db_pool_clone, user.id, v, ids).await {
+                                resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
-                                }
                             }
-
-                            return build_response_baq_request_message(String::from(
-                                error_util::SUCCESS,
-                            ))
-                            .await;
                         }
+
+                        resp
                     }
                     Err(_) => {
                         build_response_baq_request_message(String::from(
