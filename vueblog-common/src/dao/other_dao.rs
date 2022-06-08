@@ -1,4 +1,4 @@
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool, Row, Transaction};
 
 use crate::pojo::{
     me::{SelectMe, UpdateMe},
@@ -66,5 +66,19 @@ pub async fn update_page_footer(
         update_footer.content
     )
     .execute(db_pool)
+    .await
+}
+
+pub async fn last_insert_id(tran: &mut Transaction<'_, MySql>) -> Result<u64, sqlx::Error> {
+    sqlx::query::<MySql>(
+        r#"
+            SELECT LAST_INSERT_ID();
+        "#,
+    )
+    .map(|row| {
+        let id: u64 = row.get(0);
+        id
+    })
+    .fetch_one(tran)
     .await
 }

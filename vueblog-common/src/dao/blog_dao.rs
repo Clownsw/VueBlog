@@ -11,7 +11,7 @@ use crate::{
 };
 use sqlx::{
     mysql::{MySqlPool, MySqlQueryResult},
-    MySql, Row,
+    MySql, Row, Transaction,
 };
 
 /**
@@ -244,24 +244,6 @@ pub async fn get_by_id_with_sort_and_tag(
 }
 
 /**
- * 通过名称查询文章
- */
-pub async fn select_by_title(
-    db_pool: &MySqlPool,
-    title: String,
-) -> Result<SelectBlog, sqlx::Error> {
-    sqlx::query_as!(
-        SelectBlog,
-        r#"
-            SELECT * FROM m_blog WHERE title = ?
-        "#,
-        title
-    )
-    .fetch_one(db_pool)
-    .await
-}
-
-/**
  * 添加一个博文
  */
 pub async fn add_blog(
@@ -282,6 +264,30 @@ pub async fn add_blog(
         insert_blog.status
     )
     .execute(db_pool)
+    .await
+}
+
+/**
+ * 添加一个博文
+ */
+pub async fn add_blog_tran(
+    tran: &mut Transaction<'_, MySql>,
+    insert_blog: InsertBlog,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            INSERT INTO m_blog(user_id, sort_id, title, description, content, created, status)
+            VALUES(?, ?, ?, ?, ?, ?, ?)
+        "#,
+        insert_blog.user_id,
+        insert_blog.sort_id,
+        insert_blog.title,
+        insert_blog.description,
+        insert_blog.content,
+        insert_blog.created,
+        insert_blog.status
+    )
+    .execute(tran)
     .await
 }
 

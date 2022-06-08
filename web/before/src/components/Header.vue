@@ -21,7 +21,7 @@
 
         <li>
           <span>
-            <el-link href="/friend" :underline="false">友联</el-link>
+            <el-link href="/friend" :underline="false">友链</el-link>
           </span>
         </li>
 

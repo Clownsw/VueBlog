@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 03/06/2022 14:27:32
+ Date: 08/06/2022 18:41:48
 */
 
 SET NAMES utf8mb4;
@@ -78,6 +78,7 @@ INSERT INTO `m_blogtag` VALUES (20, 34);
 INSERT INTO `m_blogtag` VALUES (20, 35);
 INSERT INTO `m_blogtag` VALUES (22, 36);
 INSERT INTO `m_blogtag` VALUES (22, 37);
+INSERT INTO `m_blogtag` VALUES (25, 40);
 
 -- ----------------------------
 -- Table structure for m_friend
@@ -112,8 +113,8 @@ CREATE TABLE `m_other`  (
 -- ----------------------------
 -- Records of m_other
 -- ----------------------------
-INSERT INTO `m_other` VALUES (1, 0, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n\n\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa\naaa');
-INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<div style=\"text-align: center;margin-top: 20px;margin-bottom:10px;\">\n	<img src=\"https://www.upyun.com/static/img/%E6%A0%B7%E5%BC%8F%E5%9B%BE.7cf927c.png\" style=\"width: 304px;\" />\n<p style=\"margin: 0;font-size: 13px;\">Copyright © 2021-2022 Smilex\'s Blog. All rights reserved.</p>\n<p style=\"margin: 0;font-size: 13px;\">Powered by <a href=\"https://github.com/Clownsw/vueblog\" target=\"_blank\" style=\"color: #409eff;font-weight: bold;text-decoration: none;\">Vueblog</a></p>\n</div>');
+INSERT INTO `m_other` VALUES (1, 0, '关于我', '::: hljs-center\n\n# 关于我\n\n:::\n');
+INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<div style=\"text-align: center;margin-top: 20px;margin-bottom:10px;\">\n	<img src=\"https://www.upyun.com/static/img/%E6%A0%B7%E5%BC%8F%E5%9B%BE.7cf927c.png\" style=\"width: 304px;\" />\n<p style=\"margin: 0;font-size: 13px;\">Copyright © 2021-2022 Smilex\'s Blog. All rights reserved.</p>\n<p style=\"margin: 0;font-size: 13px;\">Powered by <a href=\"https://github.com/Clownsw/vueblog\" target=\"_blank\" style=\"color: #409eff;font-weight: bold;text-decoration: none;\">VueBlog</a></p>\n</div>');
 
 -- ----------------------------
 -- Table structure for m_sort
@@ -203,7 +204,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-03 04:36:35');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-08 10:40:41');
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

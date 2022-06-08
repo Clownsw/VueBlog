@@ -3,11 +3,7 @@ use crate::{
         other_dao::{select_page_footer, update_page_footer},
         system_dao::{select_system_info, update_system_info},
     },
-    pojo::{
-        other::{UpdatePageFooter, Void},
-        status::AppState,
-        system::{SelectSystem, UpdateSystem},
-    },
+    pojo::{other::Void, status::AppState, system::SelectSystem, vo::blog::SystemFormVo},
     util::{
         common_util::{
             build_response_baq_request_message, build_response_ok_data, build_response_ok_message,
@@ -60,30 +56,38 @@ pub async fn system_update(
             let body = body.unwrap();
 
             Box::pin(async move {
-                match serde_json::from_str::<UpdateSystem>(body.as_str()) {
+                let mut resp = build_response_ok_message(String::from(error_util::SUCCESS)).await;
+
+                match serde_json::from_str::<SystemFormVo>(body.as_str()) {
                     Ok(v) => {
-                        if sql_run_is_success(update_system_info(&db_pool_clone, v.clone()).await)
+                        if !sql_run_is_success(
+                            update_system_info(&db_pool_clone, v.system.clone()).await,
+                        )
+                        .await
+                            || !sql_run_is_success(
+                                update_page_footer(&db_pool_clone, v.footer.clone()).await,
+                            )
                             .await
                         {
+                            resp =
+                                build_response_baq_request_message(String::from(error_util::ERROR))
+                                    .await;
+                        } else {
                             let mut async_conn = redis_pool_clone.get().await.unwrap();
 
                             // 刷新redis中的system_info
                             redis_util::update(
                                 &mut async_conn,
                                 "system_info",
-                                to_json_string(&v).await,
+                                to_json_string(&v.system).await,
                             )
                             .await;
-
-                            return build_response_ok_message(String::from(error_util::SUCCESS))
-                                .await;
                         }
                     }
                     Err(_) => {}
                 }
 
-                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
-                    .await
+                resp
             })
         },
         &req,
@@ -103,43 +107,4 @@ pub async fn page_footer(data: web::Data<AppState>) -> impl Responder {
         Ok(v) => build_response_ok_data(v).await,
         _ => build_response_ok_data(String::new()).await,
     }
-}
-
-/**
- * 更新page footer
- */
-#[post("/footer/update")]
-pub async fn page_footer_update(
-    body: String,
-    req: HttpRequest,
-    data: web::Data<AppState>,
-) -> impl Responder {
-    security_interceptor_aop::<_, Void>(
-        move |app_state, body, _, _| {
-            let db_pool_clone = app_state.db_pool.clone();
-            let body = body.unwrap();
-
-            Box::pin(async move {
-                let mut resp =
-                    build_response_baq_request_message(String::from(error_util::ERROR)).await;
-
-                match serde_json::from_str::<UpdatePageFooter>(body.as_str()) {
-                    Ok(v) => {
-                        if sql_run_is_success(update_page_footer(&db_pool_clone, v).await).await {
-                            resp =
-                                build_response_ok_message(String::from(error_util::SUCCESS)).await;
-                        }
-                    }
-                    _ => {}
-                }
-
-                resp
-            })
-        },
-        &req,
-        &data,
-        Some(body),
-        None,
-    )
-    .await
 }

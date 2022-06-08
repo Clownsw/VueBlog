@@ -2,6 +2,7 @@ pub mod config;
 pub mod controller;
 pub mod dao;
 pub mod pojo;
+pub mod service;
 pub mod util;
 
 #[macro_use]

@@ -8,7 +8,7 @@ pub struct SelectPageFooter {
     pub content: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct UpdatePageFooter {
     pub content: String,
 }

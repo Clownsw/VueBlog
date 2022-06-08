@@ -11,3 +11,4 @@ pub mod status;
 pub mod system;
 pub mod tag;
 pub mod user;
+pub mod vo;
