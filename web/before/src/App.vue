@@ -15,15 +15,8 @@ export default {
     }
   },
   created() {
-    this.getPageFooter()
+    this.footer = this.$store.getters.getPageFooter
   },
-  methods: {
-    getPageFooter() {
-      this.$axios.get('footer').then(resp => {
-        this.footer = resp.data.data.content
-      })
-    }
-  }
 }
 </script>
 

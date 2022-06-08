@@ -44,19 +44,9 @@ export default {
   },
   data() {
     return {
-      sorts: []
+      sorts: this.$store.getters.getSortList
     }
   },
-  methods: {
-    getAllSort() {
-      this.$axios.get('/sort/list').then(resp => {
-        this.sorts = resp.data.data
-      })
-    }
-  },
-  created() {
-    this.getAllSort()
-  }
 }
 </script>
 
