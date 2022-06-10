@@ -94,7 +94,6 @@ export default {
 .m-page {
   margin: 0 auto;
   text-align: center;
-  max-width: 40%;
 }
 
 .limit {
