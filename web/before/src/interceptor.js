@@ -6,24 +6,29 @@ import systemApi from "@/api/system";
 
 router.beforeEach(((to, from, next) => {
 
-    if (!store.getters.sortList) {
-        sortApi.getSortList().then(resp => {
-            store.commit('SET_SORT_LIST', resp.data.data)
-        })
+    let r = async () => {
+        if (!sessionStorage.getItem('sortList')) {
+            await sortApi.getSortList().then(resp => {
+                store.commit('SET_SORT_LIST', resp.data.data)
+            })
+        }
+
+        if (!sessionStorage.getItem('pageFooter')) {
+            await systemApi.getPageFooter().then(resp => {
+                store.commit('SET_PAGE_FOOTER', resp.data.data.content)
+            })
+        }
+
+        if (!sessionStorage.getItem('systemInfo')) {
+            await systemApi.getSystemInfo().then(resp => {
+                store.commit('SET_SYSTEM_INFO', resp.data.data)
+            })
+        }
     }
 
-    if (!store.getters.getPageFooter) {
-        systemApi.getPageFooter().then(resp => {
-            store.commit('SET_PAGE_FOOTER', resp.data.data.content)
-        })
-    }
 
-    if (!store.getters.getSystemInfo) {
-        systemApi.getSystemInfo().then(resp => {
-            store.commit('SET_SYSTEM_INFO', resp.data.data)
-            next()
-        })
-    } else {
+    r().then(() => {
         next()
-    }
+    })
+
 }))

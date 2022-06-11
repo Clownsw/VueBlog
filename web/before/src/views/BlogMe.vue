@@ -15,7 +15,7 @@ export default {
   name: "BlogMe",
   data() {
     return {
-      systemInfo: {},
+      systemInfo: this.$store.getters.getSystemInfo,
       me: {},
     }
   },
@@ -31,7 +31,6 @@ export default {
     },
   },
   created() {
-    this.systemInfo = this.$store.getters.getSystemInfo
     document.title = '我 - ' + this.systemInfo.title
     this.getMe()
   }

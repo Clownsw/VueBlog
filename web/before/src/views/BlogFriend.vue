@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       friends: [],
-      systemInfo: {},
+      systemInfo: this.$store.getters.getSystemInfo,
     }
   },
   methods: {
@@ -38,7 +38,6 @@ export default {
     },
   },
   created() {
-    this.systemInfo = this.$store.getters.getSystemInfo
     document.title = '友联 - ' + this.systemInfo.title
     this.getFriends()
   }

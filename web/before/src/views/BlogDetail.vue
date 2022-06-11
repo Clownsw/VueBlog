@@ -56,7 +56,7 @@ export default {
       },
       tags: [],
       onShow: false,
-      systemInfo: {},
+      systemInfo: this.$store.getters.getSystemInfo,
     };
   },
   methods: {
@@ -69,8 +69,6 @@ export default {
     Valine
   },
   created() {
-    this.systemInfo = this.$store.getters.getSystemInfo
-
     let blogId = this.$route.params.blogId;
     if (blogId !== undefined) {
       this.$axios.get("blog/" + blogId).then((resp) => {
