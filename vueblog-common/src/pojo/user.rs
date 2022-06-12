@@ -21,7 +21,6 @@ pub struct SelectUser {
  */
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ResponseUser {
-    pub token: String,
     pub id: i64,
     pub username: Option<String>,
     pub avatar: Option<String>,
@@ -30,9 +29,8 @@ pub struct ResponseUser {
 }
 
 impl ResponseUser {
-    pub fn from_select_user(token: String, select_user: SelectUser) -> Self {
+    pub fn from_select_user(select_user: SelectUser) -> Self {
         ResponseUser {
-            token,
             id: select_user.id,
             username: select_user.username,
             avatar: select_user.avatar,
@@ -49,8 +47,6 @@ impl ResponseUser {
 pub struct LoginUser {
     pub username: String,
     pub password: String,
-    pub captcha_id: String,
-    pub captcha_code: String,
 }
 
 impl LoginUser {
@@ -58,8 +54,6 @@ impl LoginUser {
         LoginUser {
             username: String::new(),
             password: String::new(),
-            captcha_id: String::new(),
-            captcha_code: String::new(),
         }
     }
 }

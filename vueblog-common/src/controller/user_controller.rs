@@ -51,7 +51,7 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
                 match get_by_id(&db_pool_clone, user.id).await {
                     Ok(v) => {
                         build_response_ok_data_message::<ResponseUser>(
-                            ResponseUser::from_select_user(String::new(), v),
+                            ResponseUser::from_select_user(v),
                             String::from(error_util::SUCCESS),
                         )
                         .await

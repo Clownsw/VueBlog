@@ -10,5 +10,6 @@ pub mod sort;
 pub mod status;
 pub mod system;
 pub mod tag;
+pub mod token;
 pub mod user;
 pub mod vo;
