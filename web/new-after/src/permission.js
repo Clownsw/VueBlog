@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
         } else {
           store.commit('SET_TOKEN', token)
 
-          if (store.getters.name === '') {
+          if (store.getters.userInfo === undefined) {
             store.dispatch('GetInfo').then(res => { // 拉取用户信息
               next()
             }).catch((err) => {
@@ -61,7 +61,6 @@ router.beforeEach((to, from, next) => {
       //   }
       // }
     }).catch(error => {
-      console.log('aabbcc')
       console.log(error)
     })
 

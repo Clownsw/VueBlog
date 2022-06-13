@@ -6,12 +6,18 @@ const user = {
   state: {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    userInfo: JSON.parse(sessionStorage.getItem('userInfo'))
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
+    },
+    SET_USER_INFO: (state, userInfo) => {
+      console.log(userInfo)
+      state.userInfo = userInfo
+      sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
     },
     SET_NAME: (state, name) => {
       state.name = name
@@ -42,6 +48,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data
+          commit('SET_USER_INFO', data)
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', data.avatar)
           resolve(response)
@@ -76,6 +83,8 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SET_USER_INFO', undefined)
+        sessionStorage.clear()
         removeToken()
         resolve()
       })
