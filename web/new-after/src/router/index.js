@@ -99,7 +99,7 @@ export const constantRouterMap = [
       {
         path: 'friend/edit',
         name: 'OtherFriendEdit',
-        component: () => import('@/views/other/friend'),
+        component: () => import('@/views/friend/index'),
         meta: { title: '友链管理' }
       }
     ]
