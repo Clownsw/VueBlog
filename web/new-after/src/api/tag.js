@@ -7,6 +7,12 @@ export default {
       method: 'GET'
     })
   },
+  getTagIdByName(name) {
+    return request({
+      url: 'tag/id/' + name,
+      method: 'GET'
+    })
+  },
   saveTag(tag) {
     return request({
       url: 'tag/add',
@@ -24,6 +30,12 @@ export default {
   deleteTagById(id) {
     return request({
       url: 'tag/delete/' + id,
+      method: 'GET'
+    })
+  },
+  existsTagByName(name) {
+    return request({
+      url: 'tag/exist/' + name,
       method: 'GET'
     })
   }

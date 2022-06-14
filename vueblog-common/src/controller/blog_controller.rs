@@ -216,7 +216,7 @@ pub async fn blog_edit(
 /**
  * 批量删除博文
  */
-#[post("/blog/deletes/")]
+#[post("/blog/deletes")]
 pub async fn blog_deletes(
     body: String,
     req: HttpRequest,

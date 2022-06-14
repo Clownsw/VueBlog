@@ -16,6 +16,7 @@
     "axios": "0.18.0",
     "element-ui": "^2.15.9",
     "js-cookie": "2.2.0",
+    "mavon-editor": "^2.10.4",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "vue": "2.5.17",
