@@ -16,10 +16,13 @@
       </el-form-item>
 
       <el-form-item label="博客标签" prop="content">
-        <el-tag :key="tag.id" v-for="tag in tags" closable :disable-transitions="false" @close="handleClose(tag)"
-          class="tag">
-          {{ tag.name }}
-        </el-tag>
+        <draggable v-model="tags">
+          <el-tag :key="tag.id" v-for="tag in tags" closable :disable-transitions="false" @close="handleClose(tag)"
+            class="tag">
+            {{ tag.name }}
+          </el-tag>
+        </draggable>
+
         <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
           @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
         </el-input>
@@ -41,12 +44,16 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import blogApi from '../../api/blog'
 import sortApi from '../../api/sort'
 import tagApi from '../../api/tag'
 
 export default {
   name: 'BlogForm',
+  components: {
+    draggable
+  },
   data() {
     return {
       id: -1,   // -1 表示不正确, 0 表示新增博文, > 0表示修改博文
