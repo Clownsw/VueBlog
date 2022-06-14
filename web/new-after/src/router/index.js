@@ -27,7 +27,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     name: 'Dashboard',
     hidden: true,
     children: [{
@@ -93,7 +93,7 @@ export const constantRouterMap = [
       {
         path: 'tag/edit',
         name: 'OtherTagEdit',
-        component: () => import('@/views/other/tag'),
+        component: () => import('@/views/tag/index'),
         meta: { title: '标签管理' }
       },
       {

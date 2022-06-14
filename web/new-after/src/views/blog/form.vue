@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
+
     <h2>博文编辑</h2>
+
   </div>
 </template>
 
@@ -11,5 +13,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
