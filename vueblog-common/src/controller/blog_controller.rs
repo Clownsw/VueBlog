@@ -39,12 +39,7 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         }
     }
 
-    let blogs = select_all_limit(
-        &data.db_pool,
-        (current - 1) * PAGE_LIMIT_NUM,
-        PAGE_LIMIT_NUM,
-    )
-    .await;
+    let blogs = select_all_limit(&data.db_pool, (current - 1) * 10, 10).await;
 
     let counts = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
@@ -53,7 +48,7 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
 
     match blogs {
         Ok(v) => {
-            build_response_ok_data(Limit::from_unknown_datas(counts[0].count, current, v)).await
+            build_response_ok_data(Limit::from_unknown_datas(10, counts[0].count, current, v)).await
         }
         Err(_) => build_response_ok_message(String::from("null")).await,
     }
@@ -110,7 +105,13 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
     };
 
     if let Ok(v) = blogs {
-        build_response_ok_data(Limit::from_unknown_datas(count.count, current, v)).await
+        build_response_ok_data(Limit::from_unknown_datas(
+            PAGE_LIMIT_NUM,
+            count.count,
+            current,
+            v,
+        ))
+        .await
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }
@@ -152,7 +153,13 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
     };
 
     if let Ok(v) = blogs {
-        build_response_ok_data(Limit::from_unknown_datas(count.count, current, v)).await
+        build_response_ok_data(Limit::from_unknown_datas(
+            PAGE_LIMIT_NUM,
+            count.count,
+            current,
+            v,
+        ))
+        .await
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }

@@ -58,7 +58,13 @@ pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl R
 
     match friends {
         Ok(v) => {
-            build_response_ok_data(Limit::from_unknown_datas(counts[0].count, current, v)).await
+            build_response_ok_data(Limit::from_unknown_datas(
+                PAGE_LIMIT_NUM,
+                counts[0].count,
+                current,
+                v,
+            ))
+            .await
         }
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
