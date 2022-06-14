@@ -87,7 +87,7 @@ export const constantRouterMap = [
       {
         path: 'sort/edit',
         name: 'OtherSortEdit',
-        component: () => import('@/views/other/sort'),
+        component: () => import('@/views/sort/index'),
         meta: { title: '编辑分类' }
       },
       {

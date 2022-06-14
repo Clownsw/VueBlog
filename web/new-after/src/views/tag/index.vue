@@ -2,6 +2,7 @@
   <div class="app-container">
     <div class="tags clearfix"
       style="margin-top: 20px; display: flex; justify-content: center; align-items: flex-start;">
+
       <el-card class="box-card" style="margin-right: 10px; max-width: 600px; float: left">
         <div slot="header" class="clearfix">
           <span>所有标签</span>
@@ -32,6 +33,7 @@
             <el-button type="danger" v-show="delBtnStatus" @click="deleteForm">删除</el-button>
           </el-form-item>
         </el-form>
+
       </el-card>
     </div>
   </div>
@@ -56,7 +58,7 @@ export default {
       },
       formBtnName: '保存',
       delBtnStatus: false,
-      status: 0,    // 0 = 新增, 1 = 编辑
+      status: 0, // 0 = 新增, 1 = 编辑
       tmp: 0,
     }
   },

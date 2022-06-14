@@ -107,7 +107,7 @@ pub async fn sort_update(
 /**
  * 通过ID删除分类
  */
-#[get("/sort/remove/{id}")]
+#[get("/sort/delete/{id}")]
 pub async fn sort_remove(
     id: web::Path<i32>,
     req: HttpRequest,
