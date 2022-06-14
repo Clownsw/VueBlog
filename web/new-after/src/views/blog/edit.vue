@@ -219,6 +219,7 @@ export default {
     const isAdd = this.$route.name === 'BlogAdd'
     this.buttonName = isAdd ? '新增' : '修改'
     if (!isAdd) {
+      this.id = this.$route.params.id
       this.fetchGetBlogById(this.$route.params.id)
     }
     this.fetchGetSortList()
