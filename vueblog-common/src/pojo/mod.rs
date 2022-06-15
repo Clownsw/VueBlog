@@ -1,6 +1,7 @@
 pub mod blog;
 pub mod captcha;
 pub mod claims;
+pub mod config;
 pub mod friend;
 pub mod limit;
 pub mod me;

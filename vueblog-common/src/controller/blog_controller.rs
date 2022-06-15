@@ -1,5 +1,5 @@
 use crate::{
-    config::global_config::PAGE_LIMIT_NUM,
+    config::global_config::GLOBAL_CONFIG,
     dao::blog_dao::{
         delete_by_ids, get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
         select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
@@ -39,7 +39,14 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         }
     }
 
-    let blogs = select_all_limit(&data.db_pool, (current - 1) * 10, 10).await;
+    let blogs = unsafe {
+        select_all_limit(
+            &data.db_pool,
+            (current - 1) * GLOBAL_CONFIG.blog_limit_num,
+            GLOBAL_CONFIG.blog_limit_num,
+        )
+        .await
+    };
 
     let counts = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
@@ -47,9 +54,15 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
     };
 
     match blogs {
-        Ok(v) => {
-            build_response_ok_data(Limit::from_unknown_datas(10, counts[0].count, current, v)).await
-        }
+        Ok(v) => unsafe {
+            build_response_ok_data(Limit::from_unknown_datas(
+                GLOBAL_CONFIG.blog_limit_num,
+                counts[0].count,
+                current,
+                v,
+            ))
+            .await
+        },
         Err(_) => build_response_ok_message(String::from("null")).await,
     }
 }
@@ -91,13 +104,15 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
         }
     }
 
-    let blogs = select_all_limit_by_sort_id(
-        &data.db_pool,
-        (current - 1) * PAGE_LIMIT_NUM,
-        PAGE_LIMIT_NUM,
-        sort_id,
-    )
-    .await;
+    let blogs = unsafe {
+        select_all_limit_by_sort_id(
+            &data.db_pool,
+            (current - 1) * GLOBAL_CONFIG.blog_sort_limit_num,
+            GLOBAL_CONFIG.blog_sort_limit_num,
+            sort_id,
+        )
+        .await
+    };
 
     let count = match select_sort_all_count(&data.db_pool, sort_id).await {
         Ok(v) => v,
@@ -105,13 +120,15 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
     };
 
     if let Ok(v) = blogs {
-        build_response_ok_data(Limit::from_unknown_datas(
-            PAGE_LIMIT_NUM,
-            count.count,
-            current,
-            v,
-        ))
-        .await
+        unsafe {
+            build_response_ok_data(Limit::from_unknown_datas(
+                GLOBAL_CONFIG.blog_sort_limit_num,
+                count.count,
+                current,
+                v,
+            ))
+            .await
+        }
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }
@@ -139,13 +156,15 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
         }
     }
 
-    let blogs = select_all_limit_by_tag_id(
-        &data.db_pool,
-        (current - 1) * PAGE_LIMIT_NUM,
-        PAGE_LIMIT_NUM,
-        tag_id,
-    )
-    .await;
+    let blogs = unsafe {
+        select_all_limit_by_tag_id(
+            &data.db_pool,
+            (current - 1) * GLOBAL_CONFIG.blog_tag_limit_num,
+            GLOBAL_CONFIG.blog_tag_limit_num,
+            tag_id,
+        )
+        .await
+    };
 
     let count = match select_tag_all_count(&data.db_pool, tag_id).await {
         Ok(v) => v,
@@ -153,13 +172,15 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
     };
 
     if let Ok(v) = blogs {
-        build_response_ok_data(Limit::from_unknown_datas(
-            PAGE_LIMIT_NUM,
-            count.count,
-            current,
-            v,
-        ))
-        .await
+        unsafe {
+            build_response_ok_data(Limit::from_unknown_datas(
+                GLOBAL_CONFIG.blog_tag_limit_num,
+                count.count,
+                current,
+                v,
+            ))
+            .await
+        }
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }

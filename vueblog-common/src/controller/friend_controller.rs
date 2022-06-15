@@ -1,5 +1,5 @@
 use crate::{
-    config::global_config::PAGE_LIMIT_NUM,
+    config::global_config::GLOBAL_CONFIG,
     dao::friend_dao::{
         delete_by_ids, insert_friend, select_all, select_all_count, select_all_limit, update_friend,
     },
@@ -47,25 +47,27 @@ pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl R
         }
     }
 
-    let friends = select_all_limit(
-        &data.db_pool,
-        (current - 1) * PAGE_LIMIT_NUM,
-        PAGE_LIMIT_NUM,
-    )
-    .await;
+    let friends = unsafe {
+        select_all_limit(
+            &data.db_pool,
+            (current - 1) * GLOBAL_CONFIG.friend_limit_num,
+            GLOBAL_CONFIG.friend_limit_num,
+        )
+        .await
+    };
 
     let counts = select_all_count(&data.db_pool).await.unwrap();
 
     match friends {
-        Ok(v) => {
+        Ok(v) => unsafe {
             build_response_ok_data(Limit::from_unknown_datas(
-                PAGE_LIMIT_NUM,
+                GLOBAL_CONFIG.friend_limit_num,
                 counts[0].count,
                 current,
                 v,
             ))
             .await
-        }
+        },
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
         }

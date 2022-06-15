@@ -1,6 +1,6 @@
 use super::{error_util, login_util::is_login_return, redis_util};
 use crate::{
-    config::global_config,
+    config::global_config::GLOBAL_CONFIG,
     pojo::{msg::ResultMsg, status::AppState, user::SelectUser},
 };
 use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse, HttpResponseBuilder, Responder};
@@ -35,8 +35,10 @@ pub async fn sign_captcha_code(
 
     match result {
         Ok(v) => {
-            if v.len() > global_config::CAPTCHA_CODE_NUM {
-                return false;
+            unsafe {
+                if v.len() > GLOBAL_CONFIG.captcha_code_num {
+                    return false;
+                }
             }
 
             return v == code;
