@@ -4,6 +4,7 @@ pub const ERROR_REQUEST_PARAM: &str = "错误的请求参数";
 
 pub const NOT_REQUEST_ACCESS: &str = "无权限访问!";
 pub const NOT_EDIT_ACCESS: &str = "无权限编辑!";
+pub const NOT_REMOVE_CURRENT_LOGGIN_USER: &str = "无法删除当前登录用户!";
 pub const NOT_FOUND_USER: &str = "找不到该用户";
 pub const NOT_FOUND_USERNAME_OR_PASSWORD: &str = "请输入用户名或密码!";
 

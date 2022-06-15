@@ -13,9 +13,8 @@ pub struct Limit<T> {
 }
 
 impl<T> Limit<T> {
-    pub fn from_unknown_datas(all_count: i64, current: i64, datas: Vec<T>) -> Limit<T> {
+    pub fn from_unknown_datas(size: i64, all_count: i64, current: i64, datas: Vec<T>) -> Limit<T> {
         let total: i64 = all_count;
-        let size: i64 = 5;
         let mut pages: i64 = 0;
 
         {

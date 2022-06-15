@@ -17,40 +17,12 @@ pub struct SelectUser {
 }
 
 /**
- * 响应用户实体
- */
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ResponseUser {
-    pub token: String,
-    pub id: i64,
-    pub username: Option<String>,
-    pub avatar: Option<String>,
-    pub email: Option<String>,
-    pub status: i32,
-}
-
-impl ResponseUser {
-    pub fn from_select_user(token: String, select_user: SelectUser) -> Self {
-        ResponseUser {
-            token,
-            id: select_user.id,
-            username: select_user.username,
-            avatar: select_user.avatar,
-            email: select_user.email,
-            status: select_user.status,
-        }
-    }
-}
-
-/**
  * 登录用户实体
  */
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LoginUser {
     pub username: String,
     pub password: String,
-    pub captcha_id: String,
-    pub captcha_code: String,
 }
 
 impl LoginUser {
@@ -58,8 +30,6 @@ impl LoginUser {
         LoginUser {
             username: String::new(),
             password: String::new(),
-            captcha_id: String::new(),
-            captcha_code: String::new(),
         }
     }
 }

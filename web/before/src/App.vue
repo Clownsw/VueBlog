@@ -1,8 +1,8 @@
 <template>
   <div class="warp">
     <router-view :key="$route.fullPath"/>
-
-    <div class="page-footer" v-html="footer">
+	
+    <div class="page-footer" v-html="this.$store.getters.getPageFooter">
     </div>
   </div>
 </template>

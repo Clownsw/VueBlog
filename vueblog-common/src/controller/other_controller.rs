@@ -1,5 +1,5 @@
 use crate::{
-    config::global_config,
+    config::global_config::GLOBAL_CONFIG,
     pojo::{captcha::ResultCaptcha, status::AppState},
     util::{
         common_util::{build_response_ok_data, build_response_ok_message},
@@ -17,7 +17,7 @@ use sqlx::MySqlPool;
 #[get("/api/captcha")]
 pub async fn generate_captcha_code(data: web::Data<AppState>) -> impl Responder {
     // 生成随机验证码
-    let code = Captcha::new(global_config::CAPTCHA_CODE_NUM, 100, 50);
+    let code = unsafe { Captcha::new(GLOBAL_CONFIG.captcha_code_num, 100, 50) };
 
     // 对验证码生成唯一值
     let mut hasher = Sha256::new();

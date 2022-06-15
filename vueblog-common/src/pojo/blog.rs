@@ -28,8 +28,8 @@ pub struct SelectBlogSortTag {
     pub user_id: i64,
     pub sort_id: i32,
     pub title: String,
-    pub description: String,
     pub content: String,
+    pub description: String,
     pub created: NaiveDateTime,
     pub status: i8,
     pub sort: Option<SelectSortWithBlog>,
@@ -43,8 +43,37 @@ impl SelectBlogSortTag {
             user_id: row.get(*(map.get("user_id").unwrap())),
             sort_id: row.get(*(map.get("sort_id").unwrap())),
             title: row.get(*(map.get("title").unwrap())),
-            description: row.get(*(map.get("description").unwrap())),
             content: row.get(*(map.get("content").unwrap())),
+            description: row.get(*(map.get("description").unwrap())),
+            created: row.get(*(map.get("created").unwrap())),
+            status: row.get(*(map.get("status").unwrap())),
+            sort: None,
+            tags: None,
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize, Clone)]
+pub struct SelectShowListBlog {
+    pub id: i64,
+    pub user_id: i64,
+    pub sort_id: i32,
+    pub title: String,
+    pub description: String,
+    pub created: NaiveDateTime,
+    pub status: i8,
+    pub sort: Option<SelectSortWithBlog>,
+    pub tags: Option<Vec<SelectBlogOther>>,
+}
+
+impl SelectShowListBlog {
+    pub fn parse_map(row: &MySqlRow, map: &FxHashMap<&str, usize>) -> Self {
+        SelectShowListBlog {
+            id: row.get(*(map.get("id").unwrap())),
+            user_id: row.get(*(map.get("user_id").unwrap())),
+            sort_id: row.get(*(map.get("sort_id").unwrap())),
+            title: row.get(*(map.get("title").unwrap())),
+            description: row.get(*(map.get("description").unwrap())),
             created: row.get(*(map.get("created").unwrap())),
             status: row.get(*(map.get("status").unwrap())),
             sort: None,

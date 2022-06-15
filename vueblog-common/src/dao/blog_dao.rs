@@ -1,6 +1,6 @@
 use crate::{
     pojo::{
-        blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog},
+        blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog, SelectShowListBlog},
         sort::SelectSortWithBlog,
         tag::SelectBlogOther,
     },
@@ -82,13 +82,19 @@ pub async fn select_all_limit(
     db_pool: &MySqlPool,
     limit: i64,
     size: i64,
-) -> Result<Vec<SelectBlogSortTag>, sqlx::Error> {
+) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
     sqlx::query::<MySql>(
         r#"
                 SELECT
-                blog.*,
-                sort.NAME AS sort_name,
-                sort.order AS sort_order,
+                    blog.id,
+                    blog.user_id,
+                    blog.sort_id,
+                    blog.title,
+                    blog.description,
+                    blog.created,
+                    blog.status,
+                    sort.NAME AS sort_name,
+                    sort.order AS sort_order,
                 (
                 SELECT
                     GROUP_CONCAT( `id` ) 
@@ -118,7 +124,7 @@ pub async fn select_all_limit(
     .map(|row| {
         let columns = row.columns();
         let map = columns_to_map(columns);
-        let mut blog = SelectBlogSortTag::parse_map(&row, &map);
+        let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
         blog.sort = Some(SelectSortWithBlog {
             id: row.get(*(map.get("sort_id")).unwrap()),
@@ -177,7 +183,14 @@ pub async fn get_by_id_with_sort_and_tag(
     sqlx::query::<MySql>(
         r#"
             SELECT
-                blog.*,
+                blog.id,
+                blog.user_id,
+                blog.sort_id,
+                blog.title,
+                blog.content,
+                blog.description,
+                blog.created,
+                blog.status,
                 sort.NAME AS sort_name,
                 sort.order AS sort_order,
             (
@@ -351,11 +364,17 @@ pub async fn update_blog_sort_to_new_by_sort_id(db_pool: &MySqlPool, sort_id: i3
 /**
  * 分页查询指定分类下的所有博文
  */
-pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: i64, sort_id: i32) -> Result<Vec<SelectBlogSortTag>, sqlx::Error> {
+pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: i64, sort_id: i32) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
     sqlx::query::<MySql>(
         r#"
                 SELECT
-                blog.*,
+                blog.id,
+                blog.user_id,
+                blog.sort_id,
+                blog.title,
+                blog.description,
+                blog.created,
+                blog.status,
                 sort.NAME AS sort_name,
                 sort.order AS sort_order,
                 (
@@ -390,7 +409,7 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
     .map(|row| {
         let columns = row.columns();
         let map = columns_to_map(columns);
-        let mut blog = SelectBlogSortTag::parse_map(&row, &map);
+        let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
         blog.sort = Some(SelectSortWithBlog {
             id: row.get(*(map.get("sort_id")).unwrap()),
@@ -430,13 +449,19 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
 /**
  * 分页查询指定标签下的所有博文
  */
-pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i64, tag_id: i64) -> Result<Vec<SelectBlogSortTag>, sqlx::Error> {
+pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i64, tag_id: i64) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
     sqlx::query::<MySql>(
         r#"
                 SELECT
-                blog.*,
-                sort.NAME AS sort_name,
-                sort.order AS sort_order,
+                    blog.id,
+                    blog.user_id,
+                    blog.sort_id,
+                    blog.title,
+                    blog.description,
+                    blog.created,
+                    blog.status,
+                    sort.NAME AS sort_name,
+                    sort.order AS sort_order,
                 (
                 SELECT
                     GROUP_CONCAT( `id` ) 
@@ -475,7 +500,7 @@ pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i
     .map(|row| {
         let columns = row.columns();
         let map = columns_to_map(columns);
-        let mut blog = SelectBlogSortTag::parse_map(&row, &map);
+        let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
         blog.sort = Some(SelectSortWithBlog {
             id: row.get(*(map.get("sort_id")).unwrap()),

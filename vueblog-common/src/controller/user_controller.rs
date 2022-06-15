@@ -3,7 +3,7 @@ use crate::{
     pojo::{
         other::Void,
         status::AppState,
-        user::{InsertUser, ResponseUser, SelectUser, UpdateUser},
+        user::{InsertUser, SelectUser, UpdateUser},
     },
     util::{
         common_util::{
@@ -50,8 +50,8 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             Box::pin(async move {
                 match get_by_id(&db_pool_clone, user.id).await {
                     Ok(v) => {
-                        build_response_ok_data_message::<ResponseUser>(
-                            ResponseUser::from_select_user(String::new(), v),
+                        build_response_ok_data_message::<SelectUser>(
+                            v,
                             String::from(error_util::SUCCESS),
                         )
                         .await
@@ -154,19 +154,31 @@ pub async fn user_deletes(
     data: web::Data<AppState>,
 ) -> impl Responder {
     security_interceptor_aop::<_, Void>(
-        move |app_state, body, _, _| {
+        move |app_state, body, _, user| {
             let db_pool_clone = app_state.db_pool.clone();
             let body = body.unwrap();
 
             Box::pin(async move {
+                let mut resp = build_response_baq_request_message(String::from(
+                    error_util::INCOMPLETE_REQUEST,
+                ))
+                .await;
+
                 let ids: Vec<i64> = serde_json::from_str(body.as_str()).unwrap();
 
-                if sql_run_is_success(delete_by_ids(&db_pool_clone, ids).await).await {
-                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                // 判断是否包含当前登录的用户的ID
+                if ids.len() > 0 && ids.contains(&user.id) {
+                    resp = build_response_baq_request_message(String::from(
+                        error_util::NOT_REMOVE_CURRENT_LOGGIN_USER,
+                    ))
+                    .await;
+                } else {
+                    if sql_run_is_success(delete_by_ids(&db_pool_clone, ids).await).await {
+                        resp = build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                    }
                 }
 
-                build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST))
-                    .await
+                resp
             })
         },
         &req,
