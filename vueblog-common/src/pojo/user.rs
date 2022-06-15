@@ -17,30 +17,6 @@ pub struct SelectUser {
 }
 
 /**
- * 响应用户实体
- */
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ResponseUser {
-    pub id: i64,
-    pub username: Option<String>,
-    pub avatar: Option<String>,
-    pub email: Option<String>,
-    pub status: i32,
-}
-
-impl ResponseUser {
-    pub fn from_select_user(select_user: SelectUser) -> Self {
-        ResponseUser {
-            id: select_user.id,
-            username: select_user.username,
-            avatar: select_user.avatar,
-            email: select_user.email,
-            status: select_user.status,
-        }
-    }
-}
-
-/**
  * 登录用户实体
  */
 #[derive(Debug, Deserialize, Serialize)]

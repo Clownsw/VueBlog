@@ -3,7 +3,7 @@ use crate::{
     pojo::{
         other::Void,
         status::AppState,
-        user::{InsertUser, ResponseUser, SelectUser, UpdateUser},
+        user::{InsertUser, SelectUser, UpdateUser},
     },
     util::{
         common_util::{
@@ -50,8 +50,8 @@ pub async fn user_info(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             Box::pin(async move {
                 match get_by_id(&db_pool_clone, user.id).await {
                     Ok(v) => {
-                        build_response_ok_data_message::<ResponseUser>(
-                            ResponseUser::from_select_user(v),
+                        build_response_ok_data_message::<SelectUser>(
+                            v,
                             String::from(error_util::SUCCESS),
                         )
                         .await
