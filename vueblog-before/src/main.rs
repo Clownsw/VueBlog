@@ -4,6 +4,7 @@ use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 use vueblog_common::{
+    config::global_config::init_global_config,
     controller::{
         blog_controller::{blog_detail, blog_list, blog_sort_list, blog_tag_list},
         default_controller::not_found_page,
@@ -70,6 +71,10 @@ async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
         .unwrap()
         .parse::<u16>()
         .unwrap();
+
+    if let Err(_) = init_global_config().await {
+        panic!("init global config error!")
+    }
 
     (server_address, server_port, workers, db_pool, redis_client)
 }
