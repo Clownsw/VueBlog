@@ -3088,7 +3088,6 @@ dependencies = [
  "captcha_rust",
  "chrono",
  "jsonwebtoken",
- "lazy_static",
  "log",
  "qstring",
  "redis",

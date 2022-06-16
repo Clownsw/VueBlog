@@ -1,5 +1,6 @@
 #[repr(C)]
 pub struct GlobalConfig {
+    pub jwt_key: String,
     // 验证码长度
     pub captcha_code_num: usize,
     // 后台管理博文列表每页个数
@@ -15,6 +16,7 @@ pub struct GlobalConfig {
 impl GlobalConfig {
     pub const fn new() -> Self {
         Self {
+            jwt_key: String::new(),
             captcha_code_num: 5,
             blog_limit_num: 10,
             friend_limit_num: 5,

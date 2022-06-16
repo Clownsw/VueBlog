@@ -5,7 +5,7 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::{
-    config::global_config::{self, init_global_config},
+    config::global_config::init_global_config,
     controller::{
         blog_controller::{blog_deletes, blog_detail, blog_edit, blog_list},
         default_controller::not_found_page,
@@ -48,15 +48,6 @@ async fn make_redis_client() -> RedisPool {
 }
 
 /**
- * 初始化JWT_KEY
- */
-async fn make_jwt_key() {
-    let jwt_key = std::env::var("JWT_KEY").unwrap();
-    let mut key = global_config::KEY.lock().unwrap();
-    *key = jwt_key;
-}
-
-/**
  * 初始化
  */
 async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
@@ -77,9 +68,6 @@ async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
 
     // redis客户端
     let redis_client = make_redis_client().await;
-
-    // JWT_KEY
-    make_jwt_key().await;
 
     // 服务地址
     let server_address = std::env::var("VUEBLOG_AFTER_URL").unwrap();
