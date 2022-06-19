@@ -1,3 +1,4 @@
+pub mod backup;
 pub mod blog;
 pub mod captcha;
 pub mod claims;

@@ -1,3 +1,4 @@
+pub mod backup_controller;
 pub mod blog_controller;
 pub mod default_controller;
 pub mod friend_controller;

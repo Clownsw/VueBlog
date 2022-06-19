@@ -137,6 +137,32 @@ export const constantRouterMap = [{
     ]
   },
   {
+    path: '/backup',
+    component: Layout,
+    redirect: '/backup/edit',
+    name: 'Backup',
+    meta: {
+      title: '备份管理'
+    },
+    children: [{
+        path: 'edit',
+        name: 'BackUpEdit',
+        component: () => import('@/views/backup/index'),
+        meta: {
+          title: '备份设置'
+        }
+      },
+      {
+        path: 'real',
+        name: 'BackUpReal',
+        component: () => import('@/views/backup/backup'),
+        meta: {
+          title: '立即备份'
+        }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     redirect: '/user/edit',

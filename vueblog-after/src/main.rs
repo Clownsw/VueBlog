@@ -1,12 +1,15 @@
 use actix_cors::Cors;
-use actix_web::{guard, web, App, HttpServer};
+use actix_web::guard;
+use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
+use vueblog_common::controller::backup_controller::backup_buy;
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
+        backup_controller::{backup_info, backup_update},
         blog_controller::{blog_deletes, blog_detail, blog_edit, blog_list},
         default_controller::not_found_page,
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
@@ -131,6 +134,9 @@ async fn main() -> std::io::Result<()> {
             .service(sort_update)
             .service(me)
             .service(me_update)
+            .service(backup_info)
+            .service(backup_update)
+            .service(backup_buy)
             .service(transactional_test)
             .default_service(
                 web::route()
