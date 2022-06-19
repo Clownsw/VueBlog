@@ -2,7 +2,7 @@ use crate::{
     pojo::{
         blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog, SelectShowListBlog},
         sort::SelectSortWithBlog,
-        tag::SelectBlogOther,
+        tag::SelectBlogOther, other::SelectCount,
     },
     util::{
         common_util::{columns_to_map, parse_string_to_parse_vec, parse_string_to_string_vec, parse_sql_row_string},
@@ -17,14 +17,14 @@ use sqlx::{
 /**
  * 查询所有文章个数
  */
-pub async fn select_all_count(db_pool: &MySqlPool) -> Result<Vec<SelectCountBlog>, sqlx::Error> {
+pub async fn select_all_count(db_pool: &MySqlPool) -> Result<SelectCount, sqlx::Error> {
     sqlx::query_as!(
-        SelectCountBlog,
+        SelectCount,
         r#"
-            SELECT COUNT(*) as count FROM m_blog
+            SELECT COUNT(1) as count FROM m_blog
         "#
     )
-    .fetch_all(db_pool)
+    .fetch_one(db_pool)
     .await
 }
 
@@ -35,7 +35,7 @@ pub async fn select_sort_all_count(db_pool: &MySqlPool, sort_id: i32) -> Result<
     sqlx::query_as!(
         SelectCountBlog,
         r#"
-        SELECT COUNT(*) as count FROM m_blog WHERE sort_id = ?
+        SELECT COUNT(1) as count FROM m_blog WHERE sort_id = ?
         "#,
         sort_id
     )

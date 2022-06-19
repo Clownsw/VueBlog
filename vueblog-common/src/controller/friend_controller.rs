@@ -6,7 +6,7 @@ use crate::{
     pojo::{
         friend::{InsertFriend, UpdateFriend},
         limit::Limit,
-        other::Void,
+        other::{SelectCount, Void},
         status::AppState,
     },
     util::{
@@ -56,13 +56,16 @@ pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl R
         .await
     };
 
-    let counts = select_all_count(&data.db_pool).await.unwrap();
+    let select_count = match select_all_count(&data.db_pool).await {
+        Ok(v) => v,
+        _ => SelectCount::default(),
+    };
 
     match friends {
         Ok(v) => unsafe {
             build_response_ok_data(Limit::from_unknown_datas(
                 GLOBAL_CONFIG.friend_limit_num,
-                counts[0].count,
+                select_count.count,
                 current,
                 v,
             ))
