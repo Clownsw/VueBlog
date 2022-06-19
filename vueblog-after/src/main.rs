@@ -6,7 +6,7 @@ use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::backup_controller::backup_buy;
-use vueblog_common::controller::statistics_controller::statistics;
+use vueblog_common::controller::statistics_controller::{statistics, statistics_blog};
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
@@ -139,6 +139,7 @@ async fn main() -> std::io::Result<()> {
             .service(backup_update)
             .service(backup_buy)
             .service(statistics)
+            .service(statistics_blog)
             .service(transactional_test)
             .default_service(
                 web::route()

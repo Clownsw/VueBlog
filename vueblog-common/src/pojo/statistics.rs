@@ -11,3 +11,10 @@ pub struct Statistics {
     /* 友链总个数 */
     pub friend_total_num: i64,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct StatisticsBlog {
+    pub id: i64,
+    pub day: String,
+    pub view_count: i64,
+}

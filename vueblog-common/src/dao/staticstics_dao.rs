@@ -1,6 +1,9 @@
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool, Row};
 
-use crate::pojo::statistics::Statistics;
+use crate::{
+    pojo::statistics::{Statistics, StatisticsBlog},
+    util::common_util::columns_to_map,
+};
 
 use super::{blog_dao, friend_dao, sort_dao, tag_dao};
 
@@ -26,4 +29,26 @@ pub async fn select_statistics(db_pool: &MySqlPool) -> Result<Statistics, sqlx::
         tag_total_num,
         friend_total_num,
     })
+}
+
+pub async fn select_blog_statistics(
+    db_pool: &MySqlPool,
+) -> Result<Vec<StatisticsBlog>, sqlx::Error> {
+    sqlx::query::<MySql>(
+        r#"
+            SELECT id, DATE_FORMAT(day, '%Y-%m-%d') AS day, view_count FROM m_blog_statistics
+        "#,
+    )
+    .map(|row| {
+        let columns = row.columns();
+        let column_map = columns_to_map(columns);
+
+        StatisticsBlog {
+            id: row.get(*(column_map.get("id").unwrap())),
+            day: row.get(*(column_map.get("day").unwrap())),
+            view_count: row.get(*(column_map.get("view_count").unwrap())),
+        }
+    })
+    .fetch_all(db_pool)
+    .await
 }

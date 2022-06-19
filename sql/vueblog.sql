@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地
+ Source Server         : local
  Source Server Type    : MySQL
- Source Server Version : 50729
+ Source Server Version : 80028
  Source Host           : localhost:3306
  Source Schema         : vueblog
 
  Target Server Type    : MySQL
- Target Server Version : 50729
+ Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 08/06/2022 18:41:48
+ Date: 20/06/2022 07:22:01
 */
 
 SET NAMES utf8mb4;
@@ -22,14 +22,14 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `m_blog`;
 CREATE TABLE `m_blog`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `sort_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `sort_id` int NOT NULL,
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `created` datetime NOT NULL,
-  `status` tinyint(4) NOT NULL,
+  `status` tinyint NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
@@ -44,12 +44,32 @@ INSERT INTO `m_blog` VALUES (20, 1, 9, '开源：企业微信及时通讯api！s
 INSERT INTO `m_blog` VALUES (22, 1, 1, '搭建Github镜像站', '搭建Github镜像站', '> 每次使用Github的时候，尤其clone项目的时候github的速度总是非常感人，我有个香港的轻型服务器，而nginx可以反向代理，为什么我不使用nginx反向代理一个Github呢？\n\n## 操作\n- 申请域名证书\n- 安装NGINX\n- 创建一个配置文件\n\n```\nupstream github {\n    server github.com:443;\n    keepalive 16;\n}\n\nserver {\n    listen 80;\n    server_name github.guiyun.plus;\n    rewrite ^ https://$http_host$request_uri? permanent;\n}\n\nserver\n{\n    listen 443;\n    server_name github.guiyun.plus;\n    ssl_certificate   ssl/github.guiyun.plus.crt;\n    ssl_certificate_key  ssl/github.guiyun.plus.key;\n    ssl_session_timeout 5m;\n    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;\n    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;\n    ssl_prefer_server_ciphers on;\n    if ($http_user_agent ~* \"qihoobot|Baiduspider|Googlebot|Googlebot-Mobile|Googlebot-Image|Mediapartners-Google|Adsbot-Google|Feedfetcher-Google|Yahoo! Slurp|Yahoo! Slurp China|YoudaoBot|Sosospider|Sogou spider|Sogou web spider|MSNBot|ia_archiver|Tomato Bot\") #防止搜索引擎收录\n    {\n        return 403;\n    }\n    location / {\n        proxy_set_header Accept-Encoding \"\";\n        proxy_set_header Connection \"\";\n        proxy_http_version 1.1;\n        proxy_connect_timeout    10s;\n        proxy_read_timeout       10s;\n        proxy_set_header Host github.com;\n\n        proxy_hide_header Strict-Transport-Security; #隐藏协议头，避免因为反向代理开启hsts\n\n        proxy_pass https://github;\n    }\n}\n```\n- 重启Nginx\n\n这样Github就搭建好了\n## 效果\n访问了一下感觉速度还是可以的\n![](https://image.guiyunweb.com/2021/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-08-25%20001332_1629821639595.png?imageMogr2/format/webp/interlace/1/quality/090)\n\n## 而clone的服务就非常让人惊喜了\n![](https://image.guiyunweb.com/2021/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-08-25%20000309_1629821638320.png?imageMogr2/format/webp/interlace/1/quality/090)\n\n唯一比较遗憾的就是没办法登录了，如果有什么登录的办法，还请小伙伴们告诉我\n\n[转自归云博客](https://guiyunweb.com/archives/%E6%90%AD%E5%BB%BAgithub%E9%95%9C%E5%83%8F%E7%AB%99)', '2022-05-30 15:40:43', 0);
 
 -- ----------------------------
+-- Table structure for m_blog_statistics
+-- ----------------------------
+DROP TABLE IF EXISTS `m_blog_statistics`;
+CREATE TABLE `m_blog_statistics`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `day` date NOT NULL,
+  `view_count` bigint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of m_blog_statistics
+-- ----------------------------
+INSERT INTO `m_blog_statistics` VALUES (1, '2022-06-08', 0);
+INSERT INTO `m_blog_statistics` VALUES (2, '2022-06-09', 10);
+INSERT INTO `m_blog_statistics` VALUES (3, '2022-06-10', 20);
+INSERT INTO `m_blog_statistics` VALUES (4, '2022-06-11', 5);
+INSERT INTO `m_blog_statistics` VALUES (5, '2022-06-12', 100);
+
+-- ----------------------------
 -- Table structure for m_blogtag
 -- ----------------------------
 DROP TABLE IF EXISTS `m_blogtag`;
 CREATE TABLE `m_blogtag`  (
-  `blogId` bigint(20) NOT NULL,
-  `tagId` bigint(20) NOT NULL
+  `blogId` bigint NOT NULL,
+  `tagId` bigint NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -85,7 +105,7 @@ INSERT INTO `m_blogtag` VALUES (25, 40);
 -- ----------------------------
 DROP TABLE IF EXISTS `m_friend`;
 CREATE TABLE `m_friend`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
   `href` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '链接地址',
@@ -103,8 +123,8 @@ INSERT INTO `m_friend` VALUES (1, 'Smile\' Blog', '一个神秘的博客', 'http
 -- ----------------------------
 DROP TABLE IF EXISTS `m_other`;
 CREATE TABLE `m_other`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `order` tinyint(4) NULL DEFAULT 0,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order` tinyint NULL DEFAULT 0,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -121,8 +141,8 @@ INSERT INTO `m_other` VALUES (2, 1, '网页底部', '<div style=\"text-align: ce
 -- ----------------------------
 DROP TABLE IF EXISTS `m_sort`;
 CREATE TABLE `m_sort`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order` int(11) NOT NULL DEFAULT 0,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `order` int NOT NULL DEFAULT 0,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
@@ -142,7 +162,7 @@ INSERT INTO `m_sort` VALUES (10, 100, '置顶');
 -- ----------------------------
 DROP TABLE IF EXISTS `m_system`;
 CREATE TABLE `m_system`  (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `welcome` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -159,7 +179,7 @@ INSERT INTO `m_system` VALUES (1, '欢迎来到Smilex博客', 'Smile\' Blog', '�
 -- ----------------------------
 DROP TABLE IF EXISTS `m_tag`;
 CREATE TABLE `m_tag`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
@@ -190,12 +210,12 @@ INSERT INTO `m_tag` VALUES (37, '镜像站');
 -- ----------------------------
 DROP TABLE IF EXISTS `m_user`;
 CREATE TABLE `m_user`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `email` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `password` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `status` int(5) NOT NULL,
+  `status` int NOT NULL,
   `created` datetime NOT NULL,
   `last_login` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -204,7 +224,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-08 10:40:41');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-19 20:02:36');
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

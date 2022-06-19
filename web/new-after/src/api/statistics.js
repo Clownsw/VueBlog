@@ -6,5 +6,11 @@ export default {
       url: '/statistics',
       method: 'GET'
     })
+  },
+  statisticsBlog() {
+    return request({
+        url: '/statistics/blog',
+      method: 'GET'
+    })
   }
 }

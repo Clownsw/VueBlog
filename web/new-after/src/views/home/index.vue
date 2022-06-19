@@ -83,22 +83,64 @@
 
       </el-col>
     </el-row>
+
+    <el-row style="margin-top: 4rem">
+      <el-col :span="24">
+        <div id="view_count" style="height: 440px;"></div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import statisticsApi from '../../api/statistics'
+import echarts from 'echarts';
+import statisticsApi from '../../api/statistics';
+
 export default {
   name: 'HomeIndex',
   data() {
     return {
-      statisticsInfo: {}
+      statisticsInfo: {},
     }
   },
   created() {
     statisticsApi.statistics().then(resp => {
       this.statisticsInfo = resp.data
     })
+  },
+  mounted() {
+    this.showEcharts()
+  },
+  methods: {
+    showEcharts() {
+
+      let r = async () => {
+        let statisticsBlogResp = await statisticsApi.statisticsBlog()
+
+        let myChart = echarts.init(document.getElementById('view_count'))
+
+        let option = {
+          title: {
+            text: '近10日访问量统计'
+          },
+          xAxis: {
+            type: 'category',
+            data: statisticsBlogResp.data.left
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              type: 'line',
+              data: statisticsBlogResp.data.right
+            }
+          ]
+        }
+        myChart.setOption(option)
+      }
+      r().then(() => { })
+    }
   },
 }
 </script>
