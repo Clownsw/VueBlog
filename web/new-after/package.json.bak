@@ -3,7 +3,7 @@
   "version": "0.7.7",
   "license": "MIT",
   "description": "Vueblog-Admin-Manager",
-  "author": "smilex<msmliexx1@gmail.com>",
+  "author": "smilex<msmliexx1@skiff.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
