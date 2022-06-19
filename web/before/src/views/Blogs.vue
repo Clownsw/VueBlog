@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
-    <el-card v-for="item in blogs.data" style="margin-bottom: 10px">
+    <el-card v-for="item in blogs.data" :key="item.id" style="margin-bottom: 10px">
       <h3 class="blog-title">
         <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
           {{ item.title }}
@@ -9,7 +9,7 @@
       </h3>
       <p class="blog-description">{{ item.description }}</p>
 
-      <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags">
+      <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags" :key="tag.id">
         <el-tag style="margin: 3px 10px 3px 0">
           {{ tag.name }}
         </el-tag>
