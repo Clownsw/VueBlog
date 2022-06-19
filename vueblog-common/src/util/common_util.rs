@@ -1,18 +1,20 @@
 use super::{error_util, login_util::is_login_return, redis_util};
 use crate::{
     config::global_config::GLOBAL_CONFIG,
-    pojo::{msg::ResultMsg, status::AppState, user::SelectUser},
+    pojo::{backup::SelectBackUp, msg::ResultMsg, status::AppState, user::SelectUser},
 };
 use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse, HttpResponseBuilder, Responder};
+use chrono::Utc;
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
+use reqwest::Client;
 use rustc_hash::FxHashMap;
 use serde::Serialize;
 use sqlx::{
     mysql::{MySqlColumn, MySqlRow},
     Column, MySqlPool, Row,
 };
-use std::{future::Future, pin::Pin, str::FromStr};
+use std::{future::Future, pin::Pin, process, str::FromStr};
 
 /**
  * 创建一个响应对象_json
@@ -247,6 +249,40 @@ pub async fn like_table_async_run<
         Ok(v) => Ok(f(v, db_pool).await),
         Err(err) => Err(err),
     }
+}
+
+pub async fn dump_sql(backup: SelectBackUp) -> Result<String, anyhow::Error> {
+    let output = process::Command::new("mysqldump")
+        .arg(format!("-u{}", backup.username))
+        .arg(format!("-p{}", backup.password))
+        .arg("vueblog")
+        .output()
+        .unwrap();
+
+    Ok(String::from_utf8(output.stdout)?)
+}
+
+pub async fn remote_upload_file(
+    backup: SelectBackUp,
+    file_content: String,
+) -> Result<StatusCode, anyhow::Error> {
+    let mut file_name = String::from("/sql_dump/dump_");
+    file_name.push_str(Utc::now().to_string().as_str());
+    file_name.push_str(".sql");
+
+    let request_url = format!(
+        "{}/{}/{}",
+        "http://v0.api.upyun.com", backup.bucket_name, file_name
+    );
+
+    let resp = Client::new()
+        .post(request_url.as_str())
+        .basic_auth(backup.operator, Some(backup.operator_password))
+        .body(file_content.as_bytes().to_vec())
+        .send()
+        .await?;
+
+    Ok(resp.status())
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T

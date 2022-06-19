@@ -1,3 +1,4 @@
+pub mod backup_dao;
 pub mod blog_dao;
 pub mod blog_tag_dao;
 pub mod friend_dao;

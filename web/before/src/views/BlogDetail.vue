@@ -5,7 +5,7 @@
       <h1 class="m-blog-title">{{ blog.title }}</h1>
 
       <div class="tags" style="text-align: center; margin-top: 5px;">
-        <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in blog.tags">
+        <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in blog.tags" :key="tag.id">
           <el-tag style="margin: 3px 10px 3px 0">
             {{ tag.name }}
           </el-tag>

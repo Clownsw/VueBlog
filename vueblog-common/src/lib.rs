@@ -5,9 +5,6 @@ pub mod pojo;
 pub mod service;
 pub mod util;
 
-#[macro_use]
-extern crate lazy_static;
-
 #[cfg(test)]
 mod tests {
     #[test]

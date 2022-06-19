@@ -20,7 +20,9 @@ use sqlx::{
 pub async fn select_all_count(db_pool: &MySqlPool) -> Result<Vec<SelectCountBlog>, sqlx::Error> {
     sqlx::query_as!(
         SelectCountBlog,
-        r#"SELECT COUNT(*) as count FROM m_blog WHERE id != 1"#
+        r#"
+            SELECT COUNT(*) as count FROM m_blog
+        "#
     )
     .fetch_all(db_pool)
     .await
@@ -68,7 +70,7 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectBlog>, sqlx::Er
     sqlx::query_as!(
         SelectBlog,
         r#"
-            SELECT * FROM m_blog WHERE id != 1
+            SELECT * FROM m_blog
         "#
     )
     .fetch_all(db_pool)

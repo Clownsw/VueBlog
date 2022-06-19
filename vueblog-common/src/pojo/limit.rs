@@ -17,13 +17,13 @@ impl<T> Limit<T> {
         let total: i64 = all_count;
         let mut pages: i64 = 0;
 
-        {
-            if total > 0 {
-                if total % size == 0 {
-                    pages = total / size;
-                } else {
-                    pages = (total / size) + 1;
-                }
+        if total > 0 {
+            if total <= size {
+                pages = 1;
+            } else if total % size == 0 {
+                pages = total / size;
+            } else {
+                pages = (total / size) + 1;
             }
         }
 

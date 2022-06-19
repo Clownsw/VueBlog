@@ -1,5 +1,6 @@
 use actix_cors::Cors;
-use actix_web::{guard, web, App, HttpServer};
+use actix_web::guard;
+use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};

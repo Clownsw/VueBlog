@@ -1,6 +1,5 @@
-use actix_web::{post, web, HttpRequest, Responder};
+use actix_web::{post, web, Responder};
 use chrono::Utc;
-use log::{error, info};
 
 use crate::{
     dao::user_dao::{get_by_name_and_passwd, update_user_last_login_by_id},
@@ -16,7 +15,6 @@ use crate::{
         common_util::{build_response_baq_request_message, build_response_ok_data},
         error_util,
         jwt_util::{get_token_default_token_user, sign_token_default},
-        sql_util::sql_run_is_success,
     },
 };
 
@@ -24,7 +22,7 @@ use crate::{
  * 登录API
  */
 #[post("/admin/login")]
-pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
+pub async fn login(body: String, data: web::Data<AppState>) -> impl Responder {
     let login_user: LoginUser;
 
     // 将请求体序列化为LoginUser
@@ -57,24 +55,10 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
         Ok(v) => {
             // 校验用户是否被锁定
             if v.status != -1 {
-                info!(
-                    "登录成功: IP={}, 用户名={}, 密码={}",
-                    req.connection_info().realip_remote_addr().unwrap(),
-                    login_user.username,
-                    login_user.password
-                );
-
                 // 更新最后登录时间
-                if sql_run_is_success(
-                    update_user_last_login_by_id(&data.db_pool, v.id, Utc::now().naive_local())
-                        .await,
-                )
-                .await
-                {
-                    info!("更新 id={}, 最后登录时间成功!", v.id);
-                } else {
-                    error!("更新 id={}, 最后登录时间失败!", v.id)
-                }
+                update_user_last_login_by_id(&data.db_pool, v.id, Utc::now().naive_local())
+                    .await
+                    .unwrap();
 
                 let token_user = TokenUser::from_select_user(v.clone());
                 let token = Token {
@@ -90,14 +74,7 @@ pub async fn login(body: String, req: HttpRequest, data: web::Data<AppState>) ->
             }
         }
         // 找不到直接返回相关错误提示
-        _ => {
-            error!(
-                "登录失败: IP={}, 用户名={}, 密码={}",
-                req.connection_info().realip_remote_addr().unwrap(),
-                login_user.username,
-                login_user.password
-            );
-        }
+        _ => {}
     }
 
     resp
