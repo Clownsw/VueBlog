@@ -1,6 +1,23 @@
 use sqlx::MySqlPool;
 
-use crate::pojo::sort::{InsertSort, SelectSort, SelectSortWithBlog, UpdateSort};
+use crate::pojo::{
+    other::SelectCount,
+    sort::{InsertSort, SelectSort, SelectSortWithBlog, UpdateSort},
+};
+
+/**
+ * 查询所有分类个数
+ */
+pub async fn select_all_count(db_pool: &MySqlPool) -> Result<SelectCount, sqlx::Error> {
+    sqlx::query_as!(
+        SelectCount,
+        r#"
+            SELECT COUNT(1) as count FROM m_sort
+        "#
+    )
+    .fetch_one(db_pool)
+    .await
+}
 
 /**
  * 查询所有分类

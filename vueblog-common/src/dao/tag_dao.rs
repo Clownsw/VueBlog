@@ -1,4 +1,7 @@
-use crate::pojo::tag::{InsertTag, SelectBlogOther, SelectTag, UpdateTag};
+use crate::pojo::{
+    other::SelectCount,
+    tag::{InsertTag, SelectBlogOther, SelectTag, UpdateTag},
+};
 use sqlx::{mysql::MySqlQueryResult, MySqlPool};
 
 /**
@@ -12,6 +15,20 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectTag>, sqlx::Err
         "#
     )
     .fetch_all(db_pool)
+    .await
+}
+
+/**
+ * 查询所有标签个数
+ */
+pub async fn select_all_count(db_pool: &MySqlPool) -> Result<SelectCount, sqlx::Error> {
+    sqlx::query_as!(
+        SelectCount,
+        r#"
+            SELECT COUNT(1) as count FROM m_tag
+        "#
+    )
+    .fetch_one(db_pool)
     .await
 }
 

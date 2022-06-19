@@ -85,7 +85,7 @@ impl SelectShowListBlog {
 /**
  * 查询所有文章个数结构
  */
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize)]
 pub struct SelectCountBlog {
     pub count: i64,
 }

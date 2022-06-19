@@ -8,7 +8,7 @@ use crate::{
     pojo::{
         blog::{RequestBlog, SelectBlogSortTag, SelectCountBlog},
         limit::Limit,
-        other::Void,
+        other::{SelectCount, Void},
         status::AppState,
     },
     service::blog_service::{blog_add_service, blog_update_service},
@@ -48,16 +48,16 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         .await
     };
 
-    let counts = match select_all_count(&data.db_pool).await {
+    let select_count = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
-        _ => Vec::new(),
+        _ => SelectCount::default(),
     };
 
     match blogs {
         Ok(v) => unsafe {
             build_response_ok_data(Limit::from_unknown_datas(
                 GLOBAL_CONFIG.blog_limit_num,
-                counts[0].count,
+                select_count.count,
                 current,
                 v,
             ))

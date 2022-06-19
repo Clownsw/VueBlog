@@ -18,3 +18,8 @@ pub struct SelectPageFooter {
 pub struct UpdatePageFooter {
     pub content: String,
 }
+
+#[derive(Debug, Default, Clone)]
+pub struct SelectCount {
+    pub count: i64,
+}
