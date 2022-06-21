@@ -1,9 +1,17 @@
 {
+<<<<<<< HEAD
   "name": "Vueblog-Admin-Manager",
   "version": "0.7.7",
   "license": "MIT",
   "description": "Vueblog-Admin-Manager",
   "author": "smilex<msmliexx1@gmail.com>",
+=======
+  "name": "vueblog-admin-manager",
+  "version": "0.7.7",
+  "license": "MIT",
+  "description": "vueblog-admin-manager",
+  "author": "smilex <msmliexx1@gmail.com>",
+>>>>>>> new
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",

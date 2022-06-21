@@ -1,9 +1,12 @@
 use crate::{
     config::global_config::GLOBAL_CONFIG,
-    dao::blog_dao::{
-        delete_by_ids, get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
-        select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
-        select_tag_all_count,
+    dao::{
+        blog_dao::{
+            delete_by_ids, get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
+            select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
+            select_tag_all_count,
+        },
+        staticstics_dao::blog_view_count_plus,
     },
     pojo::{
         blog::{RequestBlog, SelectBlogSortTag, SelectCountBlog},
@@ -75,7 +78,11 @@ pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> imp
     let id = path.into_inner();
 
     match get_by_id_with_sort_and_tag(&data.db_pool, id).await {
-        Ok(v) => build_response_ok_data(v).await,
+        Ok(v) => {
+            let mut conn = data.redis_pool.get().await.unwrap();
+            blog_view_count_plus(&mut conn).await;
+            build_response_ok_data(v).await
+        }
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::BLOG_HAS_DELETE)).await
         }

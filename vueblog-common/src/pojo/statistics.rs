@@ -18,3 +18,15 @@ pub struct StatisticsBlog {
     pub day: String,
     pub view_count: i64,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct InsertStatisticsBlog {
+    pub day: String,
+    pub view_count: i64,
+}
+
+impl InsertStatisticsBlog {
+    pub fn new(day: String, view_count: i64) -> Self {
+        Self { day, view_count }
+    }
+}

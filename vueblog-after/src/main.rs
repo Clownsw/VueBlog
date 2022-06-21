@@ -7,6 +7,7 @@ use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::backup_controller::backup_buy;
 use vueblog_common::controller::statistics_controller::{statistics, statistics_blog};
+use vueblog_common::util::schedule_task::build_view_count;
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
@@ -52,6 +53,13 @@ async fn make_redis_client() -> RedisPool {
 }
 
 /**
+ * 初始化定时任务
+ */
+async fn init_schedule_task(db_pool: MySqlPool, redis_pool: RedisPool) {
+    tokio::spawn(build_view_count(db_pool, redis_pool));
+}
+
+/**
  * 初始化
  */
 async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
@@ -85,6 +93,8 @@ async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
     if let Err(_) = init_global_config().await {
         panic!("init global config error!")
     }
+
+    init_schedule_task(db_pool.clone(), redis_client.clone()).await;
 
     (server_address, server_port, workers, db_pool, redis_client)
 }
