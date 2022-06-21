@@ -1,11 +1,12 @@
 [package]
 name = "vueblog-common"
-version = "0.7.5"
+version = "0.7.7"
 edition = "2021"
 authors = ["smilex<msmliexx1@gmail.com>"]
 
 [dependencies]
 actix-web =  { version = "4", features = ["actix-web-codegen", "compress-brotli", "compress-gzip", "compress-zstd", "macros"] }
+tokio = { version = "1", features = ["full"] }
 redis = { version = "0.17.0", features = ["tokio-comp"] }
 redis-async-pool = "0.2.4"
 sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "runtime-actix-native-tls"] }
@@ -20,3 +21,4 @@ qstring = "0.7.2"
 rustc-hash = "1.1"
 anyhow = "*"
 reqwest = { version = "0.11.10", features = ["json", "cookies", "gzip", "tokio-native-tls", "stream"] }
+job_scheduler = { git = "https://github.com/Clownsw/job_scheduler", rev = "a1cb1f7a" }

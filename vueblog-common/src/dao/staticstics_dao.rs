@@ -1,8 +1,10 @@
+use redis::RedisError;
+use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use sqlx::{MySql, MySqlPool, Row};
 
 use crate::{
-    pojo::statistics::{Statistics, StatisticsBlog},
-    util::common_util::columns_to_map,
+    pojo::statistics::{InsertStatisticsBlog, Statistics, StatisticsBlog},
+    util::{common_util::columns_to_map, redis_util},
 };
 
 use super::{blog_dao, friend_dao, sort_dao, tag_dao};
@@ -51,4 +53,34 @@ pub async fn select_blog_statistics(
     })
     .fetch_all(db_pool)
     .await
+}
+
+pub async fn save_blog_statistics(
+    db_pool: &MySqlPool,
+    insert_blog_statistics: InsertStatisticsBlog,
+) -> Result<sqlx::mysql::MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            INSERT INTO m_blog_statistics(day, view_count) VALUES(?, ?)
+        "#,
+        insert_blog_statistics.day,
+        insert_blog_statistics.view_count,
+    )
+    .execute(db_pool)
+    .await
+}
+
+/**
+ * 当日访问人数自增
+ */
+pub async fn blog_view_count_plus(conn: &mut Object<RedisConnection, RedisError>) {
+    match redis_util::get::<String, &str>(conn, "blog_view_count").await {
+        Ok(v) => {
+            redis_util::set::<&str, i64>(conn, "blog_view_count", (v.parse::<i64>().unwrap()) + 1)
+                .await;
+        }
+        Err(e) => {
+            log::error!("{}", e);
+        }
+    }
 }

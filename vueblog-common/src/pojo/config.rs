@@ -11,6 +11,8 @@ pub struct GlobalConfig {
     pub blog_tag_limit_num: i64,
     // 前台展示分类博文每页展示
     pub blog_sort_limit_num: i64,
+    // 定时统计
+    pub statisics_cron: String,
 }
 
 impl GlobalConfig {
@@ -22,6 +24,7 @@ impl GlobalConfig {
             friend_limit_num: 5,
             blog_tag_limit_num: 5,
             blog_sort_limit_num: 5,
+            statisics_cron: String::new(),
         }
     }
 }
