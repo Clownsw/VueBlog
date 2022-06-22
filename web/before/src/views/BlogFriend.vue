@@ -3,7 +3,7 @@
     <Header :welcome="systemInfo.welcome"></Header>
     <div class="m-friends">
 
-      <a :href="item.href" target="_blank" v-for="item in friends">
+      <a :href="item.href" target="_blank" v-for="item in friends" :key="item.id">
         <div class="image">
           <img :src="item.avatar" alt="">
         </div>
