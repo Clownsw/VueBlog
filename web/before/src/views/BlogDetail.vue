@@ -15,15 +15,14 @@
       <div style="display: flex; justify-content: center">
         <p class="blog-description" style="display: inline-block; margin-right: 10px">{{
             parseStrToDate(blog.created)
-          }}</p>
+        }}</p>
 
-        <router-link :to="{ name: 'BlogsId', params: { id: blog.sort.id } }"
-                     class="blog-description">
+        <router-link :to="{ name: 'BlogsId', params: { id: blog.sort.id } }" class="blog-description">
           {{ blog.sort.name }}
         </router-link>
       </div>
 
-      <el-divider/>
+      <el-divider />
 
       <mavon-editor ref="markdown"
                     :subfield="false"
@@ -36,7 +35,7 @@
                     v-model="blog.content"/>
     </div>
 
-    <Valine/>
+    <Valine />
   </div>
 </template>
 
@@ -57,6 +56,7 @@ export default {
       tags: [],
       onShow: false,
       systemInfo: this.$store.getters.getSystemInfo,
+      loading: null,
     };
   },
   methods: {
@@ -69,6 +69,13 @@ export default {
     Valine
   },
   created() {
+    this.loading = this.$loading({
+      lock: true,
+      text: 'loading',
+      spinner: 'el-icon-loading',
+      background: 'rgb(0 0 0 / 80%)'
+    })
+
     let blogId = this.$route.params.blogId;
     if (blogId !== undefined) {
       this.$axios.get("blog/" + blogId).then((resp) => {
@@ -88,6 +95,8 @@ export default {
         if (this.blog.code === 400) {
           this.$router.push('/blogs')
         }
+
+        this.loading.close()
       });
     } else {
       this.$router.push("/blogs");
