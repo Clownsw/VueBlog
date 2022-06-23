@@ -7,6 +7,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import 'viewerjs/dist/viewer.css'
+import VueViewer from 'v-viewer'
 
 import './axios'
 import './interceptor'
@@ -14,6 +16,7 @@ import './interceptor'
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(mavonEditor)
+Vue.use(VueViewer)
 Vue.prototype.$axios = axios
 
 new Vue({
