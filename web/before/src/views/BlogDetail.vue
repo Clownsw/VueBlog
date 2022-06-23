@@ -24,7 +24,7 @@
 
       <el-divider />
 
-      <mavon-editor v-viewer ref="markdown"
+      <mavon-editor v-viewer="{ movable: false }" ref="markdown"
                     :subfield="false"
                     :editable="false"
                     :defaultOpen="'preview'"
@@ -100,6 +100,9 @@ export default {
           this.$router.push('/blogs')
         }
 
+      })
+      .catch(error => {
+        this.$router.push("/blogs");
       });
     } else {
       this.$router.push("/blogs");
