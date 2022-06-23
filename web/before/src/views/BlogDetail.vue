@@ -96,12 +96,14 @@ export default {
           this.$router.push('/blogs')
         }
 
-        this.loading.close()
       });
     } else {
       this.$router.push("/blogs");
     }
   },
+  mounted() {
+    this.loading.close()
+  }
 };
 </script>
 
