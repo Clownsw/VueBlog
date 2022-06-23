@@ -24,13 +24,14 @@
 
       <el-divider />
 
-      <mavon-editor ref="markdown"
+      <mavon-editor v-viewer ref="markdown"
                     :subfield="false"
                     :editable="false"
                     :defaultOpen="'preview'"
                     :toolbarsFlag="false"
                     :boxShadow="true"
                     :code-style="'github-dark'"
+                    :imageClick="handleImageClick"
                     class="blog-body"
                     v-model="blog.content"/>
     </div>
@@ -60,6 +61,9 @@ export default {
     };
   },
   methods: {
+    handleImageClick() {
+
+    },
     parseStrToDate(str) {
       return new Date(str).toLocaleString()
     },
