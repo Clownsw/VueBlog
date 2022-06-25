@@ -210,20 +210,20 @@ pub async fn blog_edit(
             Box::pin(async move {
                 match serde_json::from_str::<RequestBlog>(body.as_str()) {
                     Ok(v) => {
-                        let ids = v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
-
                         let mut resp =
                             build_response_baq_request_message(String::from(error_util::ERROR))
                                 .await;
                         // 编辑
                         if let Some(id) = v.id {
+                            let ids = v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
+
                             if blog_update_service(&db_pool_clone, v, id, ids).await {
                                 resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
                             }
                         } else {
                             // 添加
-                            if blog_add_service(&db_pool_clone, user.id, v, ids).await {
+                            if blog_add_service(&db_pool_clone, user.id, v).await {
                                 resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
                             }

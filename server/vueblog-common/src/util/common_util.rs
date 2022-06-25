@@ -14,7 +14,7 @@ use sqlx::{
     mysql::{MySqlColumn, MySqlRow},
     Column, MySqlPool, Row,
 };
-use std::{future::Future, pin::Pin, process, str::FromStr};
+use std::{fmt, future::Future, pin::Pin, process, str::FromStr};
 
 /**
  * 创建一个响应对象_json
@@ -54,12 +54,16 @@ pub async fn sign_captcha_code(
 /**
  * 获取删除和新增向量
  */
-pub async fn get_del_and_add_vec<T>(a: Vec<T>, b: Vec<T>) -> (Vec<T>, Vec<T>)
+pub async fn get_del_and_add_and_default_vec<T: fmt::Debug>(
+    a: Vec<T>,
+    b: Vec<T>,
+) -> (Vec<T>, Vec<T>, Vec<T>)
 where
     T: PartialEq + Copy,
 {
     let mut del: Vec<T> = vec![];
     let mut add: Vec<T> = vec![];
+    let mut default: Vec<T> = vec![];
 
     // del
     for item_a in &a {
@@ -75,7 +79,20 @@ where
         }
     }
 
-    (del, add)
+    // default
+    for item in &a {
+        if !del.contains(item) && !add.contains(item) && !default.contains(item) {
+            default.push(*item);
+        }
+    }
+
+    for item in &b {
+        if !del.contains(item) && !add.contains(item) && !default.contains(item) {
+            default.push(*item);
+        }
+    }
+
+    (del, add, default)
 }
 
 /**

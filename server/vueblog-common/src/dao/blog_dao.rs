@@ -107,12 +107,11 @@ pub async fn select_all_limit(
                 ) AS 'tag_ids',
                 (
                 SELECT
-                    GROUP_CONCAT( `name` ) 
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
                 FROM
-                    m_tag AS tag 
-                WHERE
-                    tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
-                ) AS 'tag_names' 
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+                ) AS 'tag_names'
                 FROM
                     m_blog AS blog
                     LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id 
@@ -205,11 +204,10 @@ pub async fn get_by_id_with_sort_and_tag(
             ) AS 'tag_ids',
             (
             SELECT
-                GROUP_CONCAT( `name` ) 
+                GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
             FROM
-                m_tag AS tag 
-            WHERE
-                tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
+                m_tag AS tag
+                RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
             ) AS 'tag_names' 
             FROM
                 m_blog AS blog
@@ -389,12 +387,11 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
                 ) AS 'tag_ids',
                 (
                 SELECT
-                    GROUP_CONCAT( `name` ) 
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
                 FROM
-                    m_tag AS tag 
-                WHERE
-                    tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
-                ) AS 'tag_names' 
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+                ) AS 'tag_names'
                 FROM
                     m_blog AS blog
                     LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
@@ -474,12 +471,11 @@ pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i
                 ) AS 'tag_ids',
                 (
                 SELECT
-                    GROUP_CONCAT( `name` ) 
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
                 FROM
-                    m_tag AS tag 
-                WHERE
-                    tag.id IN ( SELECT tagId FROM m_blogtag AS blogtag WHERE blogtag.blogId = blog.id ) 
-                ) AS 'tag_names' 
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+                ) AS 'tag_names'
                 FROM
                     m_blog AS blog
                     LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id

@@ -114,11 +114,34 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.id === -1) {
-            this.addBlog()
-          } else {
-            this.updateBlog();
+
+          let r = async () => {
+            let names = []
+            for (let i = 0; i < this.tags.length; i++) {
+              names.push(this.tags[i].name)
+            }
+
+            let resp = await tagApi.getIdsByNames(names)
+
+            for (let i = 0; i < this.tags.length; i++) {
+              this.tags[i].sort = i
+              
+              for (let j = 0; j < resp.data.length; j++) {
+                if (this.tags[i].name === resp.data[j].name) {
+                  this.tags[i].id = resp.data[j].id
+                }
+              }
+            }
+
+            if (this.id === -1) {
+              this.addBlog()
+            } else {
+              this.updateBlog();
+            }
           }
+
+          r().then(() => { })
+
         } else {
           return false;
         }
@@ -148,7 +171,7 @@ export default {
         content: this.blog.content,
         tag: this.tags,
       }
-      console.log(obj);
+
       this.fetchBlogAdd(obj).then(resp => {
         this.$message.success(resp.message)
 
