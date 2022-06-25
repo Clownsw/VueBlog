@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 20/06/2022 07:22:01
+ Date: 25/06/2022 15:22:17
 */
 
 SET NAMES utf8mb4;
@@ -52,7 +52,7 @@ CREATE TABLE `m_blog_statistics`  (
   `day` date NOT NULL,
   `view_count` bigint NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of m_blog_statistics
@@ -62,6 +62,9 @@ INSERT INTO `m_blog_statistics` VALUES (2, '2022-06-09', 10);
 INSERT INTO `m_blog_statistics` VALUES (3, '2022-06-10', 20);
 INSERT INTO `m_blog_statistics` VALUES (4, '2022-06-11', 5);
 INSERT INTO `m_blog_statistics` VALUES (5, '2022-06-12', 100);
+INSERT INTO `m_blog_statistics` VALUES (56, '2022-06-21', 1);
+INSERT INTO `m_blog_statistics` VALUES (57, '2022-06-21', 2);
+INSERT INTO `m_blog_statistics` VALUES (58, '2022-06-21', 22222);
 
 -- ----------------------------
 -- Table structure for m_blogtag
@@ -69,36 +72,40 @@ INSERT INTO `m_blog_statistics` VALUES (5, '2022-06-12', 100);
 DROP TABLE IF EXISTS `m_blogtag`;
 CREATE TABLE `m_blogtag`  (
   `blogId` bigint NOT NULL,
-  `tagId` bigint NOT NULL
+  `tagId` bigint NOT NULL,
+  `sort` bigint NULL DEFAULT 0
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_blogtag
 -- ----------------------------
-INSERT INTO `m_blogtag` VALUES (17, 24);
-INSERT INTO `m_blogtag` VALUES (17, 25);
-INSERT INTO `m_blogtag` VALUES (17, 26);
-INSERT INTO `m_blogtag` VALUES (17, 27);
-INSERT INTO `m_blogtag` VALUES (18, 22);
-INSERT INTO `m_blogtag` VALUES (18, 28);
-INSERT INTO `m_blogtag` VALUES (18, 29);
-INSERT INTO `m_blogtag` VALUES (19, 30);
-INSERT INTO `m_blogtag` VALUES (19, 31);
-INSERT INTO `m_blogtag` VALUES (20, 22);
-INSERT INTO `m_blogtag` VALUES (20, 23);
-INSERT INTO `m_blogtag` VALUES (20, 32);
-INSERT INTO `m_blogtag` VALUES (20, 33);
-INSERT INTO `m_blogtag` VALUES (20, 34);
-INSERT INTO `m_blogtag` VALUES (20, 35);
-INSERT INTO `m_blogtag` VALUES (20, 22);
-INSERT INTO `m_blogtag` VALUES (20, 23);
-INSERT INTO `m_blogtag` VALUES (20, 32);
-INSERT INTO `m_blogtag` VALUES (20, 33);
-INSERT INTO `m_blogtag` VALUES (20, 34);
-INSERT INTO `m_blogtag` VALUES (20, 35);
-INSERT INTO `m_blogtag` VALUES (22, 36);
-INSERT INTO `m_blogtag` VALUES (22, 37);
-INSERT INTO `m_blogtag` VALUES (25, 40);
+INSERT INTO `m_blogtag` VALUES (17, 24, 0);
+INSERT INTO `m_blogtag` VALUES (17, 25, 0);
+INSERT INTO `m_blogtag` VALUES (17, 26, 0);
+INSERT INTO `m_blogtag` VALUES (17, 27, 0);
+INSERT INTO `m_blogtag` VALUES (18, 22, 0);
+INSERT INTO `m_blogtag` VALUES (18, 28, 0);
+INSERT INTO `m_blogtag` VALUES (18, 29, 0);
+INSERT INTO `m_blogtag` VALUES (19, 30, 0);
+INSERT INTO `m_blogtag` VALUES (19, 31, 0);
+INSERT INTO `m_blogtag` VALUES (20, 22, 0);
+INSERT INTO `m_blogtag` VALUES (20, 23, 0);
+INSERT INTO `m_blogtag` VALUES (20, 32, 0);
+INSERT INTO `m_blogtag` VALUES (20, 33, 0);
+INSERT INTO `m_blogtag` VALUES (20, 34, 0);
+INSERT INTO `m_blogtag` VALUES (20, 35, 0);
+INSERT INTO `m_blogtag` VALUES (20, 22, 0);
+INSERT INTO `m_blogtag` VALUES (20, 23, 0);
+INSERT INTO `m_blogtag` VALUES (20, 32, 0);
+INSERT INTO `m_blogtag` VALUES (20, 33, 0);
+INSERT INTO `m_blogtag` VALUES (20, 34, 0);
+INSERT INTO `m_blogtag` VALUES (20, 35, 0);
+INSERT INTO `m_blogtag` VALUES (22, 36, 0);
+INSERT INTO `m_blogtag` VALUES (22, 37, 0);
+INSERT INTO `m_blogtag` VALUES (25, 40, 0);
+INSERT INTO `m_blogtag` VALUES (15, 41, 1);
+INSERT INTO `m_blogtag` VALUES (15, 39, 0);
+INSERT INTO `m_blogtag` VALUES (15, 42, 2);
 
 -- ----------------------------
 -- Table structure for m_friend
@@ -182,7 +189,7 @@ CREATE TABLE `m_tag`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_tag
@@ -204,6 +211,13 @@ INSERT INTO `m_tag` VALUES (34, 'Server酱');
 INSERT INTO `m_tag` VALUES (35, 'Api');
 INSERT INTO `m_tag` VALUES (36, 'Github');
 INSERT INTO `m_tag` VALUES (37, '镜像站');
+INSERT INTO `m_tag` VALUES (38, 'Hello');
+INSERT INTO `m_tag` VALUES (39, 'World');
+INSERT INTO `m_tag` VALUES (40, 'AAA');
+INSERT INTO `m_tag` VALUES (41, 'A');
+INSERT INTO `m_tag` VALUES (42, 'B');
+INSERT INTO `m_tag` VALUES (43, 'C');
+INSERT INTO `m_tag` VALUES (44, 'D');
 
 -- ----------------------------
 -- Table structure for m_user
@@ -224,7 +238,7 @@ CREATE TABLE `m_user`  (
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-19 20:02:36');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-25 03:26:57');
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
 
 SET FOREIGN_KEY_CHECKS = 1;

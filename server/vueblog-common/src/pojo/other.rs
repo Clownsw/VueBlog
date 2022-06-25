@@ -23,3 +23,8 @@ pub struct UpdatePageFooter {
 pub struct SelectCount {
     pub count: i64,
 }
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, sqlx::FromRow)]
+pub struct SelectId {
+    pub id: i64,
+}

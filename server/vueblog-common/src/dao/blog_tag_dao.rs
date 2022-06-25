@@ -1,6 +1,6 @@
 use sqlx::{mysql::MySqlQueryResult, MySql, MySqlPool, Transaction};
 
-use crate::util::sql_util::build_what_sql_by_num;
+use crate::{pojo::tag::SelectBlogTag, util::sql_util::build_what_sql_by_num};
 
 /**
  * 删除所有包含指定标签id的博文的标签
@@ -117,24 +117,59 @@ pub async fn add_blog_tag_by_ids(
 pub async fn add_blog_tag_by_ids_tran(
     tran: &mut Transaction<'_, MySql>,
     blog_id: i64,
-    ids: Vec<i64>,
+    tag: Vec<SelectBlogTag>,
 ) -> Result<MySqlQueryResult, sqlx::Error> {
     let mut query = String::from(
         r#"
-            INSERT INTO m_blogtag(blogId, tagId)
+            INSERT INTO m_blogtag(blogId, tagId, sort)
             VALUES
         "#,
     );
 
-    for item in ids.clone() {
-        query.push_str(format!("({}, {}),", blog_id, item).as_str());
+    for item in tag.clone() {
+        query.push_str(format!("({}, {}, {}),", blog_id, item.id, item.sort).as_str());
     }
     query.remove(query.len() - 1);
 
     let mut q = sqlx::query::<MySql>(query.as_str());
 
-    for item in ids {
-        q = q.bind(item);
+    for item in tag {
+        q = q.bind(item.id);
+    }
+
+    q.execute(tran).await
+}
+
+pub async fn update_batch_blog_tag_by_ids(
+    tran: &mut Transaction<'_, MySql>,
+    blog_id: i64,
+    tag: Vec<SelectBlogTag>,
+) -> Result<MySqlQueryResult, sqlx::Error> {
+    let mut query = String::from(
+        r#"
+            UPDATE m_blogtag
+            SET sort = CASE tagId
+        "#,
+    );
+
+    for item in &tag {
+        query.push_str(format!("WHEN {} THEN {} ", item.id, item.sort).as_str());
+    }
+
+    query.push_str(" END ");
+    query.push_str(
+        format!(
+            "WHERE blogId = {} AND tagId IN ({})",
+            blog_id,
+            build_what_sql_by_num(tag.len()).await
+        )
+        .as_str(),
+    );
+
+    let mut q = sqlx::query::<MySql>(query.as_str());
+
+    for item in tag {
+        q = q.bind(item.id);
     }
 
     q.execute(tran).await

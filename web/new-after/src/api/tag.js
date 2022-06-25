@@ -38,5 +38,12 @@ export default {
       url: 'tag/exist/' + name,
       method: 'GET'
     })
+  },
+  getIdsByNames(names) {
+    return request({
+      url: 'tag/ids',
+      method: 'POST',
+      data: names
+    })
   }
 }

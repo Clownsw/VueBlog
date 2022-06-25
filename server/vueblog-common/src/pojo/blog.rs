@@ -1,6 +1,6 @@
 use super::{
     sort::SelectSortWithBlog,
-    tag::{SelectBlogOther, SelectTag},
+    tag::{SelectBlogOther, SelectBlogTag},
 };
 use chrono::NaiveDateTime;
 use rustc_hash::FxHashMap;
@@ -101,7 +101,7 @@ pub struct RequestBlog {
     pub title: String,
     pub description: String,
     pub content: String,
-    pub tag: Vec<SelectTag>,
+    pub tag: Vec<SelectBlogTag>,
 }
 
 /**

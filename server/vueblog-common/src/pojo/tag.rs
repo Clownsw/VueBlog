@@ -1,9 +1,25 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, sqlx::FromRow)]
 pub struct SelectTag {
     pub id: i64,
     pub name: String,
+}
+
+impl SelectTag {
+    pub fn new() -> Self {
+        Self {
+            id: -1,
+            name: String::new(),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct SelectBlogTag {
+    pub id: i64,
+    pub name: String,
+    pub sort: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
