@@ -1,13 +1,22 @@
-# vueblog
-一个博客项目(玩具), 目前处于重度开发中
+# VueBlog
+一个极简风格的个人博客系统。
+
+## 特点
+- 高性能
+- 低占用
+- 易使用
+- 高稳定
+
+## 技术架构
+Rust + Actix Web + Sqlx + MySQL + Redis + Vue.js
 
 ## 功能
-- 用户管理
 - 文章管理
 - 分类管理
 - 标签管理
 - 评论系统(Vuline + LeanCloud)
 - 关于我
+- 备份管理(将数据库备份到又拍云OSS)
 - 系统管理
 
 ## example
