@@ -18,7 +18,7 @@ use vueblog_common::{
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
         me_controller::{me, me_update},
-        other_controller::{generate_captcha_code, transactional_test},
+        other_controller::generate_captcha_code,
         sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
         system_controller::{page_footer, system_info, system_update},
         tag_controller::{
@@ -152,7 +152,6 @@ async fn main() -> std::io::Result<()> {
             .service(backup_buy)
             .service(statistics)
             .service(statistics_blog)
-            .service(transactional_test)
             .default_service(
                 web::route()
                     .guard(guard::Not(guard::Get()))
