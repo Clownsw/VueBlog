@@ -121,14 +121,17 @@ export default {
               names.push(this.tags[i].name)
             }
 
-            let resp = await tagApi.getIdsByNames(names)
+            if (names.length > 0) {
 
-            for (let i = 0; i < this.tags.length; i++) {
-              this.tags[i].sort = i
-              
-              for (let j = 0; j < resp.data.length; j++) {
-                if (this.tags[i].name === resp.data[j].name) {
-                  this.tags[i].id = resp.data[j].id
+              let resp = await tagApi.getIdsByNames(names)
+
+              for (let i = 0; i < this.tags.length; i++) {
+                this.tags[i].sort = i
+
+                for (let j = 0; j < resp.data.length; j++) {
+                  if (this.tags[i].name === resp.data[j].name) {
+                    this.tags[i].id = resp.data[j].id
+                  }
                 }
               }
             }

@@ -1,4 +1,5 @@
 use chrono::Utc;
+use log::error;
 use sqlx::MySqlPool;
 
 use crate::{
@@ -106,14 +107,12 @@ pub async fn blog_update_service(
                 }
             }
         } else {
-            if sql_run_is_success(
-                delete_blog_all_tag_by_blog_id(&db_pool, request_blog.id.unwrap()).await,
-            )
-            .await
+            if let Err(e) = delete_blog_all_tag_by_blog_id(&db_pool, request_blog.id.unwrap()).await
             {
-                transactional.commit().await.unwrap();
-                return true;
+                error!("{}", e);
             }
+            transactional.commit().await.unwrap();
+            return true;
         }
     }
 
