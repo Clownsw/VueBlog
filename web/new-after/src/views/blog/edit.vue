@@ -115,35 +115,15 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
 
-          let r = async () => {
-            let names = []
-            for (let i = 0; i < this.tags.length; i++) {
-              names.push(this.tags[i].name)
-            }
-
-            if (names.length > 0) {
-
-              let resp = await tagApi.getIdsByNames(names)
-
-              for (let i = 0; i < this.tags.length; i++) {
-                this.tags[i].sort = i
-
-                for (let j = 0; j < resp.data.length; j++) {
-                  if (this.tags[i].name === resp.data[j].name) {
-                    this.tags[i].id = resp.data[j].id
-                  }
-                }
-              }
-            }
-
-            if (this.id === -1) {
-              this.addBlog()
-            } else {
-              this.updateBlog();
-            }
+          for (let i = 0; i < this.tags.length; i++) {
+            this.tags[i].sort = i
           }
 
-          r().then(() => { })
+          if (this.id === -1) {
+            this.addBlog()
+          } else {
+            this.updateBlog();
+          }
 
         } else {
           return false;

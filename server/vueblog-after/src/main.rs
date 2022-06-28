@@ -7,7 +7,6 @@ use sqlx::{MySqlPool, Pool};
 
 use vueblog_common::controller::backup_controller::backup_buy;
 use vueblog_common::controller::statistics_controller::{statistics, statistics_blog};
-use vueblog_common::controller::tag_controller::tag_get_tags_by_names;
 use vueblog_common::util::schedule_task::build_view_count;
 use vueblog_common::{
     config::global_config::init_global_config,
@@ -140,7 +139,6 @@ async fn main() -> std::io::Result<()> {
             .service(tags_blog)
             .service(tag_id_by_name)
             .service(tag_is_exist)
-            .service(tag_get_tags_by_names)
             .service(sort_list)
             .service(sort_remove)
             .service(sort_add)
