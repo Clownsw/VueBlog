@@ -3,7 +3,7 @@ use crate::{
         blog_tag_dao::delete_all_blog_by_tag_id,
         tag_dao::{
             delete_by_id, insert_tag, select_all, select_all_by_blog_id, select_id_by_name,
-            select_tags_by_names, update_by_id,
+            update_by_id,
         },
     },
     pojo::{
@@ -13,8 +13,8 @@ use crate::{
     },
     util::{
         common_util::{
-            build_response_baq_request, build_response_baq_request_message, build_response_ok_data,
-            build_response_ok_message, security_interceptor_aop,
+            build_response_baq_request, build_response_ok_data, build_response_ok_message,
+            security_interceptor_aop,
         },
         error_util,
         sql_util::sql_run_is_success,
@@ -165,18 +165,4 @@ pub async fn tag_is_exist(path: web::Path<String>, data: web::Data<AppState>) ->
         Ok(_) => build_response_ok_data(true).await,
         _ => build_response_ok_data(false).await,
     }
-}
-
-/**
- * 批量通过名称获取ID
- */
-#[post("/tag/ids")]
-pub async fn tag_get_tags_by_names(body: String, data: web::Data<AppState>) -> impl Responder {
-    if let Ok(v) = serde_json::from_str::<Vec<String>>(body.as_str()) {
-        if let Ok(v) = select_tags_by_names(&data.db_pool, v).await {
-            return build_response_ok_data(v).await;
-        }
-    }
-
-    build_response_baq_request_message(String::from(error_util::ERROR)).await
 }

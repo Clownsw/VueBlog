@@ -1,11 +1,8 @@
-use crate::{
-    pojo::{
-        other::SelectCount,
-        tag::{InsertTag, SelectBlogOther, SelectTag, UpdateTag},
-    },
-    util::sql_util::build_what_sql_by_num,
+use crate::pojo::{
+    other::SelectCount,
+    tag::{InsertTag, SelectBlogOther, SelectTag, UpdateTag},
 };
-use sqlx::{mysql::MySqlQueryResult, MySql, MySqlPool};
+use sqlx::{mysql::MySqlQueryResult, MySqlPool};
 
 /**
  * 查询所有标签
@@ -141,25 +138,4 @@ pub async fn delete_blog_all_tag_by_blog_id(
     )
     .execute(db_pool)
     .await
-}
-
-pub async fn select_tags_by_names(
-    db_pool: &MySqlPool,
-    names: Vec<String>,
-) -> Result<Vec<SelectTag>, sqlx::Error> {
-    let query = String::from(format!(
-        r#"
-            SELECT * FROM m_tag
-            WHERE `name` IN ({})
-        "#,
-        build_what_sql_by_num(names.len()).await
-    ));
-
-    let mut q = sqlx::query_as::<MySql, SelectTag>(query.as_str());
-
-    for item in names {
-        q = q.bind(item);
-    }
-
-    q.fetch_all(db_pool).await
 }
