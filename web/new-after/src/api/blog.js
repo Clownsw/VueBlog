@@ -33,5 +33,11 @@ export default {
       method: 'POST',
       data: ids
     })
+  },
+  getBlogKeyById(id) {
+    return request({
+      url: '/blog/key/' + id,
+      method: 'GET'
+    })
   }
 }

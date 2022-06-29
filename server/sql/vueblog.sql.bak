@@ -70,6 +70,7 @@ CREATE TABLE `m_blogtag`  (
   `sort` bigint NULL DEFAULT 0
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
+
 -- ----------------------------
 -- Table structure for m_friend
 -- ----------------------------

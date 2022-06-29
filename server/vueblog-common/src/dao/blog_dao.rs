@@ -2,7 +2,7 @@ use crate::{
     pojo::{
         blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog, SelectShowListBlog},
         sort::SelectSortWithBlog,
-        tag::SelectBlogOther, other::SelectCount,
+        tag::SelectBlogOther, other::SelectCount, key::{UpdateBlogKey, SelectBlogKey},
     },
     util::{
         common_util::{columns_to_map, parse_string_to_parse_vec, parse_string_to_string_vec, parse_sql_row_string},
@@ -176,6 +176,21 @@ pub async fn get_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlog, 
     .await
 }
 
+/**
+ * 通过ID获取指定文章秘钥
+ */
+pub async fn get_blog_key_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlogKey, sqlx::Error> {
+    sqlx::query_as!(
+        SelectBlogKey,
+        r#"
+            SELECT * FROM m_blog_key WHERE id = ?
+        "#,
+        blog_id
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
 pub async fn get_by_id_with_sort_and_tag(
     db_pool: &MySqlPool,
     blog_id: i64,
@@ -311,13 +326,29 @@ pub async fn update_blog_by_id(
 ) -> Result<MySqlQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
-            UPDATE m_blog SET title = ?, description = ?, content = ?, sort_id = ? WHERE id = ?
+            UPDATE m_blog SET title = ?, description = ?, content = ?, sort_id = ?, status = ? WHERE id = ?
         "#,
         update_blog.title,
         update_blog.description,
         update_blog.content,
         update_blog.sort_id,
+        update_blog.status,
         update_blog.id
+    )
+    .execute(db_pool)
+    .await
+}
+
+/**
+ * 更新博文秘钥
+ */
+pub async fn update_blog_key_by_id(db_pool: &MySqlPool, update_blog_key: UpdateBlogKey) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            REPLACE INTO m_blog_key(id, `key`) VALUES(?, ?)
+        "#,
+        update_blog_key.id,
+        update_blog_key.key
     )
     .execute(db_pool)
     .await

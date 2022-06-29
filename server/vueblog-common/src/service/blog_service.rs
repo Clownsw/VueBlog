@@ -4,7 +4,7 @@ use sqlx::MySqlPool;
 
 use crate::{
     dao::{
-        blog_dao::{add_blog_tran, get_by_id, update_blog_by_id},
+        blog_dao::{add_blog_tran, get_by_id, update_blog_by_id, update_blog_key_by_id},
         blog_tag_dao::{
             add_blog_tag_by_ids_tran, delete_blog_tag_by_tag_ids_tran, update_batch_blog_tag_by_ids,
         },
@@ -13,6 +13,7 @@ use crate::{
     },
     pojo::{
         blog::{InsertBlog, RequestBlog, UpdateBlog},
+        key::UpdateBlogKey,
         tag::SelectBlogTag,
     },
     util::{common_util::get_del_and_add_and_default_vec, sql_util::sql_run_is_success},
@@ -93,12 +94,31 @@ pub async fn blog_update_service(
                     }
                 }
 
+                if let Some(v) = request_blog.key.clone() {
+                    if !sql_run_is_success(
+                        update_blog_key_by_id(
+                            &db_pool,
+                            UpdateBlogKey {
+                                id: request_blog.id.clone().unwrap(),
+                                key: v,
+                            },
+                        )
+                        .await,
+                    )
+                    .await
+                    {
+                        transactional.rollback().await.unwrap();
+                        return false;
+                    }
+                }
+
                 let update_blog = UpdateBlog {
                     id: request_blog.id.unwrap(),
                     sort_id: request_blog.sort_id,
                     title: request_blog.title,
                     content: request_blog.content,
                     description: request_blog.description,
+                    status: request_blog.status,
                 };
 
                 if sql_run_is_success(update_blog_by_id(&db_pool, update_blog).await).await {

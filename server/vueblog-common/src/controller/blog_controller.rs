@@ -2,9 +2,9 @@ use crate::{
     config::global_config::GLOBAL_CONFIG,
     dao::{
         blog_dao::{
-            delete_by_ids, get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
-            select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
-            select_tag_all_count,
+            delete_by_ids, get_blog_key_by_id, get_by_id_with_sort_and_tag, select_all_count,
+            select_all_limit, select_all_limit_by_sort_id, select_all_limit_by_tag_id,
+            select_sort_all_count, select_tag_all_count,
         },
         staticstics_dao::blog_view_count_plus,
     },
@@ -21,6 +21,7 @@ use crate::{
             security_interceptor_aop,
         },
         error_util,
+        login_util::is_login_return,
         sql_util::sql_run_is_success,
     },
 };
@@ -71,16 +72,63 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
 }
 
 /**
+ * 获取指定文章的key
+ */
+#[get("/blog/key/{id}")]
+pub async fn blog_detail_key(
+    path: web::Path<i64>,
+    req: HttpRequest,
+    data: web::Data<AppState>,
+) -> impl Responder {
+    let id = path.into_inner();
+
+    security_interceptor_aop::<_, Void>(
+        move |app_state, _, _, _| {
+            let db_pool_clone = app_state.db_pool.clone();
+            
+            Box::pin(async move {
+                let mut key = String::new();
+                if let Ok(v) = get_blog_key_by_id(&db_pool_clone, id).await {
+                    key = v.key;
+                }
+
+                build_response_ok_data(key).await
+            })
+        },
+        &req,
+        &data,
+        None,
+        None,
+    )
+    .await
+}
+
+/**
  * 查询文章
  */
 #[get("/blog/{id}")]
-pub async fn blog_detail(path: web::Path<i64>, data: web::Data<AppState>) -> impl Responder {
+pub async fn blog_detail(
+    path: web::Path<i64>,
+    req: HttpRequest,
+    data: web::Data<AppState>,
+) -> impl Responder {
     let id = path.into_inner();
 
+    let is_login = is_login_return(&req, &data.db_pool).await.1 == None;
+
     match get_by_id_with_sort_and_tag(&data.db_pool, id).await {
-        Ok(v) => {
+        Ok(mut v) => {
             let mut conn = data.redis_pool.get().await.unwrap();
             blog_view_count_plus(&mut conn).await;
+
+            // 博文开启了加密
+            if v.status == 1 {
+                // 如果不是来自后台 则清空内容
+                if !is_login {
+                    v.content = String::new();
+                }
+            }
+
             build_response_ok_data(v).await
         }
         Err(_) => {

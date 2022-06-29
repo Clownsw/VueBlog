@@ -29,6 +29,12 @@
       <el-table-column prop="description" label="描述" show-overflow-tooltip align="center">
       </el-table-column>
 
+      <el-table-column prop="status" label="状态" width="180" show-overflow-tooltip align="center">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.status === 0 ? 'success' : 'danger'">{{ scope.row.status === 0 ? '未加密' : '已加密' }}</el-tag>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="created" label="创建时间" width="230" show-overflow-tooltip align="center">
       </el-table-column>
 
