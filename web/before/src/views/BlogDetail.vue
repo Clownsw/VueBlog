@@ -23,7 +23,8 @@
       </div>
 
       <el-divider />
-      <mavon-editor v-viewer="viewerOptions" ref="markdown"
+      <el-empty v-if="blog.status === 1" description="该文章已加密!"></el-empty>
+      <mavon-editor v-else v-viewer="viewerOptions" ref="markdown"
                     :subfield="false"
                     :editable="false"
                     :defaultOpen="'preview'"

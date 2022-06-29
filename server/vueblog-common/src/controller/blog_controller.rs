@@ -2,9 +2,10 @@ use crate::{
     config::global_config::GLOBAL_CONFIG,
     dao::{
         blog_dao::{
-            delete_by_ids, get_blog_key_by_id, get_by_id_with_sort_and_tag, select_all_count,
-            select_all_limit, select_all_limit_by_sort_id, select_all_limit_by_tag_id,
-            select_sort_all_count, select_tag_all_count,
+            delete_by_ids_tran, delete_key_by_ids_tran, get_blog_key_by_id,
+            get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
+            select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
+            select_tag_all_count,
         },
         staticstics_dao::blog_view_count_plus,
     },
@@ -85,12 +86,12 @@ pub async fn blog_detail_key(
     security_interceptor_aop::<_, Void>(
         move |app_state, _, _, _| {
             let db_pool_clone = app_state.db_pool.clone();
-            
+
             Box::pin(async move {
-                let mut key = String::new();
-                if let Ok(v) = get_blog_key_by_id(&db_pool_clone, id).await {
-                    key = v.key;
-                }
+                let key = match get_blog_key_by_id(&db_pool_clone, id).await {
+                    Ok(v) => Some(v),
+                    _ => None,
+                };
 
                 build_response_ok_data(key).await
             })
@@ -125,7 +126,6 @@ pub async fn blog_detail(
             if v.status == 1 {
                 // 如果不是来自后台 则清空内容
                 if !is_login {
-                    v.title = String::from("该文章已加密");
                     v.content = String::new();
                 }
             }
@@ -314,10 +314,22 @@ pub async fn blog_deletes(
             Box::pin(async move {
                 let ids: Vec<i64> = serde_json::from_str(body.as_str()).unwrap();
 
-                if sql_run_is_success(delete_by_ids(&db_pool_clone, ids).await).await {
-                    return build_response_ok_message(String::from(error_util::SUCCESS)).await;
+                let mut transaction = db_pool_clone.begin().await.unwrap();
+
+                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await)
+                    .await
+                    || !sql_run_is_success(delete_key_by_ids_tran(&mut transaction, ids).await)
+                        .await
+                {
+                    transaction.rollback().await.unwrap();
+                    return build_response_baq_request_message(String::from(
+                        error_util::ERROR_UNKNOWN,
+                    ))
+                    .await;
                 }
-                build_response_baq_request_message(String::from(error_util::ERROR_UNKNOWN)).await
+
+                transaction.commit().await.unwrap();
+                build_response_ok_message(String::from(error_util::SUCCESS)).await
             })
         },
         &req,

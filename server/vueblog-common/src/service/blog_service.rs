@@ -1,10 +1,10 @@
-use chrono::Utc;
+use chrono::Local;
 use log::error;
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool, Transaction};
 
 use crate::{
     dao::{
-        blog_dao::{add_blog_tran, get_by_id, update_blog_by_id, update_blog_key_by_id},
+        blog_dao::{add_blog_tran, get_by_id, update_blog_by_id, update_blog_key_by_id_tran},
         blog_tag_dao::{
             add_blog_tag_by_ids_tran, delete_blog_tag_by_tag_ids_tran, update_batch_blog_tag_by_ids,
         },
@@ -18,6 +18,16 @@ use crate::{
     },
     util::{common_util::get_del_and_add_and_default_vec, sql_util::sql_run_is_success},
 };
+
+pub async fn update_blog_key_by_id_tran_service(
+    tran: &mut Transaction<'_, MySql>,
+    id: i64,
+    title: String,
+    key: String,
+) -> bool {
+    sql_run_is_success(update_blog_key_by_id_tran(tran, UpdateBlogKey { id, title, key }).await)
+        .await
+}
 
 /**
  * 更新博客
@@ -94,16 +104,18 @@ pub async fn blog_update_service(
                     }
                 }
 
-                if let Some(v) = request_blog.key.clone() {
-                    if !sql_run_is_success(
-                        update_blog_key_by_id(
-                            &db_pool,
-                            UpdateBlogKey {
-                                id: request_blog.id.clone().unwrap(),
-                                key: v,
-                            },
-                        )
-                        .await,
+                if request_blog.key != None || request_blog.key_title != None {
+                    if !update_blog_key_by_id_tran_service(
+                        &mut transactional,
+                        request_blog.id.clone().unwrap(),
+                        match request_blog.key_title.clone() {
+                            Some(v) => v,
+                            _ => String::new(),
+                        },
+                        match request_blog.key.clone() {
+                            Some(v) => v,
+                            _ => String::new(),
+                        },
                     )
                     .await
                     {
@@ -156,12 +168,32 @@ pub async fn blog_add_service(
         title: request_blog.title,
         description: request_blog.description,
         content: request_blog.content,
-        created: Utc::now().naive_utc(),
-        status: 0,
+        created: Local::now().naive_local(),
+        status: request_blog.status,
     };
 
     if sql_run_is_success(add_blog_tran(&mut transactional, insert_blog).await).await {
         let id = last_insert_id(&mut transactional).await.unwrap();
+
+        if request_blog.key != None || request_blog.key_title != None {
+            if !update_blog_key_by_id_tran_service(
+                &mut transactional,
+                id as i64,
+                match request_blog.key_title.clone() {
+                    Some(v) => v,
+                    _ => String::new(),
+                },
+                match request_blog.key.clone() {
+                    Some(v) => v,
+                    _ => String::new(),
+                },
+            )
+            .await
+            {
+                transactional.rollback().await.unwrap();
+                return false;
+            }
+        }
 
         if request_blog.tag.len() > 0 {
             sql_run_is_success(

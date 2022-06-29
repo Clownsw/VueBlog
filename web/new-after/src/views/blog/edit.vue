@@ -38,6 +38,10 @@
         <el-input v-model="key"></el-input>
       </el-form-item>
 
+      <el-form-item label="加密标题" prop="key" v-if="blog.status === 1">
+        <el-input v-model="key_title"></el-input>
+      </el-form-item>
+
       <el-form-item label="博文内容" prop="content">
         <mavon-editor :boxShadow="true" :code-style="'github-dark'" v-model="blog.content" class="blog-body">
         </mavon-editor>
@@ -97,6 +101,7 @@ export default {
       tags: [],
       sorts: [],
       key: '',
+      key_title: '',
       inputVisible: false,
       inputValue: ''
     }
@@ -109,7 +114,8 @@ export default {
 
         if (this.blog.status === 1) {
           blogApi.getBlogKeyById(this.blog.id).then(resp => {
-            this.key = resp.data
+            this.key = resp.data.key
+            this.key_title = resp.data.title
           })
         }
       })
@@ -160,7 +166,8 @@ export default {
         content: this.blog.content,
         tag: this.tags,
         status: this.blog.status,
-        key: this.key
+        key: this.key,
+        key_title: this.key_title
       }
 
       this.fetchBlogUpdateById(obj).then(resp => {
@@ -175,6 +182,9 @@ export default {
         description: this.blog.description,
         content: this.blog.content,
         tag: this.tags,
+        status: this.blog.status,
+        key: this.key,
+        key_title: this.key_title
       }
 
       this.fetchBlogAdd(obj).then(resp => {
@@ -247,7 +257,8 @@ export default {
     blog: {
       handler(newVal, oldVal) {
         if (this.blog.status === 0) {
-          this.blog.key = ''
+          this.key = ''
+          this.key_title = ''
         }
       },
       deep: true
@@ -269,7 +280,6 @@ export default {
 .tag {
   margin-right: 10px;
 }
-
 
 .blog-description {
   font-size: 13px;

@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 29/06/2022 15:41:06
+ Date: 30/06/2022 06:02:06
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,7 @@ CREATE TABLE `m_blog`  (
   `created` datetime NOT NULL,
   `status` tinyint NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_blog_key
@@ -39,14 +39,10 @@ CREATE TABLE `m_blog`  (
 DROP TABLE IF EXISTS `m_blog_key`;
 CREATE TABLE `m_blog_key`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '博文ID',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文被加密时， 显示标题',
   `key` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文秘钥',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 42 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of m_blog_key
--- ----------------------------
-INSERT INTO `m_blog_key` VALUES (41, 'test');
+) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for m_blog_statistics
@@ -98,8 +94,7 @@ CREATE TABLE `m_other`  (
 -- Records of m_other
 -- ----------------------------
 INSERT INTO `m_other` VALUES (1, 0, '关于我', '');
-INSERT INTO `m_other` VALUES (2, 1, '网页底部', '');
-INSERT INTO `m_other` VALUES (3, 3, '备份配置', '');
+INSERT INTO `m_other` VALUES (3, 3, '备份配置', '{\"username\":\"\",\"password\":\"\",\"operator\":\"\",\"operator_password\":\"\",\"bucket_name\":\"\"}');
 
 -- ----------------------------
 -- Table structure for m_sort
@@ -110,12 +105,14 @@ CREATE TABLE `m_sort`  (
   `order` int NOT NULL DEFAULT 0,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_sort
 -- ----------------------------
 INSERT INTO `m_sort` VALUES (1, 99, '综合');
+INSERT INTO `m_sort` VALUES (3, -1, '其他');
+INSERT INTO `m_sort` VALUES (14, 0, '加密');
 
 -- ----------------------------
 -- Table structure for m_system
@@ -127,7 +124,7 @@ CREATE TABLE `m_system`  (
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_system
@@ -158,11 +155,11 @@ CREATE TABLE `m_user`  (
   `created` datetime NOT NULL,
   `last_login` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_user
 -- ----------------------------
-INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-29 06:08:53');
+INSERT INTO `m_user` VALUES (1, 'xiaoxiao', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', 1, '2022-03-29 21:23:55', '2022-06-29 20:54:56');
 
 SET FOREIGN_KEY_CHECKS = 1;
