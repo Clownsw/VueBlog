@@ -35,7 +35,7 @@ pub async fn select_sort_all_count(db_pool: &MySqlPool, sort_id: i32) -> Result<
     sqlx::query_as!(
         SelectCountBlog,
         r#"
-        SELECT COUNT(1) as count FROM m_blog WHERE sort_id = ?
+            SELECT COUNT(1) as count FROM m_blog WHERE sort_id = ?
         "#,
         sort_id
     )

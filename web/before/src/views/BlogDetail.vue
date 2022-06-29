@@ -23,12 +23,16 @@
       </div>
 
       <el-divider />
-
-      <el-empty v-if="blog.status === 1" description="该文章已加密!"></el-empty>
-
-      <mavon-editor v-if="blog.status === 0" v-viewer="{ movable: false }" ref="markdown" :subfield="false"
-        :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" :boxShadow="true" :code-style="'github-dark'"
-        :imageClick="handleImageClick" class="blog-body" v-model="blog.content" />
+      <mavon-editor v-viewer="viewerOptions" ref="markdown"
+                    :subfield="false"
+                    :editable="false"
+                    :defaultOpen="'preview'"
+                    :toolbarsFlag="false"
+                    :boxShadow="true"
+                    :code-style="'github-dark'"
+                    :imageClick="handleImageClick"
+                    class="blog-body"
+                    v-model="blog.content"/>
     </div>
 
     <Valine />
@@ -43,6 +47,12 @@ export default {
   name: "BlogDetail",
   data() {
     return {
+      viewerOptions: {
+        filter (image) {
+          return !!image.closest(".v-note-show")
+        },
+        movable: false,
+      },
       blog: {
         sort: {
           id: 0
