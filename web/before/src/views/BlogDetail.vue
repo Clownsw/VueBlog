@@ -24,16 +24,11 @@
 
       <el-divider />
 
-      <mavon-editor v-viewer="{ movable: false }" ref="markdown"
-                    :subfield="false"
-                    :editable="false"
-                    :defaultOpen="'preview'"
-                    :toolbarsFlag="false"
-                    :boxShadow="true"
-                    :code-style="'github-dark'"
-                    :imageClick="handleImageClick"
-                    class="blog-body"
-                    v-model="blog.content"/>
+      <el-empty v-if="blog.status === 1" description="该文章已加密!"></el-empty>
+
+      <mavon-editor v-if="blog.status === 0" v-viewer="{ movable: false }" ref="markdown" :subfield="false"
+        :editable="false" :defaultOpen="'preview'" :toolbarsFlag="false" :boxShadow="true" :code-style="'github-dark'"
+        :imageClick="handleImageClick" class="blog-body" v-model="blog.content" />
     </div>
 
     <Valine />
@@ -58,6 +53,7 @@ export default {
       onShow: false,
       systemInfo: this.$store.getters.getSystemInfo,
       loading: null,
+      key: ''
     };
   },
   methods: {
@@ -100,10 +96,12 @@ export default {
           this.$router.push('/blogs')
         }
 
-      })
-      .catch(error => {
+        if (this.blog.status === 1) {
+          this.$message.error('该文章已加密!')
+        }
+      }).catch(() => {
         this.$router.push("/blogs");
-      });
+      })
     } else {
       this.$router.push("/blogs");
     }

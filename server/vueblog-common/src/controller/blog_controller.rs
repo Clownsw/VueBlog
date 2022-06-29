@@ -125,6 +125,7 @@ pub async fn blog_detail(
             if v.status == 1 {
                 // 如果不是来自后台 则清空内容
                 if !is_login {
+                    v.title = String::from("该文章已加密");
                     v.content = String::new();
                 }
             }
