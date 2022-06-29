@@ -24,7 +24,7 @@
 
       <el-divider />
 
-      <mavon-editor v-viewer="{ movable: false }" ref="markdown"
+      <mavon-editor v-viewer="viewerOptions" ref="markdown"
                     :subfield="false"
                     :editable="false"
                     :defaultOpen="'preview'"
@@ -48,6 +48,12 @@ export default {
   name: "BlogDetail",
   data() {
     return {
+      viewerOptions: {
+        filter (image) {
+          return !!image.closest(".v-note-show")
+        },
+        movable: false,
+      },
       blog: {
         sort: {
           id: 0
