@@ -12,6 +12,8 @@ Rust + Actix Web + Sqlx + MySQL + Redis + Vue.js
 
 ## 功能
 - 文章管理
+	- 普通文章
+	- 加密文章
 - 分类管理
 - 标签管理
 - 评论系统(Vuline + LeanCloud)
