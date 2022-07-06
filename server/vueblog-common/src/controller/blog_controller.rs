@@ -44,11 +44,14 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
         }
     }
 
+    let is_login = None == is_login_return(&req, &data.db_pool).await.1;
+
     let blogs = unsafe {
         select_all_limit(
             &data.db_pool,
             (current - 1) * GLOBAL_CONFIG.blog_limit_num,
             GLOBAL_CONFIG.blog_limit_num,
+            is_login,
         )
         .await
     };

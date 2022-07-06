@@ -86,42 +86,51 @@ pub async fn select_all_limit(
     db_pool: &MySqlPool,
     limit: i64,
     size: i64,
+    is_login: bool,
 ) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
+    let status_query_str = match is_login {
+        true => "",
+        false => r#"
+            WHERE
+                blog.status = 0
+        "#
+    };
     sqlx::query::<MySql>(
-        r#"
+        format!(r#"
+        SELECT
+            blog.id,
+            blog.user_id,
+            blog.sort_id,
+            blog.title,
+            blog.description,
+            blog.created,
+            blog.status AS status,
+            sort.NAME AS sort_name,
+            sort.order AS sort_order,
+            (
                 SELECT
-                    blog.id,
-                    blog.user_id,
-                    blog.sort_id,
-                    blog.title,
-                    blog.description,
-                    blog.created,
-                    blog.status AS status,
-                    sort.NAME AS sort_name,
-                    sort.order AS sort_order,
-                    (
-                        SELECT
-                            GROUP_CONCAT( `id` ORDER BY mbt.sort ) 
-                        FROM
-                            m_tag AS tag
-                            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
-                    ) AS 'tag_ids',
-                    (
-                        SELECT
-                            GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
-                        FROM
-                            m_tag AS tag
-                            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
-                    ) AS 'tag_names'
-                    FROM
-                        m_blog AS blog
-                        LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id 
-                    WHERE
-                        blog.status = 0
-                    ORDER BY
-                        created DESC 
-                        LIMIT ?, ?
-            "#,
+                    GROUP_CONCAT( `id` ORDER BY mbt.sort ) 
+                FROM
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+            ) AS 'tag_ids',
+            (
+                SELECT
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
+                FROM
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+            ) AS 'tag_names'
+            FROM
+                m_blog AS blog
+                LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+            
+            {}
+
+            ORDER BY
+                created DESC 
+                LIMIT ?, ?
+    "#, status_query_str).as_str(),
     )
     .bind(limit)
     .bind(size)
