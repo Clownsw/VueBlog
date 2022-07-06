@@ -2,7 +2,7 @@ use crate::{
     config::global_config::GLOBAL_CONFIG,
     dao::{
         blog_dao::{
-            delete_by_ids_tran, delete_key_by_ids_tran, get_blog_key_by_id,
+            delete_by_ids_tran, delete_key_by_ids_tran, get_blog_key_by_id, get_by_id_and_key,
             get_by_id_with_sort_and_tag, select_all_count, select_all_limit,
             select_all_limit_by_sort_id, select_all_limit_by_tag_id, select_sort_all_count,
             select_tag_all_count,
@@ -76,7 +76,23 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
 }
 
 /**
- * 获取指定文章的key
+ * 通过文章ID和key查询文章
+ */
+#[get("/blog/key/{id}/{key}")]
+pub async fn blog_detail_id_key(
+    path: web::Path<(i64, String)>,
+    data: web::Data<AppState>,
+) -> impl Responder {
+    let (id, key) = path.into_inner();
+
+    match get_by_id_and_key(&data.db_pool, id, key.as_str()).await {
+        Ok(v) => build_response_ok_data(v).await,
+        _ => build_response_baq_request_message(String::from(error_util::ERROR)).await,
+    }
+}
+
+/**
+ * 通过文章ID获取key
  */
 #[get("/blog/key/{id}")]
 pub async fn blog_detail_key(
@@ -91,12 +107,10 @@ pub async fn blog_detail_key(
             let db_pool_clone = app_state.db_pool.clone();
 
             Box::pin(async move {
-                let key = match get_blog_key_by_id(&db_pool_clone, id).await {
-                    Ok(v) => Some(v),
-                    _ => None,
-                };
-
-                build_response_ok_data(key).await
+                match get_blog_key_by_id(&db_pool_clone, id).await {
+                    Ok(v) => build_response_ok_data(v).await,
+                    _ => build_response_baq_request_message(String::from(error_util::ERROR)).await,
+                }
             })
         },
         &req,

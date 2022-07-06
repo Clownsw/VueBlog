@@ -51,9 +51,12 @@
     </el-table>
 
     <div class="limit">
-      <el-pagination background layout="prev, pager, next" :page-size="size" :currnet-page="current" :total="total"
+      <el-pagination background layout="prev, pager, next"
+        :page-size="size"
+        :currnet-page="current" 
+        :total="total"
         @current-change=getBlogs>
-      </el-pagination>
+        </el-pagination>
     </div>
   </div>
 </template>

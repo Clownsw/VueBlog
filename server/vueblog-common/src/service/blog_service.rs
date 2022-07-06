@@ -103,49 +103,47 @@ pub async fn blog_update_service(
                         return false;
                     }
                 }
-
-                if request_blog.key != None || request_blog.key_title != None {
-                    if !update_blog_key_by_id_tran_service(
-                        &mut transactional,
-                        request_blog.id.clone().unwrap(),
-                        match request_blog.key_title.clone() {
-                            Some(v) => v,
-                            _ => String::new(),
-                        },
-                        match request_blog.key.clone() {
-                            Some(v) => v,
-                            _ => String::new(),
-                        },
-                    )
-                    .await
-                    {
-                        transactional.rollback().await.unwrap();
-                        return false;
-                    }
-                }
-
-                let update_blog = UpdateBlog {
-                    id: request_blog.id.unwrap(),
-                    sort_id: request_blog.sort_id,
-                    title: request_blog.title,
-                    content: request_blog.content,
-                    description: request_blog.description,
-                    status: request_blog.status,
-                };
-
-                if sql_run_is_success(update_blog_by_id(&db_pool, update_blog).await).await {
-                    transactional.commit().await.unwrap();
-                    return true;
-                }
             }
         } else {
             if let Err(e) = delete_blog_all_tag_by_blog_id(&db_pool, request_blog.id.unwrap()).await
             {
                 error!("{}", e);
             }
-            transactional.commit().await.unwrap();
-            return true;
         }
+    }
+
+    if request_blog.key != None || request_blog.key_title != None {
+        if !update_blog_key_by_id_tran_service(
+            &mut transactional,
+            request_blog.id.clone().unwrap(),
+            match request_blog.key_title.clone() {
+                Some(v) => v,
+                _ => String::new(),
+            },
+            match request_blog.key.clone() {
+                Some(v) => v,
+                _ => String::new(),
+            },
+        )
+        .await
+        {
+            transactional.rollback().await.unwrap();
+            return false;
+        }
+    }
+
+    let update_blog = UpdateBlog {
+        id: request_blog.id.unwrap(),
+        sort_id: request_blog.sort_id,
+        title: request_blog.title,
+        content: request_blog.content,
+        description: request_blog.description,
+        status: request_blog.status,
+    };
+
+    if sql_run_is_success(update_blog_by_id(&db_pool, update_blog).await).await {
+        transactional.commit().await.unwrap();
+        return true;
     }
 
     transactional.rollback().await.unwrap();

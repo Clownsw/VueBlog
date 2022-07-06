@@ -23,7 +23,9 @@
       </div>
 
       <el-divider />
-      <el-empty v-if="blog.status === 1" description="该文章已加密!"></el-empty>
+      <el-empty v-if="blog.status === 1" description="该文章已加密!">
+        <el-input v-model="key" placeholder="输入秘钥" @keyup.enter.native="handlerInputKey"></el-input>
+      </el-empty>
       <mavon-editor v-else v-viewer="viewerOptions" ref="markdown"
                     :subfield="false"
                     :editable="false"
@@ -74,6 +76,21 @@ export default {
     parseStrToDate(str) {
       return new Date(str).toLocaleString()
     },
+    handlerInputKey() {
+      if (this.key !== '' && this.key.length <= 100) {
+        this.$axios.get(`blog/key/${this.blog.id}/${this.key}`)
+        .then(resp => {
+          this.blog.title = resp.data.data.title
+          this.blog.content = resp.data.data.content
+          this.blog.status = 0
+
+          document.title = this.blog.title + ' - ' + this.systemInfo.title;
+        })
+        .catch(err => {
+          this.$message.error('秘钥错误!')
+        })
+      }
+    }
   },
   components: {
     Header,

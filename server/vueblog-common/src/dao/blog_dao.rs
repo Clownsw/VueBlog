@@ -190,6 +190,28 @@ pub async fn get_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlog, 
 }
 
 /**
+ * 通过ID和key查询文章
+ */
+pub async fn get_by_id_and_key(db_pool: &MySqlPool, blog_id: i64, key: &str) -> Result<SelectBlog, sqlx::Error> {
+    sqlx::query_as!(
+        SelectBlog,
+        r#"
+            SELECT 
+                blog.*
+            FROM 
+                m_blog AS blog
+            LEFT JOIN m_blog_key AS mbk ON blog.id = mbk.id  
+            WHERE 
+                blog.id = ? AND mbk.`key` = ?
+        "#,
+        blog_id,
+        key
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
+/**
  * 通过ID获取指定文章秘钥
  */
 pub async fn get_blog_key_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlogKey, sqlx::Error> {
