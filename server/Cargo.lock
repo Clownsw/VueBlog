@@ -3312,7 +3312,7 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "vueblog-after"
-version = "0.7.8"
+version = "0.7.9"
 dependencies = [
  "actix-cors",
  "actix-web",
@@ -3328,7 +3328,7 @@ dependencies = [
 
 [[package]]
 name = "vueblog-before"
-version = "0.7.8"
+version = "0.7.9"
 dependencies = [
  "actix-cors",
  "actix-web",
@@ -3344,7 +3344,7 @@ dependencies = [
 
 [[package]]
 name = "vueblog-common"
-version = "0.7.8"
+version = "0.7.9"
 dependencies = [
  "actix-web",
  "anyhow",

@@ -1,8 +1,8 @@
 {
-  "name": "vueblog-admin-manager",
-  "version": "0.7.7",
+  "name": "after",
+  "version": "0.7.9",
   "license": "MIT",
-  "description": "vueblog-admin-manager",
+  "description": "after",
   "author": "smilex <msmliexx1@gmail.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
