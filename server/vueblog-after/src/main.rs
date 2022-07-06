@@ -5,20 +5,18 @@ use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
-use vueblog_common::controller::backup_controller::backup_buy;
-use vueblog_common::controller::statistics_controller::{statistics, statistics_blog};
-use vueblog_common::util::schedule_task::build_view_count;
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
-        backup_controller::{backup_info, backup_update},
-        blog_controller::{blog_deletes, blog_detail, blog_edit, blog_list},
+        backup_controller::{backup_buy, backup_info, backup_update},
+        blog_controller::{blog_deletes, blog_detail, blog_detail_key, blog_edit, blog_list},
         default_controller::not_found_page,
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
         me_controller::{me, me_update},
         other_controller::generate_captcha_code,
         sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
+        statistics_controller::{statistics, statistics_blog},
         system_controller::{page_footer, system_info, system_update},
         tag_controller::{
             tag_add, tag_all, tag_delete, tag_id_by_name, tag_is_exist, tag_update, tags_blog,
@@ -26,6 +24,7 @@ use vueblog_common::{
         user_controller::{all_user, user_add, user_deletes, user_info, user_update},
     },
     pojo::status::AppState,
+    util::schedule_task::build_view_count,
 };
 
 /**
@@ -116,6 +115,7 @@ async fn main() -> std::io::Result<()> {
             .service(blog_edit)
             .service(blog_detail)
             .service(blog_deletes)
+            .service(blog_detail_key)
             .service(login)
             .service(sign_token)
             .service(generate_captcha_code)

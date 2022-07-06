@@ -4,6 +4,7 @@ use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
+use vueblog_common::controller::blog_controller::blog_detail_id_key;
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
@@ -95,6 +96,7 @@ async fn main() -> std::io::Result<()> {
             }))
             .service(blog_list)
             .service(blog_detail)
+            .service(blog_detail_id_key)
             .service(blog_sort_list)
             .service(blog_tag_list)
             .service(me)

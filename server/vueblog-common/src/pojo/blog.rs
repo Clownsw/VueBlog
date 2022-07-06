@@ -102,6 +102,9 @@ pub struct RequestBlog {
     pub description: String,
     pub content: String,
     pub tag: Vec<SelectBlogTag>,
+    pub status: i8,
+    pub key: Option<String>,
+    pub key_title: Option<String>,
 }
 
 /**
@@ -128,4 +131,5 @@ pub struct UpdateBlog {
     pub title: String,
     pub description: String,
     pub content: String,
+    pub status: i8,
 }

@@ -29,6 +29,19 @@
         <el-button v-else class="button-new-tag" size="small" @click="showInput">添加新标签</el-button>
       </el-form-item>
 
+      <el-form-item label="博文状态" prop="status">
+        <el-radio v-model="blog.status" :label="0">未加密</el-radio>
+        <el-radio v-model="blog.status" :label="1">加密</el-radio>
+      </el-form-item>
+
+      <el-form-item label="加密秘钥" prop="key" v-if="blog.status === 1">
+        <el-input v-model="key"></el-input>
+      </el-form-item>
+
+      <el-form-item label="加密标题" prop="key" v-if="blog.status === 1">
+        <el-input v-model="key_title"></el-input>
+      </el-form-item>
+
       <el-form-item label="博文内容" prop="content">
         <mavon-editor :boxShadow="true" :code-style="'github-dark'" v-model="blog.content" class="blog-body">
         </mavon-editor>
@@ -63,7 +76,8 @@ export default {
         content: '',
         sort: {
           id: null
-        }
+        },
+        status: 0,
       },
       rules: {
         title: [
@@ -78,11 +92,16 @@ export default {
         ],
         sort: [
           { required: true, message: '请选择分类', trigger: 'blur' },
-        ]
+        ],
+        status: [
+          { required: true, message: '请输入博文内容', trigger: 'blur' },
+        ],
       },
       buttonName: '',
       tags: [],
       sorts: [],
+      key: '',
+      key_title: '',
       inputVisible: false,
       inputValue: ''
     }
@@ -92,6 +111,13 @@ export default {
       blogApi.getBlogById(id).then(resp => {
         this.blog = resp.data
         this.tags = resp.data.tags
+
+        if (this.blog.status === 1) {
+          blogApi.getBlogKeyById(this.blog.id).then(resp => {
+            this.key = resp.data.key
+            this.key_title = resp.data.title
+          })
+        }
       })
     },
     fetchBlogAdd(blog) {
@@ -139,6 +165,9 @@ export default {
         description: this.blog.description,
         content: this.blog.content,
         tag: this.tags,
+        status: this.blog.status,
+        key: this.key,
+        key_title: this.key_title
       }
 
       this.fetchBlogUpdateById(obj).then(resp => {
@@ -153,6 +182,9 @@ export default {
         description: this.blog.description,
         content: this.blog.content,
         tag: this.tags,
+        status: this.blog.status,
+        key: this.key,
+        key_title: this.key_title
       }
 
       this.fetchBlogAdd(obj).then(resp => {
@@ -221,6 +253,17 @@ export default {
       }
     }
   },
+  watch: {
+    blog: {
+      handler(newVal, oldVal) {
+        if (this.blog.status === 0) {
+          this.key = ''
+          this.key_title = ''
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     const isAdd = this.$route.name === 'BlogAdd'
     this.buttonName = isAdd ? '新增' : '修改'
@@ -237,7 +280,6 @@ export default {
 .tag {
   margin-right: 10px;
 }
-
 
 .blog-description {
   font-size: 13px;

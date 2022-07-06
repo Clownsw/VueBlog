@@ -2,7 +2,7 @@ use crate::{
     pojo::{
         blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog, SelectShowListBlog},
         sort::SelectSortWithBlog,
-        tag::SelectBlogOther, other::SelectCount,
+        tag::SelectBlogOther, other::SelectCount, key::{UpdateBlogKey, SelectBlogKey},
     },
     util::{
         common_util::{columns_to_map, parse_string_to_parse_vec, parse_string_to_string_vec, parse_sql_row_string},
@@ -21,7 +21,7 @@ pub async fn select_all_count(db_pool: &MySqlPool) -> Result<SelectCount, sqlx::
     sqlx::query_as!(
         SelectCount,
         r#"
-            SELECT COUNT(1) as count FROM m_blog
+            SELECT COUNT(1) as count FROM m_blog WHERE status = 0
         "#
     )
     .fetch_one(db_pool)
@@ -51,11 +51,13 @@ pub async fn select_tag_all_count(db_pool: &MySqlPool, tag_id: i64) -> Result<Se
         SelectCountBlog,
         r#"
             SELECT
-                COUNT( DISTINCT ( blogId ) ) AS count 
+                COUNT( DISTINCT ( mbt.blogId ) ) AS count 
             FROM
-                m_blogtag 
+                m_blogtag AS mbt
+                LEFT JOIN m_blog mb ON mb.id = mbt.blogId 
             WHERE
-                tagId = ?
+                mbt.tagId = ? 
+                AND mb.`status` = 0
         "#,
         tag_id
     )
@@ -84,40 +86,51 @@ pub async fn select_all_limit(
     db_pool: &MySqlPool,
     limit: i64,
     size: i64,
+    is_login: bool,
 ) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
+    let status_query_str = match is_login {
+        true => "",
+        false => r#"
+            WHERE
+                blog.status = 0
+        "#
+    };
     sqlx::query::<MySql>(
-        r#"
+        format!(r#"
+        SELECT
+            blog.id,
+            blog.user_id,
+            blog.sort_id,
+            blog.title,
+            blog.description,
+            blog.created,
+            blog.status AS status,
+            sort.NAME AS sort_name,
+            sort.order AS sort_order,
+            (
                 SELECT
-                    blog.id,
-                    blog.user_id,
-                    blog.sort_id,
-                    blog.title,
-                    blog.description,
-                    blog.created,
-                    blog.status AS status,
-                    sort.NAME AS sort_name,
-                    sort.order AS sort_order,
-                    (
-                        SELECT
-                            GROUP_CONCAT( `id` ORDER BY mbt.sort ) 
-                        FROM
-                            m_tag AS tag
-                            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
-                    ) AS 'tag_ids',
-                    (
-                        SELECT
-                            GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
-                        FROM
-                            m_tag AS tag
-                            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
-                    ) AS 'tag_names'
-                    FROM
-                        m_blog AS blog
-                        LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id 
-                    ORDER BY
-                        created DESC 
-                        LIMIT ?, ?
-            "#,
+                    GROUP_CONCAT( `id` ORDER BY mbt.sort ) 
+                FROM
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+            ) AS 'tag_ids',
+            (
+                SELECT
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
+                FROM
+                    m_tag AS tag
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+            ) AS 'tag_names'
+            FROM
+                m_blog AS blog
+                LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+            
+            {}
+
+            ORDER BY
+                created DESC 
+                LIMIT ?, ?
+    "#, status_query_str).as_str(),
     )
     .bind(limit)
     .bind(size)
@@ -176,6 +189,43 @@ pub async fn get_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlog, 
     .await
 }
 
+/**
+ * 通过ID和key查询文章
+ */
+pub async fn get_by_id_and_key(db_pool: &MySqlPool, blog_id: i64, key: &str) -> Result<SelectBlog, sqlx::Error> {
+    sqlx::query_as!(
+        SelectBlog,
+        r#"
+            SELECT 
+                blog.*
+            FROM 
+                m_blog AS blog
+            LEFT JOIN m_blog_key AS mbk ON blog.id = mbk.id  
+            WHERE 
+                blog.id = ? AND mbk.`key` = ?
+        "#,
+        blog_id,
+        key
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
+/**
+ * 通过ID获取指定文章秘钥
+ */
+pub async fn get_blog_key_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlogKey, sqlx::Error> {
+    sqlx::query_as!(
+        SelectBlogKey,
+        r#"
+            SELECT title, `key` FROM m_blog_key WHERE id = ?
+        "#,
+        blog_id
+    )
+    .fetch_one(db_pool)
+    .await
+}
+
 pub async fn get_by_id_with_sort_and_tag(
     db_pool: &MySqlPool,
     blog_id: i64,
@@ -186,9 +236,9 @@ pub async fn get_by_id_with_sort_and_tag(
                 blog.id,
                 blog.user_id,
                 blog.sort_id,
-                blog.title,
+                IF(blog.status = 1, blog_key.title, blog.title) AS title,
                 blog.content,
-                blog.description,
+                IF(blog.status = 1, blog_key.title, blog.description) AS description,
                 blog.created,
                 blog.STATUS AS status,
                 sort.NAME AS sort_name,
@@ -210,6 +260,7 @@ pub async fn get_by_id_with_sort_and_tag(
                 FROM
                     m_blog AS blog
                     LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id 
+                    LEFT JOIN m_blog_key AS blog_key ON blog_key.id = blog.id
                 WHERE
                     blog.id = ?
             "#
@@ -311,12 +362,13 @@ pub async fn update_blog_by_id(
 ) -> Result<MySqlQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
-            UPDATE m_blog SET title = ?, description = ?, content = ?, sort_id = ? WHERE id = ?
+            UPDATE m_blog SET title = ?, description = ?, content = ?, sort_id = ?, status = ? WHERE id = ?
         "#,
         update_blog.title,
         update_blog.description,
         update_blog.content,
         update_blog.sort_id,
+        update_blog.status,
         update_blog.id
     )
     .execute(db_pool)
@@ -324,10 +376,26 @@ pub async fn update_blog_by_id(
 }
 
 /**
+ * 更新博文秘钥
+ */
+pub async fn update_blog_key_by_id_tran(tran: &mut Transaction<'_, MySql>, update_blog_key: UpdateBlogKey) -> Result<MySqlQueryResult, sqlx::Error> {
+    sqlx::query!(
+        r#"
+            REPLACE INTO m_blog_key(id, title, `key`) VALUES(?, ?, ?)
+        "#,
+        update_blog_key.id,
+        update_blog_key.title,
+        update_blog_key.key
+    )
+    .execute(tran)
+    .await
+}
+
+/**
  * 通过ID批量删除博文
  */
-pub async fn delete_by_ids(
-    db_pool: &MySqlPool,
+pub async fn delete_by_ids_tran(
+    tran: &mut Transaction<'_, MySql>,
     ids: Vec<i64>,
 ) -> Result<MySqlQueryResult, sqlx::Error> {
     let query = format!(
@@ -341,7 +409,22 @@ pub async fn delete_by_ids(
         q = q.bind(id);
     }
 
-    q.execute(db_pool).await
+    q.execute(tran).await
+}
+
+pub async fn delete_key_by_ids_tran(tran: &mut Transaction<'_, MySql>, ids: Vec<i64>) -> Result<MySqlQueryResult, sqlx::Error> {
+    let query = format!(
+        "DELETE FROM m_blog_key WHERE id in({})",
+        build_what_sql_by_num(ids.len()).await
+    );
+
+    let mut q = sqlx::query::<sqlx::MySql>(query.as_str());
+
+    for id in ids {
+        q = q.bind(id);
+    }
+
+    q.execute(tran).await
 }
 
 /**
@@ -369,8 +452,8 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
                 blog.id,
                 blog.user_id,
                 blog.sort_id,
-                blog.title,
-                blog.description,
+                IF(blog.status = 1, blog_key.title, blog.title) AS title,
+                IF(blog.status = 1, blog_key.title, blog.description) AS description,
                 blog.created,
                 blog.status AS status,
                 sort.NAME AS sort_name,
@@ -392,6 +475,7 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
                 FROM
                     m_blog AS blog
                     LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+                    LEFT JOIN m_blog_key AS blog_key ON blog_key.id = blog.id
                 WHERE
                     blog.sort_id = ?
                 ORDER BY
@@ -483,6 +567,9 @@ pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i
                                 m_blogtag
                             WHERE tagId = ?
                         )
+                        AND
+                        blog.status = 0
+
                     ORDER BY
                         created DESC 
                         LIMIT ?, ?

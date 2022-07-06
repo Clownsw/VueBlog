@@ -17,3 +17,4 @@ pub mod token;
 pub mod tuple;
 pub mod user;
 pub mod vo;
+pub mod key;

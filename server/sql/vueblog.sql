@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/06/2022 15:22:17
+ Date: 06/07/2022 15:10:16
 */
 
 SET NAMES utf8mb4;
@@ -31,11 +31,19 @@ CREATE TABLE `m_blog`  (
   `created` datetime NOT NULL,
   `status` tinyint NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of m_blog
+-- Table structure for m_blog_key
 -- ----------------------------
+DROP TABLE IF EXISTS `m_blog_key`;
+CREATE TABLE `m_blog_key`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '博文ID',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文被加密时， 显示标题',
+  `key` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文秘钥',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for m_blog_statistics
@@ -46,19 +54,7 @@ CREATE TABLE `m_blog_statistics`  (
   `day` date NOT NULL,
   `view_count` bigint NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of m_blog_statistics
--- ----------------------------
-INSERT INTO `m_blog_statistics` VALUES (1, '2022-06-08', 0);
-INSERT INTO `m_blog_statistics` VALUES (2, '2022-06-09', 10);
-INSERT INTO `m_blog_statistics` VALUES (3, '2022-06-10', 20);
-INSERT INTO `m_blog_statistics` VALUES (4, '2022-06-11', 5);
-INSERT INTO `m_blog_statistics` VALUES (5, '2022-06-12', 100);
-INSERT INTO `m_blog_statistics` VALUES (56, '2022-06-21', 1);
-INSERT INTO `m_blog_statistics` VALUES (57, '2022-06-21', 2);
-INSERT INTO `m_blog_statistics` VALUES (58, '2022-06-21', 22222);
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_blogtag
@@ -71,13 +67,6 @@ CREATE TABLE `m_blogtag`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of m_blogtag
--- ----------------------------
-INSERT INTO `m_blogtag` VALUES (15, 41, 1);
-INSERT INTO `m_blogtag` VALUES (15, 39, 0);
-INSERT INTO `m_blogtag` VALUES (15, 42, 2);
-
--- ----------------------------
 -- Table structure for m_friend
 -- ----------------------------
 DROP TABLE IF EXISTS `m_friend`;
@@ -88,11 +77,7 @@ CREATE TABLE `m_friend`  (
   `href` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '链接地址',
   `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '头像地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of m_friend
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_other
@@ -104,14 +89,14 @@ CREATE TABLE `m_other`  (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_other
 -- ----------------------------
-INSERT INTO `m_other` VALUES (1, 0, '关于我', '## 关于我');
+INSERT INTO `m_other` VALUES (1, 0, '关于我', '');
 INSERT INTO `m_other` VALUES (2, 1, '网页底部', '');
-INSERT INTO `m_other` VALUES (3, 3, '备份设置', '{\"username\":\" \",\"password\":\" \",\"operator\":\" \",\"operator_password\":\" \",\"bucket_name\":\" \"}');
+INSERT INTO `m_other` VALUES (3, 3, '备份配置', '{\"username\":\"\",\"password\":\"",\"operator\":\"\",\"operator_password\":\"\",\"bucket_name\":\"\"}');
 
 -- ----------------------------
 -- Table structure for m_sort
@@ -122,11 +107,12 @@ CREATE TABLE `m_sort`  (
   `order` int NOT NULL DEFAULT 0,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of m_sort
 -- ----------------------------
+INSERT INTO `m_sort` VALUES (1, 99, '综合');
 
 -- ----------------------------
 -- Table structure for m_system
@@ -143,7 +129,7 @@ CREATE TABLE `m_system`  (
 -- ----------------------------
 -- Records of m_system
 -- ----------------------------
-INSERT INTO `m_system` VALUES (1, '欢迎来到Smilex博客', 'Smile\' Blog', '一个神秘的博客');
+INSERT INTO `m_system` VALUES (1, '欢迎来到Smile\' Blog', 'Smile\' Blog', '一个神秘的博客');
 
 -- ----------------------------
 -- Table structure for m_tag
@@ -153,15 +139,7 @@ CREATE TABLE `m_tag`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of m_tag
--- ----------------------------
-INSERT INTO `m_tag` VALUES (41, 'A');
-INSERT INTO `m_tag` VALUES (42, 'B');
-INSERT INTO `m_tag` VALUES (43, 'C');
-INSERT INTO `m_tag` VALUES (44, 'D');
+) ENGINE = InnoDB AUTO_INCREMENT = 71 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_user
@@ -183,5 +161,4 @@ CREATE TABLE `m_user`  (
 -- Records of m_user
 -- ----------------------------
 INSERT INTO `m_user` VALUES (2, 'x', 'https://avatars.githubusercontent.com/u/28394742', 'msmliexx1@gmail.com', '123123', -1, '2022-03-29 21:23:55', '2022-03-29 21:24:00');
-
 SET FOREIGN_KEY_CHECKS = 1;
