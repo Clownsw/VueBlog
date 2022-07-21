@@ -17,13 +17,15 @@ use sqlx::{
 /**
  * 查询所有文章个数
  */
-pub async fn select_all_count(db_pool: &MySqlPool) -> Result<SelectCount, sqlx::Error> {
-    sqlx::query_as!(
-        SelectCount,
-        r#"
-            SELECT COUNT(1) as count FROM m_blog WHERE status = 0
-        "#
-    )
+pub async fn select_all_count<'a>(db_pool: &MySqlPool, query_str: Option<&'a str>) -> Result<SelectCount, sqlx::Error> {
+
+    let mut sql = String::from("SELECT COUNT(1) as count FROM m_blog WHERE status = 0");
+    
+    if let Some(v) = query_str {
+        sql.push_str(format!(" AND MATCH(m_blog.title, m_blog.description, m_blog.content) AGAINST('{}')", v).as_str());
+    }
+
+    sqlx::query_as::<_, SelectCount>(sql.as_str())
     .fetch_one(db_pool)
     .await
 }
@@ -82,19 +84,29 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectBlog>, sqlx::Er
 /**
  * 分页查询文章
  */
-pub async fn select_all_limit(
+pub async fn select_all_limit<'a>(
     db_pool: &MySqlPool,
     limit: i64,
     size: i64,
     is_login: bool,
+    query_str: Option<&'a str>,
 ) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
-    let status_query_str = match is_login {
-        true => "",
+    let mut status_query_str = match is_login {
+        true => "".to_string(),
         false => r#"
             WHERE
                 blog.status = 0
-        "#
+        "#.to_string()
     };
+
+    if let Some(v) = query_str {
+        status_query_str.push_str(format!(r#"
+            AND 
+                MATCH(blog.title, blog.description, blog.content) AGAINST('{}')
+        "#, v).as_str())
+    }
+
+
     sqlx::query::<MySql>(
         format!(r#"
         SELECT

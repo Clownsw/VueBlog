@@ -14,7 +14,7 @@ use super::{blog_dao, friend_dao, sort_dao, tag_dao};
  */
 pub async fn select_statistics(db_pool: &MySqlPool) -> Result<Statistics, sqlx::Error> {
     /* 查询博文条数 */
-    let blog_total_num = blog_dao::select_all_count(db_pool).await?.count;
+    let blog_total_num = blog_dao::select_all_count(db_pool, None).await?.count;
 
     /* 查询分类个数 */
     let sort_total_num = sort_dao::select_all_count(db_pool).await?.count;

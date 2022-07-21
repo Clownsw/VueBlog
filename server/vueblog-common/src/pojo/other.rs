@@ -19,7 +19,7 @@ pub struct UpdatePageFooter {
     pub content: String,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, sqlx::FromRow)]
 pub struct SelectCount {
     pub count: i64,
 }

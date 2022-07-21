@@ -52,11 +52,12 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             (current - 1) * GLOBAL_CONFIG.blog_limit_num,
             GLOBAL_CONFIG.blog_limit_num,
             is_login,
+            qs.get("queryStr"),
         )
         .await
     };
 
-    let select_count = match select_all_count(&data.db_pool).await {
+    let select_count = match select_all_count(&data.db_pool, qs.get("queryStr")).await {
         Ok(v) => v,
         _ => SelectCount::default(),
     };
