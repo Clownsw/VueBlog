@@ -1,7 +1,6 @@
 <template>
   <div class="m-content">
     <h2>{{ welcome }}</h2>
-    <el-button type="primary" size="mini" @click="testBtnClick">测试</el-button>
     <div class="m-action" style="display: flex; justify-content: center;">
 
       <ul style="list-style: none; display: flex; margin: 0 auto; width: auto; padding-inline-start: 0;">
@@ -56,16 +55,11 @@ export default {
   },
   methods: {
     searchDialog() {
-      this.$parent.searchDialogVisible = true
-    },
-    testBtnClick() {
-      this.$axios.get('/blogs?currentPage=1&queryStr=Element').then(resp => {
-        this.$parent.blogs.data = resp.data.data.datas
-        this.$parent.blogs.currentPage = resp.data.data.current
-        this.$parent.blogs.pages = resp.data.data.pages
-        this.$parent.blogs.total = resp.data.data.total
-        this.$parent.blogs.size = resp.data.data.size
-      })
+      if (this.$parent.searchDialogVisible === undefined) {
+        this.$message.error('不可在文章详情页使用搜索功能!')        
+      } else {
+        this.$parent.searchDialogVisible = true
+      }
     }
   }
 }
