@@ -40,10 +40,10 @@ CREATE TABLE `m_blog`  (
 DROP TABLE IF EXISTS `m_blog_key`;
 CREATE TABLE `m_blog_key`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '博文ID',
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文被加密时， 显示标题',
-  `key` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '博文秘钥',
+  `title` varchar(255) CHARACTER SET utf8mb4 NOT NULL COMMENT '博文被加密时， 显示标题',
+  `key` varchar(30) CHARACTER SET utf8mb4  NOT NULL COMMENT '博文秘钥',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4  ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for m_blog_statistics
@@ -54,7 +54,7 @@ CREATE TABLE `m_blog_statistics`  (
   `day` date NOT NULL,
   `view_count` bigint NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4  ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_blogtag

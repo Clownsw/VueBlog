@@ -1,7 +1,9 @@
 <template>
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
-    <el-card v-for="item in blogs.data" :key="item.id" style="margin-bottom: 10px">
+
+    <p v-if="blogs.data.length === 0" style="text-align: center; font-style: italic">暂无文章</p>
+    <el-card v-else v-for="item in blogs.data" :key="item.id" style="margin-bottom: 10px">
       <h3 class="blog-title">
         <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
           {{ item.title }}
@@ -82,11 +84,15 @@ export default {
               : "/blogs?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
-            this.blogs.data = resp.data.data.datas
-            this.blogs.currentPage = resp.data.data.current
-            this.blogs.pages = resp.data.data.pages
-            this.blogs.total = resp.data.data.total
-            this.blogs.size = resp.data.data.size
+            if (resp.data.data !== null) {
+              this.blogs.data = resp.data.data.datas
+              this.blogs.currentPage = resp.data.data.current
+              this.blogs.pages = resp.data.data.pages
+              this.blogs.total = resp.data.data.total
+              this.blogs.size = resp.data.data.size
+            }
+
+            console.log(this.blogs.data.length);
           })
     },
     parseStrToDate(str) {
