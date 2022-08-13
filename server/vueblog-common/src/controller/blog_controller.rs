@@ -334,11 +334,8 @@ pub async fn blog_deletes(
 
                 let mut transaction = db_pool_clone.begin().await.unwrap();
 
-                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await)
-                    .await
-                    || !sql_run_is_success(delete_key_by_ids_tran(&mut transaction, ids).await)
-                        .await
-                {
+                if let Err(_) = delete_key_by_ids_tran(&mut transaction, ids.clone()).await {}
+                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids).await).await {
                     transaction.rollback().await.unwrap();
                     return build_response_baq_request_message(String::from(
                         error_util::ERROR_UNKNOWN,
