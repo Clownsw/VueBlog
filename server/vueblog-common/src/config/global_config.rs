@@ -16,7 +16,6 @@ pub async fn init_global_config() -> Result<(), anyhow::Error> {
         GLOBAL_CONFIG.friend_limit_num = env::var("FRIEND_LIMIT_NUM")?.parse::<i64>()?;
         GLOBAL_CONFIG.blog_tag_limit_num = env::var("BLOG_TAG_LIMIT_NUM")?.parse::<i64>()?;
         GLOBAL_CONFIG.blog_sort_limit_num = env::var("BLOG_SORT_LIMIT_NUM")?.parse::<i64>()?;
-        GLOBAL_CONFIG.statisics_cron = env::var("STATISTICS_CROn")?;
     }
 
     Ok(())

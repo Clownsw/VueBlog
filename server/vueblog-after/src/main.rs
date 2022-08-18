@@ -24,7 +24,6 @@ use vueblog_common::{
         user_controller::{all_user, user_add, user_deletes, user_info, user_update},
     },
     pojo::status::AppState,
-    util::schedule_task::build_view_count,
 };
 
 /**
@@ -49,13 +48,6 @@ async fn make_redis_client() -> RedisPool {
         RedisConnectionManager::new(redis::Client::open(redis_url).unwrap(), true, None),
         redis_pool_num,
     )
-}
-
-/**
- * 初始化定时任务
- */
-async fn init_schedule_task(db_pool: MySqlPool, redis_pool: RedisPool) {
-    tokio::spawn(build_view_count(db_pool, redis_pool));
 }
 
 /**
@@ -92,8 +84,6 @@ async fn init() -> (String, u16, usize, MySqlPool, RedisPool) {
     if let Err(_) = init_global_config().await {
         panic!("init global config error!")
     }
-
-    init_schedule_task(db_pool.clone(), redis_client.clone()).await;
 
     (server_address, server_port, workers, db_pool, redis_client)
 }

@@ -21,4 +21,3 @@ qstring = "0.7.2"
 rustc-hash = "1.1"
 anyhow = "*"
 reqwest = { version = "0.11.10", features = ["json", "cookies", "gzip", "tokio-native-tls", "stream"] }
-job_scheduler = { git = "https://github.com/Clownsw/job_scheduler", rev = "a1cb1f7a" }
