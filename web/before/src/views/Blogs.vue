@@ -1,12 +1,15 @@
 <template>
   <div>
     <Header :welcome="systemInfo.welcome"></Header>
-    <el-card v-for="item in blogs.data" :key="item.id" style="margin-bottom: 10px">
+
+    <p v-if="blogs.data.length === 0" style="text-align: center; font-style: italic">暂无文章</p>
+    <el-card v-else v-for="item in blogs.data" :key="item.id" style="margin-bottom: 10px">
       <h3 class="blog-title">
         <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
           {{ item.title }}
         </router-link>
       </h3>
+      
       <p class="blog-description">{{ item.description }}</p>
 
       <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags" :key="tag.id">
@@ -24,6 +27,16 @@
         </router-link>
       </div>
     </el-card>
+
+
+    <el-dialog
+      class="searchDialogClass"
+      title="文章搜索"
+      :visible.sync="searchDialogVisible"
+      width="30%"
+      :before-close="handleSearchDialogClose">
+      <el-input v-model="searchQueryStr" @keyup.native.enter="handleSearchInputEnter"></el-input>
+    </el-dialog>
 
     <div class="limit">
       <el-pagination background layout="prev, pager, next"
@@ -56,27 +69,48 @@ export default {
       systemInfo: {},
       sortId: null,
       tagId: null,
+      searchQueryStr: '',
+      searchDialogVisible: false,
     }
   },
   methods: {
-    page(currentPage) {
+    page(currentPage, queryStr) {
       let url = this.sortId !== null
           ? "/blogs/sort/list?currentPage=" + currentPage + '&sortId=' + this.sortId
           : this.tagId !== null
               ? "/blogs/tag/list?currentPage=" + currentPage + '&tagId=' + this.tagId
+              : queryStr != null
+              ? "/blogs?currentPage=" + currentPage + '&queryStr=' + queryStr
               : "/blogs?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
-            this.blogs.data = resp.data.data.datas
-            this.blogs.currentPage = resp.data.data.currentPage
-            this.blogs.pages = resp.data.data.pages
-            this.blogs.total = resp.data.data.total
-            this.blogs.size = resp.data.data.size
+            if (resp.data.data !== null) {
+              this.blogs.data = resp.data.data.datas
+              this.blogs.currentPage = resp.data.data.current
+              this.blogs.pages = resp.data.data.pages
+              this.blogs.total = resp.data.data.total
+              this.blogs.size = resp.data.data.size
+            }
+
+            console.log(this.blogs.data.length);
           })
     },
     parseStrToDate(str) {
       return new Date(str).toLocaleString()
     },
+    handleSearchDialogClose() {
+      this.searchQueryStr = ''
+      this.searchDialogVisible = false
+    },
+    handleSearchInputEnter() {
+      if (this.searchQueryStr != '') {
+        this.page(1, this.searchQueryStr)
+        this.searchQueryStr = ''
+      } else {
+        this.page(1, null)
+      }
+      this.searchDialogVisible = false
+    }
   },
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo
@@ -85,7 +119,7 @@ export default {
     this.sortId = this.$route.params.id === undefined ? null : this.$route.params.id
     this.tagId = this.$route.params.tagId === undefined ? null : this.$route.params.tagId
 
-    this.page(1)
+    this.page(1, null)
   }
 }
 </script>
@@ -119,5 +153,9 @@ a {
   color: #a0a3a8;
   margin-block-start: 1em;
   margin-block-end: 0;
+}
+
+.searchDialogClass ::v-deep .el-dialog__body {
+  padding: 10px 10px !important;
 }
 </style>

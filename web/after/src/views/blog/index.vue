@@ -40,7 +40,7 @@
 
       <el-table-column prop="action" label="操作" width="200" show-overflow-tooltip align="center">
         <template slot-scope="scope">
-          <el-button type="info" @click="editWord(scope.row.id)">编辑</el-button>
+          <el-button type="primary" @click="editWord(scope.row.id)">编辑</el-button>
 
           <el-popconfirm confirm-button-text='删除' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
             title="您确定要删除该文章吗？" style="margin-left: 5px" @confirm="deleteBlog(scope.row.id)">

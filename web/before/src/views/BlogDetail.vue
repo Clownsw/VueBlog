@@ -27,12 +27,13 @@
         <el-input v-model="key" placeholder="输入秘钥" @keyup.enter.native="handlerInputKey"></el-input>
       </el-empty>
       <mavon-editor v-else v-viewer="viewerOptions" ref="markdown"
+                    :fontSize="'20px'"
                     :subfield="false"
                     :editable="false"
                     :defaultOpen="'preview'"
                     :toolbarsFlag="false"
                     :boxShadow="true"
-                    :code-style="'github-dark'"
+                    :code-style="'monokai-sublime'"
                     :imageClick="handleImageClick"
                     class="blog-body"
                     v-model="blog.content"/>
@@ -179,5 +180,9 @@ a {
 
 .blog-body ::v-deep .hljs {
   padding: 12px;
+}
+
+.markdown-body {
+  font-size: 17px !important;
 }
 </style>

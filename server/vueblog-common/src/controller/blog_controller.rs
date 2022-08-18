@@ -52,11 +52,12 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             (current - 1) * GLOBAL_CONFIG.blog_limit_num,
             GLOBAL_CONFIG.blog_limit_num,
             is_login,
+            qs.get("queryStr"),
         )
         .await
     };
 
-    let select_count = match select_all_count(&data.db_pool).await {
+    let select_count = match select_all_count(&data.db_pool, qs.get("queryStr")).await {
         Ok(v) => v,
         _ => SelectCount::default(),
     };
@@ -333,11 +334,8 @@ pub async fn blog_deletes(
 
                 let mut transaction = db_pool_clone.begin().await.unwrap();
 
-                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await)
-                    .await
-                    || !sql_run_is_success(delete_key_by_ids_tran(&mut transaction, ids).await)
-                        .await
-                {
+                if let Err(_) = delete_key_by_ids_tran(&mut transaction, ids.clone()).await {}
+                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids).await).await {
                     transaction.rollback().await.unwrap();
                     return build_response_baq_request_message(String::from(
                         error_util::ERROR_UNKNOWN,
