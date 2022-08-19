@@ -1,3 +1,6 @@
+use actix_web::{get, HttpRequest, post, Responder, web};
+use qstring::QString;
+
 use crate::{
     config::global_config::GLOBAL_CONFIG,
     dao::friend_dao::{
@@ -18,8 +21,6 @@ use crate::{
         sql_util::sql_run_is_success,
     },
 };
-use actix_web::{get, post, web, HttpRequest, Responder};
-use qstring::QString;
 
 /**
  * 获取所有友联信息
@@ -47,14 +48,12 @@ pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl R
         }
     }
 
-    let friends = unsafe {
-        select_all_limit(
-            &data.db_pool,
-            (current - 1) * GLOBAL_CONFIG.friend_limit_num,
-            GLOBAL_CONFIG.friend_limit_num,
-        )
-        .await
-    };
+    let global_config = GLOBAL_CONFIG.get().unwrap();
+    let friends = select_all_limit(
+        &data.db_pool,
+        (current - 1) * global_config.friend_limit_num,
+        global_config.friend_limit_num,
+    ).await;
 
     let select_count = match select_all_count(&data.db_pool).await {
         Ok(v) => v,
@@ -62,15 +61,14 @@ pub async fn friend_limit(req: HttpRequest, data: web::Data<AppState>) -> impl R
     };
 
     match friends {
-        Ok(v) => unsafe {
+        Ok(v) => {
             build_response_ok_data(Limit::from_unknown_datas(
-                GLOBAL_CONFIG.friend_limit_num,
+                global_config.friend_limit_num,
                 select_count.count,
                 current,
                 v,
-            ))
-            .await
-        },
+            )).await
+        }
         Err(_) => {
             build_response_baq_request_message(String::from(error_util::INCOMPLETE_REQUEST)).await
         }
@@ -110,7 +108,7 @@ pub async fn friend_add(
         Some(body),
         None,
     )
-    .await
+        .await
 }
 
 /**
@@ -146,7 +144,7 @@ pub async fn friend_update(
         Some(body),
         None,
     )
-    .await
+        .await
 }
 
 /**
@@ -179,5 +177,5 @@ pub async fn friend_deletes(
         Some(body),
         None,
     )
-    .await
+        .await
 }

@@ -1,9 +1,6 @@
-use super::{error_util, login_util::is_login_return, redis_util};
-use crate::{
-    config::global_config::GLOBAL_CONFIG,
-    pojo::{backup::SelectBackUp, msg::ResultMsg, status::AppState, user::SelectUser},
-};
-use actix_web::{http::StatusCode, web, HttpRequest, HttpResponse, HttpResponseBuilder, Responder};
+use std::{fmt, future::Future, pin::Pin, process, str::FromStr};
+
+use actix_web::{http::StatusCode, HttpRequest, HttpResponse, HttpResponseBuilder, Responder, web};
 use chrono::Utc;
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
@@ -11,10 +8,16 @@ use reqwest::Client;
 use rustc_hash::FxHashMap;
 use serde::Serialize;
 use sqlx::{
-    mysql::{MySqlColumn, MySqlRow},
-    Column, MySqlPool, Row,
+    Column,
+    mysql::{MySqlColumn, MySqlRow}, MySqlPool, Row,
 };
-use std::{fmt, future::Future, pin::Pin, process, str::FromStr};
+
+use crate::{
+    config::global_config::GLOBAL_CONFIG,
+    pojo::{backup::SelectBackUp, msg::ResultMsg, status::AppState, user::SelectUser},
+};
+
+use super::{error_util, login_util::is_login_return, redis_util};
 
 /**
  * 创建一个响应对象_json
@@ -37,10 +40,8 @@ pub async fn sign_captcha_code(
 
     match result {
         Ok(v) => {
-            unsafe {
-                if v.len() > GLOBAL_CONFIG.captcha_code_num {
-                    return false;
-                }
+            if v.len() > GLOBAL_CONFIG.get().unwrap().captcha_code_num {
+                return false;
             }
 
             return v == code;
@@ -58,8 +59,8 @@ pub async fn get_del_and_add_and_default_vec<T: fmt::Debug>(
     a: Vec<T>,
     b: Vec<T>,
 ) -> (Vec<T>, Vec<T>, Vec<T>)
-where
-    T: PartialEq + Copy,
+    where
+        T: PartialEq + Copy,
 {
     let mut del: Vec<T> = vec![];
     let mut add: Vec<T> = vec![];
@@ -103,8 +104,8 @@ pub async fn to_json_string<T: ?Sized + Serialize>(data: &T) -> String {
 }
 
 pub async fn build_response_ok_all<T>(data: Option<T>, message: String) -> HttpResponse<String>
-where
-    T: Serialize,
+    where
+        T: Serialize,
 {
     build_http_response_json(StatusCode::OK)
         .await
@@ -115,8 +116,8 @@ where
  * 返回一个200状态码的响应对象
  */
 pub async fn build_response_ok_data<T>(data: T) -> HttpResponse<String>
-where
-    T: Serialize,
+    where
+        T: Serialize,
 {
     build_response_ok_all(Some(data), String::from(error_util::SUCCESS)).await
 }
@@ -132,15 +133,15 @@ pub async fn build_response_ok_message(message: String) -> HttpResponse<String> 
  * 返回一个200状态码的响应对象
  */
 pub async fn build_response_ok_data_message<T>(data: T, message: String) -> HttpResponse<String>
-where
-    T: Serialize,
+    where
+        T: Serialize,
 {
     build_response_ok_all(Some(data), message).await
 }
 
 pub async fn build_response_fail_all<T>(data: Option<T>, message: String) -> HttpResponse<String>
-where
-    T: Serialize,
+    where
+        T: Serialize,
 {
     build_http_response_json(StatusCode::BAD_REQUEST)
         .await
@@ -161,8 +162,8 @@ pub async fn build_response_baq_request_data_message<T>(
     data: T,
     message: String,
 ) -> HttpResponse<String>
-where
-    T: Serialize,
+    where
+        T: Serialize,
 {
     build_response_fail_all(Some(data), message).await
 }
@@ -188,13 +189,13 @@ pub async fn security_interceptor_aop<F, T>(
     body: Option<String>,
     data: Option<T>,
 ) -> impl Responder
-where
-    F: Fn(
-        &web::Data<AppState>,
-        Option<String>,
-        Option<T>,
-        SelectUser,
-    ) -> Pin<Box<dyn Future<Output = HttpResponse<String>>>>,
+    where
+        F: Fn(
+            &web::Data<AppState>,
+            Option<String>,
+            Option<T>,
+            SelectUser,
+        ) -> Pin<Box<dyn Future<Output=HttpResponse<String>>>>,
 {
     // 验证用户是否登录
     let (user, error_msg) = is_login_return(req, &app_state.db_pool).await;
@@ -235,8 +236,8 @@ pub fn parse_sql_row_string<T, F: Fn(String) -> T>(
 }
 
 pub fn parse_string_to_parse_vec<T: FromStr>(s: String) -> Vec<T>
-where
-    <T as FromStr>::Err: std::fmt::Debug,
+    where
+        <T as FromStr>::Err: std::fmt::Debug,
 {
     s.split(",")
         .collect::<Vec<&str>>()
@@ -256,7 +257,7 @@ pub fn parse_string_to_string_vec(s: String) -> Vec<String> {
 pub async fn like_table_async_run<
     T,
     E,
-    F: Fn(T, &MySqlPool) -> Pin<Box<dyn Future<Output = T>>>,
+    F: Fn(T, &MySqlPool) -> Pin<Box<dyn Future<Output=T>>>,
 >(
     f: F,
     result: Result<T, E>,
@@ -303,8 +304,8 @@ pub async fn remote_upload_file(
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T
-where
-    F: Fn(Option<K>) -> Pin<Box<dyn Future<Output = T>>>,
+    where
+        F: Fn(Option<K>) -> Pin<Box<dyn Future<Output=T>>>,
 {
     f(None).await
 }
@@ -322,5 +323,5 @@ pub async fn run_test_aop() {
             };
         })
     })
-    .await;
+        .await;
 }

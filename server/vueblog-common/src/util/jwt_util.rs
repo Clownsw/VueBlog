@@ -1,12 +1,13 @@
+use chrono::{Duration, Utc};
+use jsonwebtoken::{
+    Algorithm, decode, DecodingKey, encode, EncodingKey, Header, TokenData, Validation,
+};
+use serde::{de::DeserializeOwned, Serialize};
+
 use crate::{
     config::global_config::GLOBAL_CONFIG,
     pojo::{claims::Claims, user::TokenUser},
 };
-use chrono::{Duration, Utc};
-use jsonwebtoken::{
-    decode, encode, Algorithm, DecodingKey, EncodingKey, Header, TokenData, Validation,
-};
-use serde::{de::DeserializeOwned, Serialize};
 
 /**
  * 以默认算法生成token
@@ -17,7 +18,7 @@ pub async fn get_token_default<T: Serialize>(
     let token = encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(unsafe { GLOBAL_CONFIG.jwt_key.as_bytes() }),
+        &EncodingKey::from_secret(GLOBAL_CONFIG.get().unwrap().jwt_key.as_bytes()),
     );
 
     token
@@ -27,12 +28,12 @@ pub async fn get_token_default<T: Serialize>(
  * 以默认算法解密token
  */
 pub async fn sign_token_default<T>(token: &str) -> Result<TokenData<T>, jsonwebtoken::errors::Error>
-where
-    T: DeserializeOwned,
+    where
+        T: DeserializeOwned,
 {
     let token_message = decode(
         token,
-        &DecodingKey::from_secret(unsafe { GLOBAL_CONFIG.jwt_key.as_bytes() }),
+        &DecodingKey::from_secret(GLOBAL_CONFIG.get().unwrap().jwt_key.as_bytes()),
         &Validation::new(Algorithm::HS256),
     );
 
@@ -62,6 +63,6 @@ pub async fn get_token_default_token_user(token_user: Option<TokenUser>) -> Stri
             .timestamp_millis() as usize,
         data: token_user,
     })
-    .await
-    .unwrap()
+        .await
+        .unwrap()
 }
