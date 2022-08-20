@@ -28,16 +28,6 @@
       </div>
     </el-card>
 
-
-    <el-dialog
-      class="searchDialogClass"
-      title="文章搜索"
-      :visible.sync="searchDialogVisible"
-      width="30%"
-      :before-close="handleSearchDialogClose">
-      <el-input v-model="searchQueryStr" @keyup.native.enter="handleSearchInputEnter"></el-input>
-    </el-dialog>
-
     <div class="limit">
       <el-pagination background layout="prev, pager, next"
                      :total="blogs.total"
@@ -68,9 +58,7 @@ export default {
       },
       systemInfo: {},
       sortId: null,
-      tagId: null,
-      searchQueryStr: '',
-      searchDialogVisible: false,
+      tagId: null
     }
   },
   methods: {
@@ -96,19 +84,6 @@ export default {
     parseStrToDate(str) {
       return new Date(str).toLocaleString()
     },
-    handleSearchDialogClose() {
-      this.searchQueryStr = ''
-      this.searchDialogVisible = false
-    },
-    handleSearchInputEnter() {
-      if (this.searchQueryStr != '') {
-        this.page(1, this.searchQueryStr)
-        this.searchQueryStr = ''
-      } else {
-        this.page(1, null)
-      }
-      this.searchDialogVisible = false
-    }
   },
   created() {
     this.systemInfo = this.$store.getters.getSystemInfo

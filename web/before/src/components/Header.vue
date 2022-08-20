@@ -35,6 +35,7 @@
           <el-divider direction="vertical" border-style="dashed" />
           <span>
             <el-link :underline="false" @click="searchDialog">搜索</el-link>
+            <blog-search ref='searchDialog'></blog-search>
           </span>
         </li>
       </ul>
@@ -43,10 +44,16 @@
 </template>
 
 <script>
+
+import BlogSearch from '@/components/BlogSearch'
+
 export default {
   name: "Header",
   props: {
     welcome: '',
+  },
+  components: {
+    BlogSearch
   },
   data() {
     return {
@@ -55,11 +62,7 @@ export default {
   },
   methods: {
     searchDialog() {
-      if (this.$parent.searchDialogVisible === undefined) {
-        this.$message.error('不可在文章详情页使用搜索功能!')        
-      } else {
-        this.$parent.searchDialogVisible = true
-      }
+      this.$refs.searchDialog.searchDialogIsShow = true
     }
   }
 }

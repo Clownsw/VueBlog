@@ -1,33 +1,33 @@
-use crate::{
-    pojo::{
-        blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, UpdateBlog, SelectShowListBlog},
-        sort::SelectSortWithBlog,
-        tag::SelectBlogOther, other::SelectCount, key::{UpdateBlogKey, SelectBlogKey},
-    },
-    util::{
-        common_util::{columns_to_map, parse_string_to_parse_vec, parse_string_to_string_vec, parse_sql_row_string},
-        sql_util::build_what_sql_by_num,
-    },
-};
 use sqlx::{
     mysql::{MySqlPool, MySqlQueryResult},
     MySql, Row, Transaction,
+};
+
+use crate::{
+    pojo::{
+        blog::{InsertBlog, SelectBlog, SelectBlogSortTag, SelectCountBlog, SelectShowListBlog, UpdateBlog},
+        key::{SelectBlogKey, UpdateBlogKey},
+        other::SelectCount, sort::SelectSortWithBlog, tag::SelectBlogOther,
+    },
+    util::{
+        common_util::{columns_to_map, parse_sql_row_string, parse_string_to_parse_vec, parse_string_to_string_vec},
+        sql_util::build_what_sql_by_num,
+    },
 };
 
 /**
  * 查询所有文章个数
  */
 pub async fn select_all_count<'a>(db_pool: &MySqlPool, query_str: Option<&'a str>) -> Result<SelectCount, sqlx::Error> {
-
     let mut sql = String::from("SELECT COUNT(1) as count FROM m_blog WHERE status = 0");
-    
+
     if let Some(v) = query_str {
         sql.push_str(format!(" AND MATCH(m_blog.title, m_blog.description, m_blog.content) AGAINST('{}')", v).as_str());
     }
 
     sqlx::query_as::<_, SelectCount>(sql.as_str())
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 /**
@@ -41,8 +41,8 @@ pub async fn select_sort_all_count(db_pool: &MySqlPool, sort_id: i32) -> Result<
         "#,
         sort_id
     )
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 /**
@@ -63,8 +63,8 @@ pub async fn select_tag_all_count(db_pool: &MySqlPool, tag_id: i64) -> Result<Se
         "#,
         tag_id
     )
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 /**
@@ -77,8 +77,8 @@ pub async fn select_all(db_pool: &MySqlPool) -> Result<Vec<SelectBlog>, sqlx::Er
             SELECT * FROM m_blog
         "#
     )
-    .fetch_all(db_pool)
-    .await
+        .fetch_all(db_pool)
+        .await
 }
 
 /**
@@ -89,23 +89,14 @@ pub async fn select_all_limit<'a>(
     limit: i64,
     size: i64,
     is_login: bool,
-    query_str: Option<&'a str>,
 ) -> Result<Vec<SelectShowListBlog>, sqlx::Error> {
-    let mut status_query_str = match is_login {
-        true => "".to_string(),
+    let status_query_str = match is_login {
+        true => "",
         false => r#"
             WHERE
                 blog.status = 0
-        "#.to_string()
+        "#
     };
-
-    if let Some(v) = query_str {
-        status_query_str.push_str(format!(r#"
-            AND 
-                MATCH(blog.title, blog.description, blog.content) AGAINST('{}')
-        "#, v).as_str())
-    }
-
 
     sqlx::query::<MySql>(
         format!(r#"
@@ -121,69 +112,69 @@ pub async fn select_all_limit<'a>(
             sort.order AS sort_order,
             (
                 SELECT
-                    GROUP_CONCAT( `id` ORDER BY mbt.sort ) 
+                    GROUP_CONCAT( `id` ORDER BY mbt.sort )
                 FROM
                     m_tag AS tag
-                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
             ) AS 'tag_ids',
             (
                 SELECT
-                    GROUP_CONCAT( `name` ORDER BY mbt.sort ) 
+                    GROUP_CONCAT( `name` ORDER BY mbt.sort )
                 FROM
                     m_tag AS tag
-                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId ) 
+                    RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
             ) AS 'tag_names'
             FROM
                 m_blog AS blog
                 LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
-            
+
             {}
 
             ORDER BY
-                created DESC 
+                created DESC
                 LIMIT ?, ?
     "#, status_query_str).as_str(),
     )
-    .bind(limit)
-    .bind(size)
-    .map(|row| {
-        let columns = row.columns();
-        let map = columns_to_map(columns);
-        let mut blog = SelectShowListBlog::parse_map(&row, &map);
+        .bind(limit)
+        .bind(size)
+        .map(|row| {
+            let columns = row.columns();
+            let map = columns_to_map(columns);
+            let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
-        blog.sort = Some(SelectSortWithBlog {
-            id: row.get(*(map.get("sort_id")).unwrap()),
-            order: row.get(*(map.get("sort_order")).unwrap()),
-            name: row.get(*(map.get("sort_name")).unwrap()),
-        });
+            blog.sort = Some(SelectSortWithBlog {
+                id: row.get(*(map.get("sort_id")).unwrap()),
+                order: row.get(*(map.get("sort_order")).unwrap()),
+                name: row.get(*(map.get("sort_name")).unwrap()),
+            });
 
-        let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let mut tags = Vec::<SelectBlogOther>::new();
-        let len = ids.len();
-        for i in 0..len {
-            tags.push(SelectBlogOther { 
-                id: Some(*(ids.get(i).unwrap())), 
-                name: Some(names.get(i).unwrap().clone()), 
-            })
-        }
+            let mut tags = Vec::<SelectBlogOther>::new();
+            let len = ids.len();
+            for i in 0..len {
+                tags.push(SelectBlogOther {
+                    id: Some(*(ids.get(i).unwrap())),
+                    name: Some(names.get(i).unwrap().clone()),
+                })
+            }
 
-        blog.tags = Some(tags);
+            blog.tags = Some(tags);
 
-        blog
-    })
-    .fetch_all(db_pool)
-    .await
+            blog
+        })
+        .fetch_all(db_pool)
+        .await
 }
 
 /**
@@ -197,8 +188,8 @@ pub async fn get_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<SelectBlog, 
         "#,
         blog_id
     )
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 /**
@@ -219,8 +210,8 @@ pub async fn get_by_id_and_key(db_pool: &MySqlPool, blog_id: i64, key: &str) -> 
         blog_id,
         key
     )
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 /**
@@ -234,8 +225,8 @@ pub async fn get_blog_key_by_id(db_pool: &MySqlPool, blog_id: i64) -> Result<Sel
         "#,
         blog_id
     )
-    .fetch_one(db_pool)
-    .await
+        .fetch_one(db_pool)
+        .await
 }
 
 pub async fn get_by_id_with_sort_and_tag(
@@ -294,19 +285,19 @@ pub async fn get_by_id_with_sort_and_tag(
             } else {
                 Vec::new()
             };
-            
+
             let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
                 v
             } else {
                 Vec::new()
             };
-            
+
             let mut tags = Vec::<SelectBlogOther>::new();
             let len = ids.len();
             for i in 0..len {
-                tags.push(SelectBlogOther { 
-                    id: Some(*(ids.get(i).unwrap())), 
-                    name: Some(names.get(i).unwrap().clone()), 
+                tags.push(SelectBlogOther {
+                    id: Some(*(ids.get(i).unwrap())),
+                    name: Some(names.get(i).unwrap().clone()),
                 })
             }
 
@@ -337,8 +328,8 @@ pub async fn add_blog(
         insert_blog.created,
         insert_blog.status
     )
-    .execute(db_pool)
-    .await
+        .execute(db_pool)
+        .await
 }
 
 /**
@@ -361,8 +352,8 @@ pub async fn add_blog_tran(
         insert_blog.created,
         insert_blog.status
     )
-    .execute(tran)
-    .await
+        .execute(tran)
+        .await
 }
 
 /**
@@ -383,8 +374,8 @@ pub async fn update_blog_by_id(
         update_blog.status,
         update_blog.id
     )
-    .execute(db_pool)
-    .await
+        .execute(db_pool)
+        .await
 }
 
 /**
@@ -399,8 +390,8 @@ pub async fn update_blog_key_by_id_tran(tran: &mut Transaction<'_, MySql>, updat
         update_blog_key.title,
         update_blog_key.key
     )
-    .execute(tran)
-    .await
+        .execute(tran)
+        .await
 }
 
 /**
@@ -450,8 +441,8 @@ pub async fn update_blog_sort_to_new_by_sort_id(db_pool: &MySqlPool, sort_id: i3
         new_sort_id,
         sort_id,
     )
-    .execute(db_pool)
-    .await
+        .execute(db_pool)
+        .await
 }
 
 /**
@@ -495,47 +486,47 @@ pub async fn select_all_limit_by_sort_id(db_pool: &MySqlPool, limit: i64, size: 
                     LIMIT ?, ?
             "#,
     )
-    .bind(sort_id)
-    .bind(limit)
-    .bind(size)
-    .map(|row| {
-        let columns = row.columns();
-        let map = columns_to_map(columns);
-        let mut blog = SelectShowListBlog::parse_map(&row, &map);
+        .bind(sort_id)
+        .bind(limit)
+        .bind(size)
+        .map(|row| {
+            let columns = row.columns();
+            let map = columns_to_map(columns);
+            let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
-        blog.sort = Some(SelectSortWithBlog {
-            id: row.get(*(map.get("sort_id")).unwrap()),
-            order: row.get(*(map.get("sort_order")).unwrap()),
-            name: row.get(*(map.get("sort_name")).unwrap()),
-        });
+            blog.sort = Some(SelectSortWithBlog {
+                id: row.get(*(map.get("sort_id")).unwrap()),
+                order: row.get(*(map.get("sort_order")).unwrap()),
+                name: row.get(*(map.get("sort_name")).unwrap()),
+            });
 
-        let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let mut tags = Vec::<SelectBlogOther>::new();
-        let len = ids.len();
-        for i in 0..len {
-            tags.push(SelectBlogOther { 
-                id: Some(*(ids.get(i).unwrap())), 
-                name: Some(names.get(i).unwrap().clone()), 
-            })
-        }
+            let mut tags = Vec::<SelectBlogOther>::new();
+            let len = ids.len();
+            for i in 0..len {
+                tags.push(SelectBlogOther {
+                    id: Some(*(ids.get(i).unwrap())),
+                    name: Some(names.get(i).unwrap().clone()),
+                })
+            }
 
-        blog.tags = Some(tags);
+            blog.tags = Some(tags);
 
-        blog
-    })
-    .fetch_all(db_pool)
-    .await
+            blog
+        })
+        .fetch_all(db_pool)
+        .await
 }
 
 /**
@@ -587,45 +578,45 @@ pub async fn select_all_limit_by_tag_id(db_pool: &MySqlPool, limit: i64, size: i
                         LIMIT ?, ?
                 "#,
     )
-    .bind(tag_id)
-    .bind(limit)
-    .bind(size)
-    .map(|row| {
-        let columns = row.columns();
-        let map = columns_to_map(columns);
-        let mut blog = SelectShowListBlog::parse_map(&row, &map);
+        .bind(tag_id)
+        .bind(limit)
+        .bind(size)
+        .map(|row| {
+            let columns = row.columns();
+            let map = columns_to_map(columns);
+            let mut blog = SelectShowListBlog::parse_map(&row, &map);
 
-        blog.sort = Some(SelectSortWithBlog {
-            id: row.get(*(map.get("sort_id")).unwrap()),
-            order: row.get(*(map.get("sort_order")).unwrap()),
-            name: row.get(*(map.get("sort_name")).unwrap()),
-        });
+            blog.sort = Some(SelectSortWithBlog {
+                id: row.get(*(map.get("sort_id")).unwrap()),
+                order: row.get(*(map.get("sort_order")).unwrap()),
+                name: row.get(*(map.get("sort_name")).unwrap()),
+            });
 
-        let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let ids = if let Some(v) = parse_sql_row_string(&row, &map, "tag_ids", parse_string_to_parse_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
-            v
-        } else {
-            Vec::new()
-        };
+            let names = if let Some(v) = parse_sql_row_string(&row, &map, "tag_names", parse_string_to_string_vec) {
+                v
+            } else {
+                Vec::new()
+            };
 
-        let mut tags = Vec::<SelectBlogOther>::new();
-        let len = ids.len();
-        for i in 0..len {
-            tags.push(SelectBlogOther { 
-                id: Some(*(ids.get(i).unwrap())), 
-                name: Some(names.get(i).unwrap().clone()), 
-            })
-        }
+            let mut tags = Vec::<SelectBlogOther>::new();
+            let len = ids.len();
+            for i in 0..len {
+                tags.push(SelectBlogOther {
+                    id: Some(*(ids.get(i).unwrap())),
+                    name: Some(names.get(i).unwrap().clone()),
+                })
+            }
 
-        blog.tags = Some(tags);
+            blog.tags = Some(tags);
 
-        blog
-    })
-    .fetch_all(db_pool)
-    .await
+            blog
+        })
+        .fetch_all(db_pool)
+        .await
 }
