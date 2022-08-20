@@ -43,7 +43,7 @@
       </el-form-item>
 
       <el-form-item label="博文内容" prop="content">
-        <mavon-editor :boxShadow="true" :code-style="'github-dark'" v-model="blog.content" class="blog-body">
+        <mavon-editor :boxShadow="true" :code-style="'github-dark'" :externalLink="externalLink" v-model="blog.content" class="blog-body">
         </mavon-editor>
       </el-form-item>
 
@@ -103,7 +103,33 @@ export default {
       key: '',
       key_title: '',
       inputVisible: false,
-      inputValue: ''
+      inputValue: '',
+	  externalLink: {
+		markdown_css: function() {
+			// 这是你的markdown css文件路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/markdown/github-markdown.min.css';
+		},
+		hljs_js: function() {
+			// 这是你的hljs文件路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/highlight.min.js';
+		},
+		hljs_css: function(css) {
+			// 这是你的代码高亮配色文件路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/styles/' + css + '.min.css';
+		},
+		hljs_lang: function(lang) {
+			// 这是你的代码高亮语言解析路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/languages/' + lang + '.css';
+		},
+		katex_css: function() {
+			// 这是你的katex配色方案路径路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.css';
+		},
+		katex_js: function() {
+			// 这是你的katex.js路径
+			return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.js';
+		},
+      }
     }
   },
   methods: {
