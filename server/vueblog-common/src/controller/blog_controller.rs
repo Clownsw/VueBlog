@@ -261,6 +261,7 @@ pub async fn blog_edit(
     security_interceptor_aop::<_, Void>(
         move |app_state, body, _, user| {
             let db_pool_clone = app_state.db_pool.clone();
+            let blog_index = app_state.search_client.index("blog");
             let body = body.unwrap();
 
             Box::pin(async move {
@@ -279,7 +280,7 @@ pub async fn blog_edit(
                             }
                         } else {
                             // 添加
-                            if blog_add_service(&db_pool_clone, user.id, v).await {
+                            if blog_add_service(&db_pool_clone, user.id, v, blog_index).await {
                                 resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
                             }
@@ -290,8 +291,7 @@ pub async fn blog_edit(
                     Err(_) => {
                         build_response_baq_request_message(String::from(
                             error_util::INCOMPLETE_REQUEST,
-                        ))
-                            .await
+                        )).await
                     }
                 }
             })
@@ -316,6 +316,7 @@ pub async fn blog_deletes(
     security_interceptor_aop::<_, Void>(
         move |app_state, body, _, _| {
             let db_pool_clone = app_state.db_pool.clone();
+            let blog_index = app_state.search_client.index("blog");
             let body = body.unwrap();
 
             Box::pin(async move {
@@ -324,14 +325,14 @@ pub async fn blog_deletes(
                 let mut transaction = db_pool_clone.begin().await.unwrap();
 
                 if let Err(_) = delete_key_by_ids_tran(&mut transaction, ids.clone()).await {}
-                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids).await).await {
+                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await).await {
                     transaction.rollback().await.unwrap();
                     return build_response_baq_request_message(String::from(
                         error_util::ERROR_UNKNOWN,
-                    ))
-                        .await;
+                    )).await;
                 }
 
+                blog_index.delete_documents(&ids).await.unwrap();
                 transaction.commit().await.unwrap();
                 build_response_ok_message(String::from(error_util::SUCCESS)).await
             })

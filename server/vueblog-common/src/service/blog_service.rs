@@ -1,5 +1,7 @@
 use chrono::Local;
 use log::error;
+use meilisearch_sdk::client::Client;
+use meilisearch_sdk::indexes::Index;
 use sqlx::{MySql, MySqlPool, Transaction};
 
 use crate::{
@@ -18,6 +20,8 @@ use crate::{
     },
     util::{common_util::get_del_and_add_and_default_vec, sql_util::sql_run_is_success},
 };
+use crate::dao::other_dao;
+use crate::pojo::blog::SearchBlog;
 
 pub async fn update_blog_key_by_id_tran_service(
     tran: &mut Transaction<'_, MySql>,
@@ -54,8 +58,7 @@ pub async fn blog_update_service(
                         sql_run_is_success(
                             delete_blog_tag_by_tag_ids_tran(&mut transactional, blog_id, dels)
                                 .await,
-                        )
-                        .await,
+                        ).await,
                     );
                 }
 
@@ -72,9 +75,9 @@ pub async fn blog_update_service(
                                     .map(|item| item.clone())
                                     .collect::<Vec<SelectBlogTag>>(),
                             )
-                            .await,
+                                .await,
                         )
-                        .await,
+                            .await,
                     );
                 }
 
@@ -91,9 +94,9 @@ pub async fn blog_update_service(
                                     .map(|item| item.clone())
                                     .collect::<Vec<SelectBlogTag>>(),
                             )
-                            .await,
+                                .await,
                         )
-                        .await,
+                            .await,
                     );
                 }
 
@@ -107,7 +110,7 @@ pub async fn blog_update_service(
         } else {
             if let Err(e) = delete_blog_all_tag_by_blog_id(&db_pool, request_blog.id.unwrap()).await
             {
-                error!("{}", e);
+                error!("{:#?}", e);
             }
         }
     }
@@ -125,7 +128,7 @@ pub async fn blog_update_service(
                 _ => String::new(),
             },
         )
-        .await
+            .await
         {
             transactional.rollback().await.unwrap();
             return false;
@@ -157,8 +160,10 @@ pub async fn blog_add_service(
     db_pool: &MySqlPool,
     user_id: i64,
     request_blog: RequestBlog,
+    blog_index: Index,
 ) -> bool {
     let mut transactional = db_pool.begin().await.unwrap();
+    let request_blog_clone = request_blog.clone();
 
     let insert_blog = InsertBlog {
         user_id,
@@ -172,8 +177,11 @@ pub async fn blog_add_service(
 
     if sql_run_is_success(add_blog_tran(&mut transactional, insert_blog).await).await {
         let id = last_insert_id(&mut transactional).await.unwrap();
+        let flag = request_blog.key != None && request_blog.key_title != None &&
+            !request_blog.key.as_ref().unwrap().is_empty() &&
+            !request_blog.key_title.as_ref().unwrap().is_empty();
 
-        if request_blog.key != None || request_blog.key_title != None {
+        if flag {
             if !update_blog_key_by_id_tran_service(
                 &mut transactional,
                 id as i64,
@@ -185,8 +193,7 @@ pub async fn blog_add_service(
                     Some(v) => v,
                     _ => String::new(),
                 },
-            )
-            .await
+            ).await
             {
                 transactional.rollback().await.unwrap();
                 return false;
@@ -197,7 +204,17 @@ pub async fn blog_add_service(
             sql_run_is_success(
                 add_blog_tag_by_ids_tran(&mut transactional, id as i64, request_blog.tag).await,
             )
-            .await;
+                .await;
+        }
+        if !flag {
+            let search_blog = SearchBlog {
+                id: other_dao::last_insert_id(&mut transactional).await.unwrap() as i64,
+                title: request_blog_clone.title,
+                description: request_blog_clone.description,
+                content: request_blog_clone.content,
+            };
+
+            blog_index.add_documents(&[search_blog], Some("id")).await.unwrap();
         }
 
         transactional.commit().await.unwrap();

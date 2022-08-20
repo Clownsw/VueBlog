@@ -138,8 +138,6 @@ pub struct UpdateBlog {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SearchBlog {
     pub id: i64,
-    pub user_id: i64,
-    pub sort_id: i64,
     pub title: String,
     pub description: String,
     pub content: String,
