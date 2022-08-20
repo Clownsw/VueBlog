@@ -1,14 +1,14 @@
 use actix_cors::Cors;
+use actix_web::{App, HttpServer, web};
 use actix_web::guard;
-use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
-use vueblog_common::controller::blog_controller::blog_detail_id_key;
+
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
-        blog_controller::{blog_detail, blog_list, blog_sort_list, blog_tag_list},
+        blog_controller::{blog_detail, blog_detail_id_key, blog_list, blog_sort_list, blog_tag_list},
         default_controller::not_found_page,
         friend_controller::friend_all,
         me_controller::me,
@@ -107,12 +107,12 @@ async fn main() -> std::io::Result<()> {
             .service(sort_list)
             .default_service(
                 web::route()
-                    .guard(guard::Not(guard::Get()))
+                    .guard(guard::Any(guard::Get()).or(guard::Post()))
                     .to(not_found_page),
             )
     })
-    .workers(workers)
-    .bind((server_address, server_port))?
-    .run()
-    .await
+        .workers(workers)
+        .bind((server_address, server_port))?
+        .run()
+        .await
 }

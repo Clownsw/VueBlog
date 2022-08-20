@@ -1,6 +1,6 @@
 use actix_cors::Cors;
+use actix_web::{App, HttpServer, web};
 use actix_web::guard;
-use actix_web::{web, App, HttpServer};
 use log::info;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
@@ -142,12 +142,12 @@ async fn main() -> std::io::Result<()> {
             .service(statistics_blog)
             .default_service(
                 web::route()
-                    .guard(guard::Not(guard::Get()))
+                    .guard(guard::Any(guard::Get()).or(guard::Post()))
                     .to(not_found_page),
             )
     })
-    .workers(workers)
-    .bind((server_address, server_port))?
-    .run()
-    .await
+        .workers(workers)
+        .bind((server_address, server_port))?
+        .run()
+        .await
 }
