@@ -1,15 +1,16 @@
-use super::{
-    sort::SelectSortWithBlog,
-    tag::{SelectBlogOther, SelectBlogTag},
-};
 use chrono::NaiveDateTime;
 use rustc_hash::FxHashMap;
 use serde::{Deserialize, Serialize};
 use sqlx::{mysql::MySqlRow, Row};
 
-/**
- * m_blog实体
- */
+use super::{
+    sort::SelectSortWithBlog,
+    tag::{SelectBlogOther, SelectBlogTag},
+};
+
+///
+/// m_blog实体
+///
 #[derive(Debug, Deserialize, Serialize)]
 pub struct SelectBlog {
     pub id: i64,
@@ -82,17 +83,17 @@ impl SelectShowListBlog {
     }
 }
 
-/**
- * 查询所有文章个数结构
- */
+///
+/// 查询所有文章个数结构
+///
 #[derive(Default, Debug, Deserialize, Serialize)]
 pub struct SelectCountBlog {
     pub count: i64,
 }
 
-/**
- * 请求博文实体
- */
+///
+/// 请求博文实体
+///
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct RequestBlog {
     pub id: Option<i64>,
@@ -107,9 +108,9 @@ pub struct RequestBlog {
     pub key_title: Option<String>,
 }
 
-/**
- * 添加博文实体
- */
+///
+/// 添加博文实体
+///
 #[derive(Debug, Deserialize, Serialize)]
 pub struct InsertBlog {
     pub user_id: i64,
@@ -121,10 +122,10 @@ pub struct InsertBlog {
     pub status: i8,
 }
 
-/**
- * 修改博文实体
- */
-#[derive(Debug, Deserialize, Serialize)]
+///
+/// 修改博文实体
+///
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateBlog {
     pub id: i64,
     pub sort_id: i32,
@@ -132,4 +133,14 @@ pub struct UpdateBlog {
     pub description: String,
     pub content: String,
     pub status: i8,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SearchBlog {
+    pub id: i64,
+    pub user_id: i64,
+    pub sort_id: i64,
+    pub title: String,
+    pub description: String,
+    pub content: String,
 }

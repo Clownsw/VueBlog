@@ -2,6 +2,7 @@ use std::{fmt, future::Future, pin::Pin, process, str::FromStr};
 
 use actix_web::{http::StatusCode, HttpRequest, HttpResponse, HttpResponseBuilder, Responder, web};
 use chrono::Utc;
+use meilisearch_sdk::search::SearchResult;
 use redis::RedisError;
 use redis_async_pool::{deadpool::managed::Object, RedisConnection};
 use reqwest::Client;
@@ -301,6 +302,14 @@ pub async fn remote_upload_file(
         .await?;
 
     Ok(resp.status())
+}
+
+pub async fn search_result_vec_to_vec<T: Clone>(search_result_vec: Vec<SearchResult<T>>) -> Vec<T> {
+    search_result_vec.iter()
+        .map(move |search_result| {
+            search_result.result.clone()
+        })
+        .collect()
 }
 
 pub async fn test_aop<F, T, K>(f: F) -> T
