@@ -1,3 +1,4 @@
+use meilisearch_sdk::client::Client;
 use redis_async_pool::RedisPool;
 use sqlx::mysql::MySqlPool;
 
@@ -7,4 +8,5 @@ use sqlx::mysql::MySqlPool;
 pub struct AppState {
     pub db_pool: MySqlPool,
     pub redis_pool: RedisPool,
+    pub search_client: Client,
 }

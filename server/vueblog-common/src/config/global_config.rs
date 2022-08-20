@@ -18,6 +18,8 @@ pub async fn init_global_config() -> Result<(), anyhow::Error> {
     global_config.friend_limit_num = env::var("FRIEND_LIMIT_NUM")?.parse::<i64>()?;
     global_config.blog_tag_limit_num = env::var("BLOG_TAG_LIMIT_NUM")?.parse::<i64>()?;
     global_config.blog_sort_limit_num = env::var("BLOG_SORT_LIMIT_NUM")?.parse::<i64>()?;
+    global_config.search_server = env::var("SEARCH_SERVER")?;
+    global_config.search_key = env::var("SEARCH_KEY")?;
     GLOBAL_CONFIG.set(global_config);
     Ok(())
 }

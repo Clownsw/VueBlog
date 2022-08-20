@@ -11,6 +11,10 @@ pub struct GlobalConfig {
     pub blog_tag_limit_num: i64,
     // 前台展示分类博文每页展示
     pub blog_sort_limit_num: i64,
+    // 搜索引擎地址
+    pub search_server: String,
+    // 搜索引擎秘钥
+    pub search_key: String,
 }
 
 impl GlobalConfig {
@@ -22,6 +26,8 @@ impl GlobalConfig {
             friend_limit_num: 5,
             blog_tag_limit_num: 5,
             blog_sort_limit_num: 5,
+            search_server: String::new(),
+            search_key: String::new(),
         }
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "vueblog-before"
-version = "0.7.9"
+version = "0.7.10-dev"
 edition = "2021"
 authors = ["smilex<msmliexx1@gmail.com>"]
 
@@ -14,5 +14,6 @@ tokio = { version = "1", features = ["full"] }
 sqlx = { version = "0.5.11", features = ["macros", "json", "chrono", "mysql", "runtime-actix-native-tls"] }
 redis = { version = "0.17.0", features = ["tokio-comp"] }
 redis-async-pool = "0.2.4"
+meilisearch-sdk = "0.17.0"
 
 vueblog-common = { path = "../vueblog-common" }
