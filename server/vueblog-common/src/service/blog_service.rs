@@ -41,8 +41,10 @@ pub async fn blog_update_service(
     request_blog: RequestBlog,
     blog_id: i64,
     new_tag_ids: Vec<i64>,
+    blog_index: Index,
 ) -> bool {
     let mut transactional = db_pool.begin().await.unwrap();
+    let mut request_blog_clone = request_blog.clone();
 
     if let Ok(_) = get_by_id(db_pool, blog_id).await {
         if new_tag_ids.len() > 0 {
@@ -115,7 +117,10 @@ pub async fn blog_update_service(
         }
     }
 
-    if request_blog.key != None || request_blog.key_title != None {
+    let flag = request_blog.key != None && request_blog.key_title != None &&
+        !request_blog.key.as_ref().unwrap().is_empty() &&
+        !request_blog.key_title.as_ref().unwrap().is_empty();
+    if flag {
         if !update_blog_key_by_id_tran_service(
             &mut transactional,
             request_blog.id.clone().unwrap(),
@@ -145,6 +150,17 @@ pub async fn blog_update_service(
     };
 
     if sql_run_is_success(update_blog_by_id(&db_pool, update_blog).await).await {
+        if !flag {
+            let search_blog = SearchBlog {
+                id: request_blog_clone.id.unwrap(),
+                title: request_blog_clone.title,
+                description: request_blog_clone.description,
+                content: request_blog_clone.content,
+            };
+
+            blog_index.add_or_update(&[search_blog], Some("id")).await.unwrap();
+        }
+
         transactional.commit().await.unwrap();
         return true;
     }

@@ -274,7 +274,7 @@ pub async fn blog_edit(
                         if let Some(id) = v.id {
                             let ids = v.tag.iter().map(|item| item.id).collect::<Vec<i64>>();
 
-                            if blog_update_service(&db_pool_clone, v, id, ids).await {
+                            if blog_update_service(&db_pool_clone, v, id, ids, blog_index).await {
                                 resp = build_response_ok_message(String::from(error_util::SUCCESS))
                                     .await;
                             }
