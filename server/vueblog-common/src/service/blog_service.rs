@@ -1,6 +1,5 @@
 use chrono::Local;
 use log::error;
-use meilisearch_sdk::client::Client;
 use meilisearch_sdk::indexes::Index;
 use sqlx::{MySql, MySqlPool, Transaction};
 
@@ -44,7 +43,7 @@ pub async fn blog_update_service(
     blog_index: Index,
 ) -> bool {
     let mut transactional = db_pool.begin().await.unwrap();
-    let mut request_blog_clone = request_blog.clone();
+    let request_blog_clone = request_blog.clone();
 
     if let Ok(_) = get_by_id(db_pool, blog_id).await {
         if new_tag_ids.len() > 0 {

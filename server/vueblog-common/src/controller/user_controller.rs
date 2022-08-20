@@ -90,10 +90,13 @@ pub async fn user_update(
             Box::pin(async move {
                 // 序列化JSON, 如果失败直接返回400
                 match serde_json::from_str::<UpdateUser>(body.as_str()) {
-                    Ok(v) => {
-                        if sql_run_is_success(update_by_id(&db_pool_clone, v).await).await {
-                            return build_response_ok_message(String::from(error_util::SUCCESS))
-                                .await;
+                    Ok(mut v) => {
+                        if let Ok(u) = get_by_id(&db_pool_clone, v.id).await {
+                            v.status = if u.status == 1 { 2 } else { 1 };
+                            if sql_run_is_success(update_by_id(&db_pool_clone, v).await).await {
+                                return build_response_ok_message(String::from(error_util::SUCCESS))
+                                    .await;
+                            }
                         }
                     }
                     Err(_) => {}

@@ -53,7 +53,7 @@ pub async fn is_login_return(
         if let Some(v) = login_info {
             let user = v.data.unwrap();
             if let Ok(v) = get_by_id(&db_pool, user.id).await {
-                if v.status != -1 {
+                if v.status != -1 && v.status == user.status {
                     return (Some(v), None);
                 }
 

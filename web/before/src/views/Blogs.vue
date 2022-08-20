@@ -91,8 +91,6 @@ export default {
               this.blogs.total = resp.data.data.total
               this.blogs.size = resp.data.data.size
             }
-
-            console.log(this.blogs.data.length);
           })
     },
     parseStrToDate(str) {
