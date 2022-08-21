@@ -1,124 +1,114 @@
 <template>
-    <el-dialog
-      class="searchDialog"
-      :visible.sync="searchDialogIsShow"
-      :width="blogSearhWidth"
-      @close="searchDialogCloseHandler"
-    >
-      <div class="searchDialogTitle" slot="title">
+<el-dialog class="searchDialog" top="5%" :visible.sync="searchDialogIsShow" :width="blogSearhWidth" :before-close="searchDialogCloseHandler">
+    <div class="searchDialogTitle" slot="title">
         搜索
         <el-divider></el-divider>
-      </div>
-      <el-input class="searchDialogInput" v-model="searchStr" @change="searchInputChangeHandler"></el-input>
-      <el-card
-        v-for="item in searchBlog"
-        :key="item.id"
-        style="margin-bottom: 10px"
-      >
+    </div>
+    <el-input class="searchDialogInput" v-model="searchStr" @change="searchInputChangeHandler"></el-input>
+    <el-card v-for="item in searchBlog" :key="item.id" style="margin-bottom: 10px">
         <h3 class="blog-title">
-          <router-link
-            :to="{ name: 'BlogDetail', params: { blogId: item.id } }"
-          >
-            {{ item.title }}
-          </router-link>
+            <router-link :to="{ name: 'BlogDetail', params: { blogId: item.id } }">
+                {{ item.title }}
+            </router-link>
         </h3>
 
         <p class="blog-description">{{ item.description }}</p>
-      </el-card>
-    </el-dialog>
-  </div>
+    </el-card>
+</el-dialog>
 </template>
 
 <script>
 import searchApi from "@/api/search";
 
 export default {
-  name: "BlogSearch",
-  data() {
-    return {
-      searchDialogIsShow: false,
-      searchStr: "",
-      searchBlog: [],
-      blogSearhWidth: "45%",
-    };
-  },
-  methods: {
-    searchDialogCloseHandler() {
-      this.searchStr = ''
-      this.searchBlog = []
+    name: "BlogSearch",
+    data() {
+        return {
+            searchDialogIsShow: false,
+            searchStr: "",
+            searchBlog: [],
+            blogSearhWidth: "45%",
+        };
     },
-    searchInputChangeHandler(newValue) {
-      this.searchStr = newValue;
-      if (newValue === "") {
-        this.searchBlog = []
-      } else {
-        searchApi.searchBlog(newValue).then((resp) => {
-          this.searchBlog = resp.data.data
-        })
-      }
+    methods: {
+        searchDialogCloseHandler(done) {
+            this.searchStr = ''
+            this.searchBlog = []
+            done()
+        },
+        searchInputChangeHandler(newValue) {
+            this.searchStr = newValue;
+            if (newValue === "") {
+                this.searchBlog = []
+            } else {
+                searchApi.searchBlog(newValue).then((resp) => {
+                    this.searchBlog = resp.data.data
+                })
+            }
+        },
+        setBlogSearchDialogWidth() {
+            let windowSize = document.body.clientWidth;
+            if (windowSize <= 700) {
+                this.blogSearhWidth = "95%";
+            } else if (windowSize <= 900) {
+                this.blogSearhWidth = "85%";
+            } else if (windowSize <= 1300) {
+                this.blogSearhWidth = "75%";
+            } else {
+                this.blogSearhWidth = "45%";
+            }
+        },
     },
-    setBlogSearchDialogWidth() {
-      let windowSize = document.body.clientWidth;
-      if (windowSize <= 700) {
-        this.blogSearhWidth = "95%";
-      } else if (windowSize <= 900) {
-        this.blogSearhWidth = "85%";
-      } else if (windowSize <= 1300) {
-        this.blogSearhWidth = "75%";
-      } else {
-        this.blogSearhWidth = "45%";
-      }
+    mounted() {
+        this.setBlogSearchDialogWidth()
+        window.onresize = () => {
+            return (() => {
+                this.setBlogSearchDialogWidth()
+            })();
+        };
     },
-  },
-  mounted() {
-    window.onresize = () => {
-      return (() => {
-        this.setBlogSearchDialogWidth();
-      })();
-    };
-  },
 };
 </script>
 
 <style scoped>
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .blog-title ::v-deep a {
-  color: #303133;
+    color: #303133;
 }
 
 .blog-description {
-  color: #a0a3a8;
+    color: #a0a3a8;
 }
 
 .blog-footer {
-  font-size: 13px;
-  color: #a0a3a8;
-  margin-block-start: 1em;
-  margin-block-end: 0;
+    font-size: 13px;
+    color: #a0a3a8;
+    margin-block-start: 1em;
+    margin-block-end: 0;
 }
 
 .searchDialog .searchDialogTitle {
-  text-align: left;
+    text-align: left;
 }
 
 .searchDialog .searchDialogInput {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .searchDialog ::v-deep .el-dialog__header {
-  padding: 20px 20px 0 !important;
+    padding: 20px 20px 0 !important;
 }
 
 .searchDialog ::v-deep .el-divider--horizontal {
-  margin: 18px 0 !important;
+    margin: 18px 0 !important;
 }
 
 .searchDialog ::v-deep .el-dialog__body {
-  padding-top: 0 !important;
-  padding-bottom: 20px !important;
-  text-align: left !important;
+    padding-top: 0 !important;
+    padding-bottom: 20px !important;
+    text-align: left !important;
 }
 </style>
