@@ -2,7 +2,8 @@
     <el-dialog
       class="searchDialog"
       :visible.sync="searchDialogIsShow"
-      width="40%"
+      :width="blogSearhWidth"
+      @close="searchDialogCloseHandler"
     >
       <div class="searchDialogTitle" slot="title">
         搜索
@@ -30,6 +31,7 @@
 
 <script>
 import searchApi from "@/api/search";
+
 export default {
   name: "BlogSearch",
   data() {
@@ -37,19 +39,43 @@ export default {
       searchDialogIsShow: false,
       searchStr: "",
       searchBlog: [],
+      blogSearhWidth: "45%",
     };
   },
   methods: {
+    searchDialogCloseHandler() {
+      this.searchStr = ''
+      this.searchBlog = []
+    },
     searchInputChangeHandler(newValue) {
       this.searchStr = newValue;
       if (newValue === "") {
-        this.searchBlog = [];
+        this.searchBlog = []
       } else {
         searchApi.searchBlog(newValue).then((resp) => {
-          this.searchBlog = resp.data.data;
-        });
+          this.searchBlog = resp.data.data
+        })
       }
     },
+    setBlogSearchDialogWidth() {
+      let windowSize = document.body.clientWidth;
+      if (windowSize <= 700) {
+        this.blogSearhWidth = "95%";
+      } else if (windowSize <= 900) {
+        this.blogSearhWidth = "85%";
+      } else if (windowSize <= 1300) {
+        this.blogSearhWidth = "75%";
+      } else {
+        this.blogSearhWidth = "45%";
+      }
+    },
+  },
+  mounted() {
+    window.onresize = () => {
+      return (() => {
+        this.setBlogSearchDialogWidth();
+      })();
+    };
   },
 };
 </script>

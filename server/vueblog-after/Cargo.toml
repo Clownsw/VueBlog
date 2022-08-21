@@ -1,6 +1,6 @@
 [package]
 name = "vueblog-after"
-version = "0.7.10"
+version = "0.7.11-dev"
 edition = "2021"
 authors = ["smilex<msmliexx1@gmail.com>"]
 
