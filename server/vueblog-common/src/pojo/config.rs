@@ -15,6 +15,8 @@ pub struct GlobalConfig {
     pub search_server: String,
     // 搜索引擎秘钥
     pub search_key: String,
+    // 搜索结果最大长度
+    pub search_limit: usize,
 }
 
 impl GlobalConfig {
@@ -28,6 +30,7 @@ impl GlobalConfig {
             blog_sort_limit_num: 5,
             search_server: String::new(),
             search_key: String::new(),
+            search_limit: 50,
         }
     }
 }

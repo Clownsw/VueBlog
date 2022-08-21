@@ -142,3 +142,10 @@ pub struct SearchBlog {
     pub description: String,
     pub content: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SearchBlogResult {
+    pub id: i64,
+    pub title: String,
+    pub description: String,
+}

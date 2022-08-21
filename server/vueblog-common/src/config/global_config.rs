@@ -20,6 +20,7 @@ pub async fn init_global_config() -> Result<(), anyhow::Error> {
     global_config.blog_sort_limit_num = env::var("BLOG_SORT_LIMIT_NUM")?.parse::<i64>()?;
     global_config.search_server = env::var("SEARCH_SERVER")?;
     global_config.search_key = env::var("SEARCH_KEY")?;
+    global_config.search_limit = env::var("SEARCH_LIMIT")?.parse::<usize>()?;
     GLOBAL_CONFIG.set(global_config);
     Ok(())
 }
