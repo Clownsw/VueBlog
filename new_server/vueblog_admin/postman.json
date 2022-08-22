@@ -1,0 +1,117 @@
+{
+	"info": {
+		"_postman_id": "843967c9-3254-485b-845c-f565747d6541",
+		"name": "test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "资源分页",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_res_page"
+			},
+			"response": []
+		},
+		{
+			"name": "角色分页",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"page\":1,\r\n    \"size\":5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_role_page"
+			},
+			"response": []
+		},
+		{
+			"name": "权限添加",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"parent_id\":null,\r\n    \"name\":\"超级管理员权限\",\r\n    \"path\":null,\r\n    \"permission\":\"SuperPower\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_res_add"
+			},
+			"response": []
+		},
+		{
+			"name": "账号分页",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_user_page"
+			},
+			"response": []
+		},
+		{
+			"name": "登陆",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account\":\"00000000000\",\n    \"password\":\"123456\",\n    \"vcode\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_login"
+			},
+			"response": []
+		},
+		{
+			"name": "账号添加",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"account\":\"1896954211\",\n    \"password\":\"123456\",\n    \"name\":\"xxxx\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/admin/sys_user_add"
+			},
+			"response": []
+		}
+	]
+}
