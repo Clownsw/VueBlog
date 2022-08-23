@@ -43,6 +43,20 @@ export const asyncRouterMap = [
           }
         ]
       },
+      {
+        path: '/blog',
+        redirect: '',
+        component: RouteView,
+        meta: { title: '', icon: 'form', permission: ['form'] },
+        children: [
+          {
+            path: '/form/base-form',
+            name: 'BaseForm',
+            component: () => import('@/views/form/basicForm'),
+            meta: { title: 'menu.form.basic-form', keepAlive: true, permission: ['form'] }
+          },
+        ]
+      },
       // forms
       {
         path: '/form',

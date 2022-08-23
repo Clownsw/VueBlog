@@ -1,10 +1,11 @@
+use actix_web::{App, HttpResponse, HttpServer, Responder, web};
+
 use vueblog_admin::controller::{
-    img_controller, sys_auth_controller, sys_dict_controller, sys_res_controller,
-    sys_role_controller, sys_user_controller,
+    img_controller, sys_auth_controller, sys_blog_controller, sys_dict_controller,
+    sys_res_controller, sys_role_controller, sys_user_controller,
 };
 use vueblog_admin::middleware::auth_actix::Auth;
 use vueblog_admin::service::CONTEXT;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 async fn index() -> impl Responder {
     HttpResponse::Ok()
@@ -118,8 +119,12 @@ async fn main() -> std::io::Result<()> {
                 "/admin/auth/check",
                 web::post().to(sys_auth_controller::check),
             )
+            .route(
+                "/admin/blog/all",
+                web::get().to(sys_blog_controller::all),
+            )
     })
-    .bind(&CONTEXT.config.server_url)?
-    .run()
-    .await
+        .bind(&CONTEXT.config.server_url)?
+        .run()
+        .await
 }

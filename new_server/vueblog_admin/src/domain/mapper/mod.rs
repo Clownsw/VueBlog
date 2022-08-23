@@ -1,3 +1,4 @@
+pub mod blog;
 pub mod sys_dict;
 pub mod sys_res;
 pub mod sys_role;

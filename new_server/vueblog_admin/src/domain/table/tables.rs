@@ -1,5 +1,7 @@
-use crate::domain::table::LoginCheck;
 use rbatis::rbdc::datetime::FastDateTime;
+
+use crate::domain::table::LoginCheck;
+
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysRes {
@@ -77,4 +79,16 @@ pub struct SysTrash {
     pub table_name: Option<String>,
     pub data: Option<String>,
     pub create_date: Option<FastDateTime>,
+}
+
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct SysBlog {
+    pub id: i64,
+    pub user_id: i64,
+    pub sort_id: i32,
+    pub title: String,
+    pub description: String,
+    pub content: String,
+    pub created: FastDateTime,
+    pub status: i16,
 }

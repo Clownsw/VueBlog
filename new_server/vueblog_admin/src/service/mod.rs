@@ -1,5 +1,27 @@
+use rbatis::rbatis::Rbatis;
+use rbdc_mysql::driver::MysqlDriver;
+
+pub use cache_service::*;
+pub use mem_service::*;
+pub use redis_service::*;
+pub use sys_auth_service::*;
+pub use sys_blog_service::*;
+pub use sys_config_service::*;
+pub use sys_dict_service::*;
+pub use sys_res_service::*;
+pub use sys_role_res_service::*;
+pub use sys_role_service::*;
+pub use sys_sms_service::*;
+pub use sys_trash_service::*;
+pub use sys_user_role_service::*;
+pub use sys_user_service::*;
+
+pub use crate::config::config::ApplicationConfig;
+
 /// 服务层
 ///
+/// 系统文章服务
+mod sys_blog_service;
 /// 缓存抽象服务
 mod cache_service;
 /// 内存缓存服务
@@ -27,26 +49,10 @@ mod sys_user_role_service;
 /// 系统用户服务
 mod sys_user_service;
 
-pub use crate::config::config::ApplicationConfig;
-pub use cache_service::*;
-pub use mem_service::*;
-use rbatis::rbatis::Rbatis;
-use rbdc_mysql::driver::MysqlDriver;
-pub use redis_service::*;
-pub use sys_auth_service::*;
-pub use sys_config_service::*;
-pub use sys_dict_service::*;
-pub use sys_res_service::*;
-pub use sys_role_res_service::*;
-pub use sys_role_service::*;
-pub use sys_sms_service::*;
-pub use sys_trash_service::*;
-pub use sys_user_role_service::*;
-pub use sys_user_service::*;
-
 pub struct ServiceContext {
     pub config: ApplicationConfig,
     pub rbatis: Rbatis,
+    pub sys_blog_service: SysBlogService,
     pub cache_service: CacheService,
     pub sys_res_service: SysResService,
     pub sys_user_service: SysUserService,
@@ -69,7 +75,15 @@ impl ServiceContext {
             .link(MysqlDriver {}, &self.config.database_url)
             .await
             .expect("[vueblog_admin] rbatis pool init fail!");
-        println!("[vueblog_admin] rbatis pool init success! pool state = {:?}", self.rbatis.get_pool().expect("pool not init!").inner.state().await);
+        println!(
+            "[vueblog_admin] rbatis pool init success! pool state = {:?}",
+            self.rbatis
+                .get_pool()
+                .expect("pool not init!")
+                .inner
+                .state()
+                .await
+        );
         log::info!(
             " - Local:   http://{}",
             self.config.server_url.replace("0.0.0.0", "127.0.0.1")
@@ -92,6 +106,7 @@ impl Default for ServiceContext {
             sys_auth_service: SysAuthService {},
             sys_trash_service: SysTrashService {},
             config,
+            sys_blog_service: SysBlogService {},
         }
     }
 }

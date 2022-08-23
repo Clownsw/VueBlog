@@ -1,9 +1,6 @@
-pub mod dict;
-pub mod jwt;
-pub mod res;
-pub mod role;
-pub mod sign_in;
-pub mod user;
+use actix_web::HttpResponse;
+use serde::{Deserialize, Serialize};
+use serde::de::DeserializeOwned;
 
 pub use dict::*;
 pub use jwt::*;
@@ -12,9 +9,14 @@ pub use role::*;
 pub use sign_in::*;
 
 use crate::error::Error;
-use actix_web::HttpResponse;
-use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
+
+pub mod dict;
+pub mod jwt;
+pub mod res;
+pub mod role;
+pub mod sign_in;
+pub mod user;
+pub mod blog;
 
 pub const CODE_SUCCESS: &str = "SUCCESS";
 pub const CODE_FAIL: &str = "FAIL";
@@ -28,8 +30,8 @@ pub struct RespVO<T> {
 }
 
 impl<T> RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     pub fn from_result(arg: &Result<T, Error>) -> Self {
         if arg.is_ok() {
@@ -89,8 +91,8 @@ where
 }
 
 impl<T> ToString for RespVO<T>
-where
-    T: Serialize + DeserializeOwned + Clone,
+    where
+        T: Serialize + DeserializeOwned + Clone,
 {
     fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()

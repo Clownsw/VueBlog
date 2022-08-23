@@ -10,3 +10,5 @@ pub mod sys_res_controller;
 pub mod sys_role_controller;
 ///系统用户接口
 pub mod sys_user_controller;
+///系统文章接口
+pub mod sys_blog_controller;
