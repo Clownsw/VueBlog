@@ -49,25 +49,3 @@ impl JWTToken {
         };
     }
 }
-
-#[cfg(test)]
-mod test {
-    use crate::domain::vo::JWTToken;
-    use rbatis::rbdc::types::datetime::FastDateTime;
-    use std::thread::sleep;
-    use std::time::Duration;
-
-    #[test]
-    fn test_jwt() {
-        let j = JWTToken {
-            id: "1".to_string(),
-            account: "189".to_string(),
-            permissions: vec![],
-            role_ids: vec![],
-            exp: FastDateTime::now().set_micro(0).timestamp_millis() as usize,
-        };
-        sleep(Duration::from_secs(5));
-        let token = j.create_token("ssss").unwrap();
-        assert_eq!(JWTToken::verify("ssss", &token).unwrap(), j);
-    }
-}
