@@ -123,6 +123,10 @@ async fn main() -> std::io::Result<()> {
                 "/admin/blog/all",
                 web::get().to(sys_blog_controller::all),
             )
+            .route(
+                "/admin/blog/page",
+                web::get().to(sys_blog_controller::page),
+            )
     })
         .bind(&CONTEXT.config.server_url)?
         .run()
