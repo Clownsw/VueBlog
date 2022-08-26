@@ -18,10 +18,6 @@ pub use sys_user_service::*;
 
 pub use crate::config::config::ApplicationConfig;
 
-/// 服务层
-///
-/// 系统文章服务
-mod sys_blog_service;
 /// 缓存抽象服务
 mod cache_service;
 /// 内存缓存服务
@@ -30,6 +26,10 @@ mod mem_service;
 mod redis_service;
 /// 系统授权服务
 mod sys_auth_service;
+/// 服务层
+///
+/// 系统文章服务
+mod sys_blog_service;
 /// 系统配置服务
 mod sys_config_service;
 /// 系统字典服务
@@ -81,8 +81,7 @@ impl ServiceContext {
                 .get_pool()
                 .expect("pool not init!")
                 .inner
-                .state()
-                .await
+                .status()
         );
         log::info!(
             " - Local:   http://{}",
