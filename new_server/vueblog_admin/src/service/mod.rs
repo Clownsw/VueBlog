@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use rbatis::rbatis::Rbatis;
 use rbdc_mysql::driver::MysqlDriver;
 
@@ -110,9 +111,7 @@ impl Default for ServiceContext {
     }
 }
 
-lazy_static! {
-    pub static ref CONTEXT: ServiceContext = ServiceContext::default();
-}
+pub static CONTEXT: Lazy<ServiceContext> = Lazy::new(|| ServiceContext::default());
 
 #[macro_export]
 macro_rules! pool {
