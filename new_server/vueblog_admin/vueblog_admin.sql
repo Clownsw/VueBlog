@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地
+ Source Server         : mysql8-3333
  Source Server Type    : MySQL
  Source Server Version : 80028
- Source Host           : localhost:3306
+ Source Host           : localhost:3333
  Source Schema         : vueblog_admin
 
  Target Server Type    : MySQL
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 23/08/2022 22:21:43
+ Date: 27/08/2022 13:33:22
 */
 
 SET NAMES utf8mb4;
@@ -32,11 +32,12 @@ CREATE TABLE `sys_blog`  (
   `status` tinyint NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   FULLTEXT INDEX `VUEBLOG_M_BLOG_TITLE_DESCRIPTION_CONTENT_FULL_TEXT`(`title`, `description`, `content`)
-) ENGINE = InnoDB AUTO_INCREMENT = 57 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 58 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_blog
 -- ----------------------------
+INSERT INTO `sys_blog` VALUES (57, 1, 1, '1', '1', '1', '2022-08-27 11:11:23', 0);
 
 -- ----------------------------
 -- Table structure for sys_dict
@@ -49,7 +50,7 @@ CREATE TABLE `sys_dict`  (
   `state` int NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dict
@@ -68,7 +69,7 @@ CREATE TABLE `sys_res`  (
   `del` int NOT NULL DEFAULT 1,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_res
@@ -95,7 +96,7 @@ CREATE TABLE `sys_role`  (
   `create_date` datetime NOT NULL,
   `parent_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '父id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -112,7 +113,7 @@ CREATE TABLE `sys_role_res`  (
   `res_id` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_res
@@ -137,11 +138,12 @@ CREATE TABLE `sys_trash`  (
   `table_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   `create_date` datetime NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_trash
 -- ----------------------------
+INSERT INTO `sys_trash` VALUES ('6309ac6300c95c84008f8b74', 'sys_user', '{\"id\":\"270466997106642944\",\"account\":\"15625285826\",\"password\":\"e10adc3949ba59abbe56e057f20f883e\",\"name\":\"johnson\",\"login_check\":null,\"state\":1,\"del\":0,\"create_date\":\"2021-08-18 16:19:17\"}', '2022-08-27 13:32:20');
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -157,13 +159,12 @@ CREATE TABLE `sys_user`  (
   `create_date` datetime NOT NULL,
   `state` int NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('205667537625681919', '00000000000', 'e10adc3949ba59abbe56e057f20f883e', '超级管理员', 'PasswordCheck', 0, '2020-07-28 08:34:40', 1);
-INSERT INTO `sys_user` VALUES ('270466997106642944', '15625285826', 'e10adc3949ba59abbe56e057f20f883e', 'johnson', NULL, 0, '2021-08-18 16:19:17', 1);
+INSERT INTO `sys_user` VALUES ('205667537625681919', '00000000000', '4297f44b13955235245b2497399d7a93', '超级管理员', 'PasswordCheck', 0, '2020-07-28 08:34:40', 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -175,12 +176,11 @@ CREATE TABLE `sys_user_role`  (
   `role_id` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('1', '205667537625681919', '1', '2020-07-28 08:34:40');
-INSERT INTO `sys_user_role` VALUES ('270466997110837248', '270466997106642944', '1', '2021-08-18 16:19:17');
+INSERT INTO `sys_user_role` VALUES ('6309ac7500c95c84008f8b75', '205667537625681919', '1', '2022-08-27 13:32:37');
 
 SET FOREIGN_KEY_CHECKS = 1;

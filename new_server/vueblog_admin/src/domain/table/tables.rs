@@ -84,11 +84,11 @@ pub struct SysTrash {
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysBlog {
     pub id: i64,
-    pub user_id: i64,
-    pub sort_id: i32,
-    pub title: String,
-    pub description: String,
-    pub content: String,
-    pub created: FastDateTime,
-    pub status: i16,
+    pub user_id: Option<i64>,
+    pub sort_id: Option<i32>,
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub content: Option<String>,
+    pub created: Option<FastDateTime>,
+    pub status: Option<i16>,
 }

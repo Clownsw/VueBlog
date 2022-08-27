@@ -1,11 +1,7 @@
-use actix_web::Responder;
-use crate::domain::vo::RespVO;
+use crate::domain::{dto::blog::BlogPageDTO, vo::RespVO};
 use crate::service::CONTEXT;
+use actix_web::{web, Responder};
 
-pub async fn all() -> impl Responder {
-    RespVO::from_result(&CONTEXT.sys_blog_service.select_all().await).resp_json()
-}
-
-pub async fn page() -> impl Responder {
-    RespVO::from_result(&CONTEXT.sys_blog_service.select_page().await).resp_json()
+pub async fn blog_page(page: web::Json<BlogPageDTO>) -> impl Responder {
+    RespVO::from_result(&CONTEXT.sys_blog_service.select_id_page(page.0.into()).await).resp_json()
 }

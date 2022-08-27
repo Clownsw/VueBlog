@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
     //日志追加器
     vueblog_admin::config::log::init_log();
     //连接数据库
-    CONTEXT.link_db().await;
+    CONTEXT.init_pool().await;
     //路由
     HttpServer::new(|| {
         App::new()
@@ -120,12 +120,8 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(sys_auth_controller::check),
             )
             .route(
-                "/admin/blog/all",
-                web::get().to(sys_blog_controller::all),
-            )
-            .route(
                 "/admin/blog/page",
-                web::get().to(sys_blog_controller::page),
+                web::post().to(sys_blog_controller::blog_page)
             )
     })
         .bind(&CONTEXT.config.server_url)?

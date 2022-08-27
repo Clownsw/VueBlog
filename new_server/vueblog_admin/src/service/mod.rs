@@ -66,7 +66,7 @@ pub struct ServiceContext {
 }
 
 impl ServiceContext {
-    pub async fn link_db(&self) {
+    pub async fn init_pool(&self) {
         //连接数据库
         println!(
             "[vueblog_admin] rbatis pool init ({})...",

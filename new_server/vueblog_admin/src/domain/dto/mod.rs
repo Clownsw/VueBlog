@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod blog;
 pub mod dict;
 pub mod res;
 pub mod role;
