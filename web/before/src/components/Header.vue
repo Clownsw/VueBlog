@@ -87,4 +87,8 @@ export default {
 .m-action {
   margin: 10px 0;
 }
+
+.aplayer {
+  z-index: 9999 !important;
+}
 </style>
