@@ -1,20 +1,20 @@
-use crate::error::Error;
-use crate::error::Result;
-use crate::service::CONTEXT;
+use std::collections::BTreeMap;
+use std::time::Duration;
+
+use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::types::datetime::FastDateTime;
 use rbatis::sql::page::{Page, PageRequest};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserPageDTO, UserRoleAddDTO};
 use crate::domain::table::{LoginCheck, SysUser};
-use crate::domain::vo::user::SysUserVO;
 use crate::domain::vo::{JWTToken, SignInVO, SysResVO};
+use crate::domain::vo::user::SysUserVO;
+use crate::error::Error;
+use crate::error::Result;
 use crate::pool;
-use crate::util::password_encoder::PasswordEncoder;
-use rbatis::plugin::object_id::ObjectId;
-use std::collections::BTreeMap;
-use std::time::Duration;
-
+use crate::service::CONTEXT;
 use crate::util::options::OptionStringRefUnwrapOrDefault;
+use crate::util::password_encoder::PasswordEncoder;
 
 const REDIS_KEY_RETRY: &'static str = "login:login_retry";
 
@@ -30,7 +30,7 @@ impl SysUserService {
             arg.name.as_deref().unwrap_or_default(),
             arg.account.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         let page = Page::<SysUserVO>::from(sys_user_page);
         return Ok(page);
     }

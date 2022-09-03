@@ -1,4 +1,4 @@
-use actix_web::{web, Responder};
+use actix_web::{Responder, web};
 use rbatis::plugin::object_id::ObjectId;
 use rbatis::rbdc::types::datetime::FastDateTime;
 

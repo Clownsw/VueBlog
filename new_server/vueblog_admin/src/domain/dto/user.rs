@@ -1,6 +1,7 @@
-use crate::domain::table::LoginCheck;
 use rbatis::sql::PageRequest;
 use serde::{Deserialize, Serialize};
+
+use crate::domain::table::LoginCheck;
 
 /// 用户
 #[derive(Serialize, Deserialize, Clone, Debug)]

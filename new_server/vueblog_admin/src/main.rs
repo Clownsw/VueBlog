@@ -121,7 +121,7 @@ async fn main() -> std::io::Result<()> {
             )
             .route(
                 "/admin/blog/page",
-                web::post().to(sys_blog_controller::blog_page)
+                web::post().to(sys_blog_controller::blog_page),
             )
     })
         .bind(&CONTEXT.config.server_url)?

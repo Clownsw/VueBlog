@@ -1,9 +1,10 @@
+use actix_web::{Responder, web};
+
 use crate::domain::dto::{
     EmptyDTO, IdDTO, SysRoleResAddDTO, SysRoleResPageDTO, SysRoleResUpdateDTO,
 };
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
-use actix_web::{web, Responder};
 
 /// 角色（关联资源）添加
 pub async fn add(arg: web::Json<SysRoleResAddDTO>) -> impl Responder {

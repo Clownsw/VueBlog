@@ -1,14 +1,15 @@
+use std::collections::{BTreeMap, HashMap};
+
+use rbatis::plugin::object_id::ObjectId;
+use rbatis::rbdc::types::datetime::FastDateTime;
+use rbatis::sql::{Page, PageRequest};
+
 use crate::domain::dto::{RoleAddDTO, RoleEditDTO, RolePageDTO};
 use crate::domain::table::{SysRole, SysRoleRes, SysUserRole};
 use crate::domain::vo::{SysResVO, SysRoleVO};
 use crate::error::Result;
-use crate::service::CONTEXT;
-use rbatis::rbdc::types::datetime::FastDateTime;
-
 use crate::pool;
-use rbatis::plugin::object_id::ObjectId;
-use rbatis::sql::{Page, PageRequest};
-use std::collections::{BTreeMap, HashMap};
+use crate::service::CONTEXT;
 
 const RES_KEY: &'static str = "sys_role:all";
 
@@ -23,7 +24,7 @@ impl SysRoleService {
             &PageRequest::from(arg),
             arg.name.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         let all_role = self.finds_all_map().await?;
         let mut page = Page::<SysRoleVO>::from(data);
         for mut vo in &mut page.records {

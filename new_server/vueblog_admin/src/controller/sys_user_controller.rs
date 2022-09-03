@@ -1,4 +1,4 @@
-use actix_web::{web, HttpRequest, Responder};
+use actix_web::{HttpRequest, Responder, web};
 
 use crate::domain::dto::{IdDTO, SignInDTO, UserAddDTO, UserEditDTO, UserRolePageDTO};
 use crate::domain::vo::{JWTToken, RespVO};

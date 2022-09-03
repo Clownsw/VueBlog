@@ -1,8 +1,10 @@
-use crate::service::CONTEXT;
+use std::time::Duration;
+
 use fast_log::config::Config;
 use fast_log::consts::LogSize;
 use fast_log::plugin::file_split::{FileSplitAppender, Packer, RollingType};
-use std::time::Duration;
+
+use crate::service::CONTEXT;
 
 pub fn init_log() {
     //create log dir

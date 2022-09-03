@@ -1,11 +1,13 @@
 use std::time::Duration;
 
-use crate::error::{Error, Result};
-use crate::service::ICacheService;
 use async_trait::async_trait;
 use log::error;
 use redis::aio::Connection;
 use redis::RedisResult;
+
+use crate::error::{Error, Result};
+use crate::service::ICacheService;
+
 ///Redis缓存服务
 pub struct RedisService {
     pub client: redis::Client,

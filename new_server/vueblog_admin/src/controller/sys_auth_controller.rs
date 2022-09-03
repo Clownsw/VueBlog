@@ -1,7 +1,8 @@
+use actix_web::{Responder, web};
+
 use crate::domain::dto::auth::SysAuthDTO;
 use crate::domain::vo::RespVO;
 use crate::service::CONTEXT;
-use actix_web::{web, Responder};
 
 ///检测token以及path 是否有效且允许访问
 pub async fn check(arg: web::Json<SysAuthDTO>) -> impl Responder {

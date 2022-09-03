@@ -1,6 +1,9 @@
-use crate::domain::table::SysRes;
-use rbatis::rbdc::types::datetime::FastDateTime;
 use std::collections::HashMap;
+
+use rbatis::rbdc::types::datetime::FastDateTime;
+
+use crate::domain::table::SysRes;
+
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysResVO {

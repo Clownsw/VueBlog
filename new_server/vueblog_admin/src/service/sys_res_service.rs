@@ -1,5 +1,6 @@
-use rbatis::sql::{Page, PageRequest};
 use std::collections::{BTreeMap, HashMap};
+
+use rbatis::sql::{Page, PageRequest};
 
 use crate::domain::dto::{ResEditDTO, ResPageDTO};
 use crate::domain::table::SysRes;
@@ -8,6 +9,7 @@ use crate::error::Error;
 use crate::error::Result;
 use crate::pool;
 use crate::service::CONTEXT;
+
 const RES_KEY: &'static str = "sys_res:all";
 
 /// 资源服务
@@ -37,7 +39,7 @@ impl SysResService {
             arg.permission.as_deref().unwrap_or_default(),
             arg.name.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "权限已存在! 权限:{:?}",

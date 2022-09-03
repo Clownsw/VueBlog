@@ -1,4 +1,5 @@
 use crate::domain::table::*;
+
 crud!(SysRole {});
 
 impl_select!(SysRole{select_list_by_ids(ids:&[String])=>

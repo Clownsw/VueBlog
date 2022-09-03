@@ -1,11 +1,12 @@
+use actix_web::{HttpResponse, Responder, web};
+use captcha::Captcha;
+use captcha::filters::{Dots, Noise, Wave};
+
 use crate::domain::dto::CatpchaDTO;
 use crate::domain::vo::RespVO;
 use crate::error::Error;
 use crate::service::CONTEXT;
 use crate::util::string::IsEmptyString;
-use actix_web::{web, HttpResponse, Responder};
-use captcha::filters::{Dots, Noise, Wave};
-use captcha::Captcha;
 
 ///图形验证码接口(注意，debug模式无论缓存是否连接成功都返回图片，release模式则校验缓存(例如redis)是否存储成功)
 /// 请求方式 GET

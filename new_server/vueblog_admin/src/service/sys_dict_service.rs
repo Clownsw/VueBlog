@@ -29,7 +29,7 @@ impl SysDictService {
             rbatis::field_name!(SysDict.id),
             arg.id.as_deref().unwrap_or_default(),
         )
-        .await?;
+            .await?;
         if old.len() > 0 {
             return Err(Error::from(format!(
                 "字典已存在! code={}",

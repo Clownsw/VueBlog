@@ -1,5 +1,7 @@
-use crate::domain::table::SysDict;
 use rbatis::rbdc::types::datetime::FastDateTime;
+
+use crate::domain::table::SysDict;
+
 ///权限资源表
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct SysDictVO {

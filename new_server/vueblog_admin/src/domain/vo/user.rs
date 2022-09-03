@@ -1,7 +1,8 @@
-use crate::domain::table::{LoginCheck, SysUser};
-use crate::domain::vo::SysRoleVO;
 use rbatis::rbdc::datetime::FastDateTime;
 use serde::{Deserialize, Serialize};
+
+use crate::domain::table::{LoginCheck, SysUser};
+use crate::domain::vo::SysRoleVO;
 
 ///后台用户
 #[derive(Clone, Debug, Serialize, Deserialize)]

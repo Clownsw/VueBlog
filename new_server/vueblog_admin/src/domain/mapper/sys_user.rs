@@ -1,4 +1,5 @@
 use crate::domain::table::*;
+
 crud!(SysUser {});
 
 impl_select_page!(SysUser{select_page(name:&str,account:&str)=>

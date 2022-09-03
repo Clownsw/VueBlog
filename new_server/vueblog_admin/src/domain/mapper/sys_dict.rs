@@ -1,4 +1,5 @@
 use crate::domain::table::*;
+
 crud!(SysDict {});
 impl_select_page!(SysDict{select_page(dto: &crate::domain::dto::DictPageDTO) =>
     "`where id!=''`

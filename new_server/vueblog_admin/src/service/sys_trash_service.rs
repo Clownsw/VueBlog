@@ -1,17 +1,18 @@
-use crate::domain::table::SysTrash;
-use crate::pool;
 use rbatis::object_id::ObjectId;
 use rbatis::rbdc::datetime::FastDateTime;
 use rbatis::rbdc::Error;
 use serde::Serialize;
+
+use crate::domain::table::SysTrash;
+use crate::pool;
 
 /// 一个垃圾桶服务，可以回收数据。找回数据，展示垃圾桶数据
 pub struct SysTrashService {}
 
 impl SysTrashService {
     pub async fn add<T>(&self, table_name: &str, args: &[T]) -> Result<u64, Error>
-    where
-        T: Serialize,
+        where
+            T: Serialize,
     {
         if args.is_empty() {
             return Ok(0);

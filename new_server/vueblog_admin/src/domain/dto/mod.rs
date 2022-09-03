@@ -1,10 +1,4 @@
-pub mod auth;
-pub mod blog;
-pub mod dict;
-pub mod res;
-pub mod role;
-pub mod sign_in;
-pub mod user;
+use serde::{Deserialize, Serialize};
 
 pub use auth::*;
 pub use dict::*;
@@ -13,7 +7,13 @@ pub use role::*;
 pub use sign_in::*;
 pub use user::*;
 
-use serde::{Deserialize, Serialize};
+pub mod auth;
+pub mod blog;
+pub mod dict;
+pub mod res;
+pub mod role;
+pub mod sign_in;
+pub mod user;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmptyDTO {}

@@ -1,7 +1,8 @@
-use crate::error::Error;
+use jsonwebtoken::{decode, DecodingKey, encode, EncodingKey, Header, Validation};
 use jsonwebtoken::errors::ErrorKind;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+
+use crate::error::Error;
 
 /// JWT 鉴权 Token结构
 #[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]

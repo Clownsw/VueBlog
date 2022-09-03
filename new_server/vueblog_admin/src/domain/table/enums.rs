@@ -1,5 +1,6 @@
-use serde::{Deserializer, Serializer};
 use std::fmt::{Display, Formatter};
+
+use serde::{Deserializer, Serializer};
 
 #[derive(Clone, Debug)]
 pub enum LoginCheck {
@@ -22,8 +23,8 @@ impl Display for LoginCheck {
 
 impl serde::Serialize for LoginCheck {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+        where
+            S: Serializer,
     {
         self.to_string().serialize(serializer)
     }
@@ -31,8 +32,8 @@ impl serde::Serialize for LoginCheck {
 
 impl<'de> serde::Deserialize<'de> for LoginCheck {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+        where
+            D: Deserializer<'de>,
     {
         let v = String::deserialize(deserializer)?;
         Ok(match v.as_str() {
