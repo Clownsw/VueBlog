@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :welcome="systemInfo.welcome"></Header>
+    <Header ref="header" :welcome="systemInfo.welcome"></Header>
     <div class="m-blog">
       <h1 class="m-blog-title">{{ blog.title }}</h1>
 
@@ -140,6 +140,7 @@ export default {
           this.tags = resp.data.data.tags
 
           document.title = this.blog.title + ' - ' + this.systemInfo.title;
+          this.$refs.header.activeIndex = this.blog.sort.name
 
           if (this.$store.getters.getUserInfo != null) {
             if (this.blog.user_id === this.$store.getters.getUserInfo.id) {
