@@ -1,11 +1,12 @@
 use actix_cors::Cors;
-use actix_web::{App, HttpServer, web};
 use actix_web::guard;
+use actix_web::{web, App, HttpServer};
 use log::info;
 use meilisearch_sdk::client::Client;
 use redis_async_pool::{RedisConnectionManager, RedisPool};
 use sqlx::{MySqlPool, Pool};
 
+use vueblog_common::config::global_config::GLOBAL_CONFIG;
 use vueblog_common::{
     config::global_config::init_global_config,
     controller::{
@@ -15,7 +16,6 @@ use vueblog_common::{
         friend_controller::{friend_add, friend_all, friend_deletes, friend_limit, friend_update},
         login_controller::{login, sign_token},
         me_controller::{me, me_update},
-        other_controller::generate_captcha_code,
         sort_controlller::{sort_add, sort_list, sort_remove, sort_update},
         statistics_controller::{statistics, statistics_blog},
         system_controller::{page_footer, system_info, system_update},
@@ -26,7 +26,6 @@ use vueblog_common::{
     },
     pojo::status::AppState,
 };
-use vueblog_common::config::global_config::GLOBAL_CONFIG;
 
 ///
 /// 初始化数据库连接池
@@ -98,7 +97,14 @@ async fn init() -> (String, u16, usize, MySqlPool, RedisPool, Client) {
         .parse::<u16>()
         .unwrap();
 
-    (server_address, server_port, workers, db_pool, redis_client, search_client)
+    (
+        server_address,
+        server_port,
+        workers,
+        db_pool,
+        redis_client,
+        search_client,
+    )
 }
 
 #[actix_web::main]
@@ -122,7 +128,6 @@ async fn main() -> std::io::Result<()> {
             .service(blog_detail_key)
             .service(login)
             .service(sign_token)
-            .service(generate_captcha_code)
             .service(all_user)
             .service(user_info)
             .service(user_update)
@@ -160,8 +165,8 @@ async fn main() -> std::io::Result<()> {
                     .to(not_found_page),
             )
     })
-        .workers(workers)
-        .bind((server_address, server_port))?
-        .run()
-        .await
+    .workers(workers)
+    .bind((server_address, server_port))?
+    .run()
+    .await
 }
