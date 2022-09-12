@@ -3407,7 +3407,7 @@ dependencies = [
 
 [[package]]
 name = "vueblog-common"
-version = "0.7.10"
+version = "0.7.11-dev"
 dependencies = [
  "actix-web",
  "anyhow",
