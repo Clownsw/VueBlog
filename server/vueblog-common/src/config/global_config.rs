@@ -21,6 +21,9 @@ pub async fn init_global_config() -> Result<(), anyhow::Error> {
     global_config.search_server = env::var("SEARCH_SERVER")?;
     global_config.search_key = env::var("SEARCH_KEY")?;
     global_config.search_limit = env::var("SEARCH_LIMIT")?.parse::<usize>()?;
-    GLOBAL_CONFIG.set(global_config);
+    
+    if let Err(_) = GLOBAL_CONFIG.set(global_config) {
+        panic!("initializer global config error!");
+    }
     Ok(())
 }
