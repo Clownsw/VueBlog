@@ -40,8 +40,8 @@
         </li>
       </ul>
     </div>
-
     <aplayer :audio="audio" fixed :lrcType="3"/>
+    <el-backtop :bottom="100" :visibility-height="50"></el-backtop>
   </div>
 </template>
 
