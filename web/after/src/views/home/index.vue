@@ -121,7 +121,7 @@ export default {
 
         let option = {
           title: {
-            text: '近10日访问量统计'
+            text: '近15日访问量统计'
           },
           xAxis: {
             type: 'category',

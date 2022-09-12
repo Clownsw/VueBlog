@@ -46,8 +46,10 @@ pub async fn statistics_blog(req: HttpRequest, data: web::Data<AppState>) -> imp
                 let mut resp =
                     build_response_baq_request_message(String::from(error_util::ERROR)).await;
 
-                if let Ok(v) = select_blog_statistics(&db_pool_clone).await {
+                if let Ok(mut v) = select_blog_statistics(&db_pool_clone).await {
                     let mut data: Tuple<Vec<String>, Vec<i64>> = Tuple::default();
+
+                    v.reverse();
 
                     for item in v.iter() {
                         data.left.push(item.day.clone());
