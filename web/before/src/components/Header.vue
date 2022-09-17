@@ -44,7 +44,7 @@ export default {
         artist: '傲七爷 / 小田音乐社',
         url: 'http://music.163.com/song/media/outer/url?id=1449678888.mp3',
         cover: 'https://p1.music.126.net/6DtmsO-P4jyJPLjnGa8Ytg==/109951165004114065.jpg?param=300y300',
-        lrc: 'https://music.api.smilex.cn/lyric?songId=1449678888',
+        lrc: 'https://music.api.smilex.cn/api/lyric?songId=1449678888',
       },
       activeIndex: "置顶"
     }
@@ -85,6 +85,12 @@ export default {
         this.searchDialog()
       }
     });
+	
+	const musicListId = 538952486;
+	
+	this.$axios.get(`https://music.api.smilex.cn/api/vueblog/playlist/detail?id=${musicListId}&limit=100&offset=0`).then(resp => {
+		this.audio = resp.data
+	})
   },
   created() {
     if (this.$route.path === '/friend') {
