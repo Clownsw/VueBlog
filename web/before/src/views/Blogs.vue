@@ -9,7 +9,7 @@
           {{ item.title }}
         </router-link>
       </h3>
-      
+
       <p class="blog-description">{{ item.description }}</p>
 
       <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags" :key="tag.id">
@@ -68,8 +68,8 @@ export default {
           : this.tagId !== null
               ? "/blogs/tag/list?currentPage=" + currentPage + '&tagId=' + this.tagId
               : queryStr != null
-              ? "/blogs?currentPage=" + currentPage + '&queryStr=' + queryStr
-              : "/blogs?currentPage=" + currentPage
+                  ? "/blogs?currentPage=" + currentPage + '&queryStr=' + queryStr
+                  : "/blogs?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
             if (resp.data.data !== null) {

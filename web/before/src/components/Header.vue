@@ -4,7 +4,7 @@
     <div class="m-action" style="display: flex; justify-content: center;">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
                @select="handleSelect">
-        <el-menu-item v-for="sort in sorts" :index="sort.name">
+        <el-menu-item v-for="sort in sorts" :key="sort.name" :index="sort.name">
           <router-link :to="'/blogs/sort/' + sort.id">{{ sort.name }}</router-link>
         </el-menu-item>
 
@@ -19,7 +19,6 @@
     </div>
 
     <blog-search ref='searchDialog'></blog-search>
-    <aplayer :audio="audio" fixed :lrcType="3"/>
     <el-backtop :bottom="100" :visibility-height="50"></el-backtop>
   </div>
 </template>
@@ -39,13 +38,6 @@ export default {
   data() {
     return {
       sorts: this.$store.getters.getSortList,
-      audio: {
-        name: '回到夏天',
-        artist: '傲七爷 / 小田音乐社',
-        url: 'http://music.163.com/song/media/outer/url?id=1449678888.mp3',
-        cover: 'https://p1.music.126.net/6DtmsO-P4jyJPLjnGa8Ytg==/109951165004114065.jpg?param=300y300',
-        lrc: 'https://music.api.smilex.cn/api/lyric?songId=1449678888',
-      },
       activeIndex: "置顶"
     }
   },
@@ -85,12 +77,6 @@ export default {
         this.searchDialog()
       }
     });
-	
-	const musicListId = 538952486;
-	
-	this.$axios.get(`https://music.api.smilex.cn/api/vueblog/playlist/detail?id=${musicListId}&limit=100&offset=0`).then(resp => {
-		this.audio = resp.data
-	})
   },
   created() {
     if (this.$route.path === '/friend') {
