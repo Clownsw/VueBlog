@@ -1,10 +1,12 @@
 package cn.smilex.vueblog.before.controller;
 
+import cn.smilex.vueblog.common.entity.Result;
 import cn.smilex.vueblog.common.service.StudentService;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
 import com.linecorp.armeria.server.annotation.Get;
+import com.linecorp.armeria.server.annotation.ProducesJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,5 +34,11 @@ public class HelloController {
     @Get("/selectAllStudent")
     public HttpResponse selectAllStudent() {
         return HttpResponse.ofJson(studentService.list());
+    }
+
+    @Get("/resultReturnTest")
+    @ProducesJson
+    public Result<?> resultReturnTest() {
+        return Result.success();
     }
 }
