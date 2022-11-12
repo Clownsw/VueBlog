@@ -68,16 +68,17 @@ export default {
           : this.tagId !== null
               ? "/blogs/tag/list?currentPage=" + currentPage + '&tagId=' + this.tagId
               : queryStr != null
-              ? "/blogs?currentPage=" + currentPage + '&queryStr=' + queryStr
-              : "/blogs?currentPage=" + currentPage
+              ? "/blog/list?currentPage=" + currentPage + '&queryStr=' + queryStr
+              : "/blog/list?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
+            console.log(resp)
             if (resp.data.data !== null) {
-              this.blogs.data = resp.data.data.datas
-              this.blogs.currentPage = resp.data.data.current
-              this.blogs.pages = resp.data.data.pages
-              this.blogs.total = resp.data.data.total
-              this.blogs.size = resp.data.data.size
+              this.blogs.data = resp.data.data
+              // this.blogs.currentPage = resp.data.data.current
+              // this.blogs.pages = resp.data.data.pages
+              // this.blogs.total = resp.data.data.total
+              // this.blogs.size = resp.data.data.size
             }
           })
     },

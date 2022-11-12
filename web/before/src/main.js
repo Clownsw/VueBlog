@@ -9,7 +9,6 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
-import APlayer from '@moefe/vue-aplayer';
 
 import './axios'
 import './interceptor'
@@ -19,10 +18,6 @@ Vue.use(ElementUI);
 Vue.use(mavonEditor)
 Vue.use(VueViewer)
 Vue.prototype.$axios = axios
-Vue.use(APlayer, {
-    defaultCover: 'https://github.com/u3u.png',
-    productionTip: true,
-});
 
 new Vue({
     router,

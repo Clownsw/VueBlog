@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -23,7 +24,16 @@ import java.util.List;
 public class SelectShowListBlog {
     private Long id;
     private Long userId;
+
+    @JsonIgnore
     private Integer sortId;
+
+    @JsonIgnore
+    private Integer sortOrder;
+
+    @JsonIgnore
+    private String sortName;
+
     private String title;
     private String description;
 
@@ -32,6 +42,13 @@ public class SelectShowListBlog {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime created;
     private Short status;
-    private List<SelectSortWithBlog> sort;
-    private List<SelectBlogOther> tags;
+
+    @JsonIgnore
+    private String tagIds;
+
+    @JsonIgnore
+    private String tagNames;
+
+    private Sort sort;
+    private List<Tag> tags;
 }

@@ -1,5 +1,8 @@
 package cn.smilex.vueblog.common.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author smilex
  * @date 2022/9/29/18:09
@@ -7,6 +10,7 @@ package cn.smilex.vueblog.common.util;
  */
 public final class CommonUtil {
     public static final String EMPTY_STRING = "";
+    public static final String COMMA = ",";
 
     public static boolean isInForArray(Class<?> clazz, Class<?>[] array) {
         for (Class<?> aClass : array) {

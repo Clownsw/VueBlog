@@ -4,6 +4,7 @@ import cn.smilex.vueblog.common.entity.Blog;
 import cn.smilex.vueblog.common.entity.SelectShowListBlog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,5 +16,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Mapper
 public interface BlogDao extends BaseMapper<Blog> {
-    List<SelectShowListBlog> selectBlogOtherPage();
+
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @return 博文集合
+     */
+    List<SelectShowListBlog> selectBlogPage(@Param("currentPage") Integer currentPage);
 }

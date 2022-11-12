@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.before.controller;
 
+import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.entity.Result;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.BlogService;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * @since 1.0
  */
 @SuppressWarnings("unused")
+@CrossOrigin
 @PathPrefix("/blog")
 @Decorator(AuthService.class)
 @Component

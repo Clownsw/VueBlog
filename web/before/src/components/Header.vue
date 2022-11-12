@@ -40,8 +40,6 @@
         </li>
       </ul>
     </div>
-
-    <aplayer :audio="audio" fixed :lrcType="3"/>
   </div>
 </template>
 
@@ -60,13 +58,6 @@ export default {
   data() {
     return {
       sorts: this.$store.getters.getSortList,
-      audio: {
-        name: '回到夏天',
-        artist: '傲七爷 / 小田音乐社',
-        url: 'http://music.163.com/song/media/outer/url?id=1449678888.mp3',
-        cover: 'https://p1.music.126.net/6DtmsO-P4jyJPLjnGa8Ytg==/109951165004114065.jpg?param=300y300',
-        lrc: 'https://music.api.smilex.cn/lyric?songId=1449678888',
-      },
     }
   },
   methods: {
