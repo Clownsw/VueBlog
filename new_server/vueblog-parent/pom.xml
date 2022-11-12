@@ -27,6 +27,8 @@
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <hikariCP.version>4.0.3</hikariCP.version>
         <mysql.version>8.0.31</mysql.version>
+        <jwt.version>4.2.1</jwt.version>
+        <req.version>0.11</req.version>
     </properties>
 
     <dependencies>
@@ -100,6 +102,18 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.smilex</groupId>
+            <artifactId>req</artifactId>
+            <version>${req.version}</version>
         </dependency>
 
     </dependencies>

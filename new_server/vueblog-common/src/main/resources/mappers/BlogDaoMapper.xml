@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smilex.vueblog.common.dao.BlogDao">
+    <select id="selectBlogOtherPage" resultType="SelectShowListBlog">
+        SELECT
+            blog.id,
+            blog.user_id,
+            blog.sort_id,
+            blog.title,
+            blog.description,
+            blog.created,
+            blog.status AS status,
+            sort.NAME AS sort_name,
+            sort.order AS sort_order,
+            (
+            SELECT
+            GROUP_CONCAT( `id` ORDER BY mbt.sort )
+            FROM
+            m_tag AS tag
+            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
+            ) AS 'tag_ids',
+            (
+            SELECT
+            GROUP_CONCAT( `name` ORDER BY mbt.sort )
+            FROM
+            m_tag AS tag
+            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
+            ) AS 'tag_names'
+        FROM
+        m_blog AS blog
+        LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+    </select>
+</mapper>

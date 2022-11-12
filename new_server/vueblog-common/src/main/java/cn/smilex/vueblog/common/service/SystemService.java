@@ -10,4 +10,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 @SuppressWarnings("unused")
 public interface SystemService extends IService<System> {
+
+    /**
+     * 查询系统信息
+     *
+     * @return 系统信息
+     */
+    System selectSystemInfo();
 }

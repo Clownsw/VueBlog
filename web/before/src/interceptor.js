@@ -2,6 +2,7 @@ import router from "@/router";
 import store from './store'
 import sortApi from "@/api/sort";
 import systemApi from "@/api/system";
+import otherApi from "@/api/other";
 
 
 router.beforeEach(((to, from, next) => {
@@ -14,7 +15,7 @@ router.beforeEach(((to, from, next) => {
         }
 
         if (!sessionStorage.getItem('pageFooter')) {
-            await systemApi.getPageFooter().then(resp => {
+            await otherApi.getPageFooter().then(resp => {
                 store.commit('SET_PAGE_FOOTER', resp.data.data.content)
             })
         }

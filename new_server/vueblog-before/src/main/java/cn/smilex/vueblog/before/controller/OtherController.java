@@ -2,7 +2,7 @@ package cn.smilex.vueblog.before.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.entity.Result;
-import cn.smilex.vueblog.common.service.SortService;
+import cn.smilex.vueblog.common.service.OtherService;
 import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.PathPrefix;
 import com.linecorp.armeria.server.annotation.ProducesJson;
@@ -11,24 +11,30 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author smilex
- * @date 2022/11/12/11:55
+ * @date 2022/11/12/17:22
  * @since 1.0
  */
 @SuppressWarnings("unused")
-@PathPrefix("/sort")
+@PathPrefix("/other")
 @CrossOrigin
 @Component
-public class SortController {
-    private SortService sortService;
+public class OtherController {
+
+    private OtherService otherService;
 
     @Autowired
-    public void setSortService(SortService sortService) {
-        this.sortService = sortService;
+    public void setOtherService(OtherService otherService) {
+        this.otherService = otherService;
     }
 
-    @Get("/list")
+    /**
+     * 查询页面底部脚本
+     *
+     * @return 页面底部脚本
+     */
+    @Get("/footer")
     @ProducesJson
-    public Result<?> selectAllSort() {
-        return Result.success(sortService.list());
+    public Result<?> footer() {
+        return Result.success(otherService.selectPageFooter());
     }
 }

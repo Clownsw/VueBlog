@@ -2,7 +2,7 @@ package cn.smilex.vueblog.before.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.entity.Result;
-import cn.smilex.vueblog.common.service.SortService;
+import cn.smilex.vueblog.common.service.SystemService;
 import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.PathPrefix;
 import com.linecorp.armeria.server.annotation.ProducesJson;
@@ -11,24 +11,30 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author smilex
- * @date 2022/11/12/11:55
+ * @date 2022/11/12/17:52
  * @since 1.0
  */
 @SuppressWarnings("unused")
-@PathPrefix("/sort")
+@PathPrefix("/system")
 @CrossOrigin
 @Component
-public class SortController {
-    private SortService sortService;
+public class SystemController {
+
+    private SystemService systemService;
 
     @Autowired
-    public void setSortService(SortService sortService) {
-        this.sortService = sortService;
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
     }
 
-    @Get("/list")
+    /**
+     * 查询系统信息
+     *
+     * @return 系统信息
+     */
+    @Get("/info")
     @ProducesJson
-    public Result<?> selectAllSort() {
-        return Result.success(sortService.list());
+    public Result<?> info() {
+        return Result.success(systemService.selectSystemInfo());
     }
 }

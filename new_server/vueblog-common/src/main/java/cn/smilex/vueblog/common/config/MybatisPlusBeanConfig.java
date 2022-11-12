@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.sql.DataSource;
 
@@ -27,7 +28,7 @@ public class MybatisPlusBeanConfig {
     public DataSource dataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        hikariDataSource.setJdbcUrl("jdbc:mysql://localhost:3333/vueblog");
+        hikariDataSource.setJdbcUrl("jdbc:mysql://localhost:3306/vueblog");
         hikariDataSource.setUsername("root");
         hikariDataSource.setPassword("123123");
         return hikariDataSource;
@@ -37,6 +38,10 @@ public class MybatisPlusBeanConfig {
     public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource);
+        sqlSessionFactory.setTypeAliasesPackage("cn.smilex.vueblog.common.entity");
+        sqlSessionFactory.setMapperLocations(
+                new ClassPathResource("mappers/BlogDaoMapper.xml")
+        );
         return sqlSessionFactory;
     }
 }

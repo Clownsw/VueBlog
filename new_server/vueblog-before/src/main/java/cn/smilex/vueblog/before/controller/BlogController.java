@@ -1,12 +1,14 @@
 package cn.smilex.vueblog.before.controller;
 
 import cn.smilex.vueblog.common.entity.Result;
+import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.BlogService;
-import com.linecorp.armeria.server.annotation.Get;
-import com.linecorp.armeria.server.annotation.PathPrefix;
-import com.linecorp.armeria.server.annotation.ProducesJson;
+import com.linecorp.armeria.common.HttpRequest;
+import com.linecorp.armeria.server.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * @author smilex
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/blog")
+@Decorator(AuthService.class)
 @Component
 public class BlogController {
     private BlogService blogService;
@@ -24,9 +27,19 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    @Get("/selectAllBlog")
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @param request     请求对象
+     * @return 博文集合
+     */
+    @Get("/list")
     @ProducesJson
-    public Result<?> selectAllBlog() {
-        return Result.success(blogService.list());
+    public Result<?> list(
+            @Param("currentPage") Optional<Integer> currentPage,
+            HttpRequest request
+    ) {
+        return Result.success(blogService.selectBlogPage(currentPage, request));
     }
 }

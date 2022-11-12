@@ -1,8 +1,11 @@
 package cn.smilex.vueblog.common.dao;
 
 import cn.smilex.vueblog.common.entity.Blog;
+import cn.smilex.vueblog.common.entity.SelectShowListBlog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author smilex
@@ -12,4 +15,5 @@ import org.apache.ibatis.annotations.Mapper;
 @SuppressWarnings("unused")
 @Mapper
 public interface BlogDao extends BaseMapper<Blog> {
+    List<SelectShowListBlog> selectBlogOtherPage();
 }

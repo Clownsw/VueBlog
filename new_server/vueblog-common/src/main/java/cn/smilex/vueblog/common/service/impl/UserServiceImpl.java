@@ -1,10 +1,17 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.UserDao;
+import cn.smilex.vueblog.common.entity.Tuple;
 import cn.smilex.vueblog.common.entity.User;
 import cn.smilex.vueblog.common.service.UserService;
+import cn.smilex.vueblog.common.util.JwtUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.linecorp.armeria.common.HttpHeaderNames;
+import com.linecorp.armeria.common.HttpRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author smilex
@@ -14,4 +21,23 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("unused")
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
+
+    /**
+     * 判断当前请求是否包含token以及token有效性来判定是否登录
+     *
+     * @param request 请求对象
+     * @return 是否登录
+     */
+    @Override
+    public boolean isLogin(HttpRequest request) {
+        String token = request.headers()
+                .get(HttpHeaderNames.AUTHORIZATION.toString().toLowerCase());
+
+        if (StringUtils.isBlank(token)) {
+            return false;
+        }
+
+        Tuple<Boolean, Map<String, Object>> result = JwtUtil.signJWTToken(token);
+        return result.getLeft();
+    }
 }
