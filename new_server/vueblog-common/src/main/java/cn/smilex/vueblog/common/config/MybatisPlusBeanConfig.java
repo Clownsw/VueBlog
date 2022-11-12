@@ -27,7 +27,7 @@ public class MybatisPlusBeanConfig {
     public DataSource dataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        hikariDataSource.setJdbcUrl("jdbc:mysql://localhost:3333/demo");
+        hikariDataSource.setJdbcUrl("jdbc:mysql://localhost:3333/vueblog");
         hikariDataSource.setUsername("root");
         hikariDataSource.setPassword("123123");
         return hikariDataSource;

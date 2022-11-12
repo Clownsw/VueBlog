@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.before.handler;
 
-import cn.smilex.vueblog.before.controller.HelloController;
+import cn.smilex.vueblog.before.controller.BlogController;
+import cn.smilex.vueblog.before.controller.SortController;
 import cn.smilex.vueblog.common.handler.GlobalErrorHandler;
 import com.linecorp.armeria.server.Server;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +16,30 @@ import org.springframework.stereotype.Component;
 public class StartListener {
 
     private GlobalErrorHandler globalErrorHandler;
-    private HelloController helloController;
+    private BlogController blogController;
+    private SortController sortController;
 
     @Autowired
-    public void setServerErrorHandler(GlobalErrorHandler globalErrorHandler) {
+    public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
         this.globalErrorHandler = globalErrorHandler;
     }
 
     @Autowired
-    public void setHelloController(HelloController helloController) {
-        this.helloController = helloController;
+    public void setBlogController(BlogController blogController) {
+        this.blogController = blogController;
+    }
+
+    @Autowired
+    public void setSortController(SortController sortController) {
+        this.sortController = sortController;
     }
 
     public void start() {
         Server server = Server.builder()
                 .http(1111)
                 .errorHandler(globalErrorHandler)
-                .annotatedService(helloController)
+                .annotatedService(blogController)
+                .annotatedService(sortController)
                 .build();
 
         server.start()
