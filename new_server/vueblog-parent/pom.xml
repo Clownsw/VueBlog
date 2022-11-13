@@ -29,6 +29,8 @@
         <mysql.version>8.0.31</mysql.version>
         <jwt.version>4.2.1</jwt.version>
         <req.version>0.11</req.version>
+        <guava.version>31.1-jre</guava.version>
+        <jctools.version>4.0.1</jctools.version>
     </properties>
 
     <dependencies>
@@ -114,6 +116,18 @@
             <groupId>cn.smilex</groupId>
             <artifactId>req</artifactId>
             <version>${req.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jctools</groupId>
+            <artifactId>jctools-core</artifactId>
+            <version>${jctools.version}</version>
         </dependency>
 
     </dependencies>

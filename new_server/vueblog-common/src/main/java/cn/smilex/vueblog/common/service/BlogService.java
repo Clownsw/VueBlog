@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.Blog;
+import cn.smilex.vueblog.common.entity.Limit;
 import cn.smilex.vueblog.common.entity.SelectShowListBlog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
@@ -13,6 +14,7 @@ import java.util.Optional;
  * @date 2022/11/12/11:44
  * @since 1.0
  */
+@SuppressWarnings("all")
 public interface BlogService extends IService<Blog> {
 
     /**
@@ -22,8 +24,8 @@ public interface BlogService extends IService<Blog> {
      * @param request     请求对象
      * @return 博文集合
      */
-    List<SelectShowListBlog> selectBlogPage(
-            Optional<Integer> currentPage,
+    Limit<SelectShowListBlog> selectBlogPage(
+            Optional<Long> currentPage,
             HttpRequest request
     );
 }

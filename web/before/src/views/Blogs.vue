@@ -30,9 +30,9 @@
 
     <div class="limit">
       <el-pagination background layout="prev, pager, next"
-                     :total="blogs.total"
+                     :total="blogs.totalCount"
                      :current-page="blogs.currentPage"
-                     :page-size="blogs.size"
+                     :page-size="blogs.pageSize"
                      @current-change=page
                      class="m-page"/>
     </div>
@@ -51,9 +51,9 @@ export default {
     return {
       blogs: {
         currentPage: 1,
-        total: 0,
-        pages: 1,
-        size: 0,
+        totalCount: 0,
+        pageCount: 1,
+        pageSize: 0,
         data: []
       },
       systemInfo: {},
@@ -72,13 +72,12 @@ export default {
               : "/blog/list?currentPage=" + currentPage
       this.$axios.get(url)
           .then(resp => {
-            console.log(resp)
             if (resp.data.data !== null) {
-              this.blogs.data = resp.data.data
-              // this.blogs.currentPage = resp.data.data.current
-              // this.blogs.pages = resp.data.data.pages
-              // this.blogs.total = resp.data.data.total
-              // this.blogs.size = resp.data.data.size
+              this.blogs.data = resp.data.data.dataList
+              this.blogs.currentPage = resp.data.data.currentPage
+              this.blogs.pageCount = resp.data.data.pageCount
+              this.blogs.totalCount = resp.data.data.totalCount
+              this.blogs.pageSize = resp.data.data.pageSize
             }
           })
     },

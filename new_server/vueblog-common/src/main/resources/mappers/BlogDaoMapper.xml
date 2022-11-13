@@ -31,5 +31,8 @@
         FROM
         m_blog AS blog
         LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+        ORDER BY
+        created DESC
+        LIMIT #{pageSize}, #{currentPage}
     </select>
 </mapper>

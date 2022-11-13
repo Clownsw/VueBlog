@@ -23,5 +23,8 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @param currentPage 当前页
      * @return 博文集合
      */
-    List<SelectShowListBlog> selectBlogPage(@Param("currentPage") Integer currentPage);
+    List<SelectShowListBlog> selectBlogPage(
+            @Param("pageSize") Long pageSize,
+            @Param("currentPage") Long currentPage
+    );
 }

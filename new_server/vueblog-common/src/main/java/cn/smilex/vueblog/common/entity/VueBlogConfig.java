@@ -1,0 +1,19 @@
+package cn.smilex.vueblog.common.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author smilex
+ * @date 2022/11/13/12:21
+ * @since 1.0
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class VueBlogConfig {
+    private String jwtKey;
+    private Integer jwtDayNumber;
+    private Long vueBlogBeforeWebPageSize;
+}
