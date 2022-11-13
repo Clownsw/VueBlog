@@ -44,4 +44,20 @@ public class BlogController {
     ) {
         return Result.success(blogService.selectBlogPage(currentPage, request));
     }
+
+    /**
+     * 根据ID获取文章信息
+     *
+     * @param id      id
+     * @param request 请求对象
+     * @return 文章信息
+     */
+    @Get("/:id")
+    @ProducesJson
+    public Result<?> selectBlogById(
+            @Param("id") Long id,
+            HttpRequest request
+    ) {
+        return Result.success(blogService.selectBlogById(id, request));
+    }
 }

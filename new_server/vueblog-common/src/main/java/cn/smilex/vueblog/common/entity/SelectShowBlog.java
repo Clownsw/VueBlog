@@ -21,7 +21,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SelectShowListBlog {
+public class SelectShowBlog {
     private Long id;
     private Long userId;
 

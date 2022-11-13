@@ -1,7 +1,8 @@
 package cn.smilex.vueblog.common.dao;
 
 import cn.smilex.vueblog.common.entity.Blog;
-import cn.smilex.vueblog.common.entity.SelectShowListBlog;
+import cn.smilex.vueblog.common.entity.SelectBlogInfo;
+import cn.smilex.vueblog.common.entity.SelectShowBlog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,8 +24,16 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @param currentPage 当前页
      * @return 博文集合
      */
-    List<SelectShowListBlog> selectBlogPage(
+    List<SelectShowBlog> selectBlogPage(
             @Param("pageSize") Long pageSize,
             @Param("currentPage") Long currentPage
     );
+
+    /**
+     * 根据ID获取文章信息
+     *
+     * @param id id
+     * @return 文章信息
+     */
+    SelectBlogInfo selectBlogById(@Param("id") Long id);
 }

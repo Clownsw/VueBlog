@@ -2,11 +2,10 @@ package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.Blog;
 import cn.smilex.vueblog.common.entity.Limit;
-import cn.smilex.vueblog.common.entity.SelectShowListBlog;
+import cn.smilex.vueblog.common.entity.SelectShowBlog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,8 +23,17 @@ public interface BlogService extends IService<Blog> {
      * @param request     请求对象
      * @return 博文集合
      */
-    Limit<SelectShowListBlog> selectBlogPage(
+    Limit<SelectShowBlog> selectBlogPage(
             Optional<Long> currentPage,
             HttpRequest request
     );
+
+    /**
+     * 根据ID获取文章信息
+     *
+     * @param id      id
+     * @param request 请求对象
+     * @return 文章信息
+     */
+    SelectShowBlog selectBlogById(Long id, HttpRequest request);
 }
