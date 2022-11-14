@@ -172,4 +172,41 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
         return limit;
     }
+
+    /**
+     * 分页查询指定分类下的所有文章
+     *
+     * @param currentPage 当前页
+     * @param sortId      分类ID
+     * @return 指定分类下的所有文章
+     */
+    @Override
+    public Limit<SelectShowBlog> selectBlogPageBySortId(Long currentPage, Integer sortId) {
+        Limit<SelectShowBlog> limit = Limit.defaultLimit(
+                vueBlogConfig.getVueBlogBeforeWebPageSize(),
+                currentPage
+        );
+
+        try (StructuredTaskScope scope = new StructuredTaskScope()) {
+            scope.execute(() -> {
+                List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageBySortId(
+                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
+                        vueBlogConfig.getVueBlogBeforeWebPageSize(),
+                        sortId
+                );
+
+                blogParseTag(selectShowBlogList);
+
+                limit.setDataList(selectShowBlogList);
+            });
+
+            scope.execute(() -> {
+                final long blogCount = getBaseMapper().selectBlogCountBySortId(sortId);
+                limit.setTotalCount(blogCount);
+                limit.setPageCount(CommonUtil.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
+            });
+        }
+
+        return limit;
+    }
 }

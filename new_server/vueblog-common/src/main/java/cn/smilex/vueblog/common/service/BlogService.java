@@ -6,9 +6,6 @@ import cn.smilex.vueblog.common.entity.SelectShowBlog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
  * @author smilex
  * @date 2022/11/12/11:44
@@ -46,4 +43,13 @@ public interface BlogService extends IService<Blog> {
      * @return 指定标签下的所有文章
      */
     Limit<SelectShowBlog> selectBlogPageByTagId(Long currentPage, Long tagId);
+
+    /**
+     * 分页查询指定分类下的所有文章
+     *
+     * @param currentPage 当前页
+     * @param sortId      分类ID
+     * @return 指定分类下的所有文章
+     */
+    Limit<SelectShowBlog> selectBlogPageBySortId(Long currentPage, Integer sortId);
 }

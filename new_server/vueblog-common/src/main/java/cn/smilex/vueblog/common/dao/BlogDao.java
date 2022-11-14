@@ -22,6 +22,7 @@ public interface BlogDao extends BaseMapper<Blog> {
      * 分页查询博文
      *
      * @param currentPage 当前页
+     * @param pageSize    每页大小
      * @return 博文集合
      */
     List<SelectShowBlog> selectBlogPage(
@@ -33,12 +34,28 @@ public interface BlogDao extends BaseMapper<Blog> {
      * 根据指定标签分页查询所有文章
      *
      * @param currentPage 当前页
+     * @param pageSize    分页大小
+     * @param tagId       标签ID
      * @return 博文集合
      */
     List<SelectShowBlog> selectBlogPageByTagId(
             @Param("pageSize") Long pageSize,
             @Param("currentPage") Long currentPage,
             @Param("tagId") Long tagId
+    );
+
+    /**
+     * 根据指定分类分页查询所有文章
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @param sortId      分类ID
+     * @return 博文集合
+     */
+    List<SelectShowBlog> selectBlogPageBySortId(
+            @Param("pageSize") Long pageSize,
+            @Param("currentPage") Long currentPage,
+            @Param("sortId") Integer sortId
     );
 
     /**
@@ -56,4 +73,12 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @return 文章个数
      */
     long selectBlogCountByTagId(@Param("tagId") Long tagId);
+
+    /**
+     * 根据分类ID查询文章个数
+     *
+     * @param sortId 分类ID
+     * @return 文章个数
+     */
+    long selectBlogCountBySortId(@Param("sortId") Integer sortId);
 }

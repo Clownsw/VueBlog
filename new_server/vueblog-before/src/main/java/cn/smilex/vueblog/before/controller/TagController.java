@@ -38,7 +38,7 @@ public class TagController {
      */
     @Get("/blogList")
     @ProducesJson
-    public Result<?> list(
+    public Result<?> blogList(
             @Param("currentPage") Optional<Long> currentPage,
             @Param("tagId") Optional<Long> tagId
     ) {

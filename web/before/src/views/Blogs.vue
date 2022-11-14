@@ -64,7 +64,7 @@ export default {
   methods: {
     page(currentPage, queryStr) {
       let url = this.sortId !== null
-          ? "/blogs/sort/list?currentPage=" + currentPage + '&sortId=' + this.sortId
+          ? "/sort/blogList?currentPage=" + currentPage + '&sortId=' + this.sortId
           : this.tagId !== null
               ? "/tag/blogList?currentPage=" + currentPage + '&tagId=' + this.tagId
               : queryStr != null
