@@ -66,7 +66,7 @@ export default {
       let url = this.sortId !== null
           ? "/blogs/sort/list?currentPage=" + currentPage + '&sortId=' + this.sortId
           : this.tagId !== null
-              ? "/blogs/tag/list?currentPage=" + currentPage + '&tagId=' + this.tagId
+              ? "/tag/blogList?currentPage=" + currentPage + '&tagId=' + this.tagId
               : queryStr != null
               ? "/blog/list?currentPage=" + currentPage + '&queryStr=' + queryStr
               : "/blog/list?currentPage=" + currentPage

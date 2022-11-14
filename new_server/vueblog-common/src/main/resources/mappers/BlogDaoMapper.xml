@@ -36,6 +36,49 @@
             LIMIT #{pageSize}, #{currentPage}
     </select>
 
+    <select id="selectBlogPageByTagId" resultType="SelectShowBlog">
+        SELECT
+            blog.id,
+            blog.user_id,
+            blog.sort_id,
+            blog.title,
+            blog.description,
+            blog.created,
+            blog.status AS status,
+            sort.NAME AS sort_name,
+            sort.order AS sort_order,
+            (
+            SELECT
+            GROUP_CONCAT( `id` ORDER BY mbt.sort )
+            FROM
+            m_tag AS tag
+            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
+            ) AS 'tag_ids',
+            (
+            SELECT
+            GROUP_CONCAT( `name` ORDER BY mbt.sort )
+            FROM
+            m_tag AS tag
+            RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = blog.id ) AS mbt ON tag.id IN ( mbt.tagId )
+            ) AS 'tag_names'
+        FROM
+            m_blog AS blog
+            LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
+        WHERE
+            blog.id IN (
+                SELECT DISTINCT
+                blogId
+                FROM
+                m_blogtag
+                WHERE tagId = #{tagId}
+            )
+        AND
+            blog.status = 0
+        ORDER BY
+        created DESC
+        LIMIT #{pageSize}, #{currentPage}
+    </select>
+
     <select id="selectBlogById" resultType="SelectBlogInfo">
         SELECT
             blog.id,
@@ -68,5 +111,17 @@
             LEFT JOIN m_blog_key AS blog_key ON blog_key.id = blog.id
         WHERE
             blog.id = #{id}
+    </select>
+
+    <select id="selectBlogCountByTagId" resultType="long">
+        SELECT
+            COUNT( DISTINCT ( mbt.blogId ) ) AS count
+        FROM
+            m_blogtag AS mbt
+            LEFT JOIN m_blog mb ON mb.id = mbt.blogId
+        WHERE
+            mbt.tagId = #{tagId}
+        AND
+            mb.`status` = 0
     </select>
 </mapper>

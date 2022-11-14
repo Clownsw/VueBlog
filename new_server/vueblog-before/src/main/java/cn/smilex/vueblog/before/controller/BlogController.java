@@ -42,7 +42,7 @@ public class BlogController {
             @Param("currentPage") Optional<Long> currentPage,
             HttpRequest request
     ) {
-        return Result.success(blogService.selectBlogPage(currentPage, request));
+        return Result.success(blogService.selectBlogPage(currentPage.orElse(1L), request));
     }
 
     /**

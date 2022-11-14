@@ -30,10 +30,30 @@ public interface BlogDao extends BaseMapper<Blog> {
     );
 
     /**
+     * 根据指定标签分页查询所有文章
+     *
+     * @param currentPage 当前页
+     * @return 博文集合
+     */
+    List<SelectShowBlog> selectBlogPageByTagId(
+            @Param("pageSize") Long pageSize,
+            @Param("currentPage") Long currentPage,
+            @Param("tagId") Long tagId
+    );
+
+    /**
      * 根据ID获取文章信息
      *
      * @param id id
      * @return 文章信息
      */
     SelectBlogInfo selectBlogById(@Param("id") Long id);
+
+    /**
+     * 根据标签ID查询文章个数
+     *
+     * @param tagId 标签ID
+     * @return 文章个数
+     */
+    long selectBlogCountByTagId(@Param("tagId") Long tagId);
 }

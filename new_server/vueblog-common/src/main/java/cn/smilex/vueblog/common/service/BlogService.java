@@ -6,6 +6,7 @@ import cn.smilex.vueblog.common.entity.SelectShowBlog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,7 +25,7 @@ public interface BlogService extends IService<Blog> {
      * @return 博文集合
      */
     Limit<SelectShowBlog> selectBlogPage(
-            Optional<Long> currentPage,
+            Long currentPage,
             HttpRequest request
     );
 
@@ -36,4 +37,13 @@ public interface BlogService extends IService<Blog> {
      * @return 文章信息
      */
     SelectShowBlog selectBlogById(Long id, HttpRequest request);
+
+    /**
+     * 根据指定标签分页查询所有文章
+     *
+     * @param currentPage 当前页
+     * @param tagId       标签ID
+     * @return 指定标签下的所有文章
+     */
+    Limit<SelectShowBlog> selectBlogPageByTagId(Long currentPage, Long tagId);
 }

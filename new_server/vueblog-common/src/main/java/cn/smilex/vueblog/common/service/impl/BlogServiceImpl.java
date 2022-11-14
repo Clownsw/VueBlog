@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/12/11:45
  * @since 1.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Duplicates"})
 @Slf4j
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
@@ -88,19 +87,18 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
      */
     @Override
     public Limit<SelectShowBlog> selectBlogPage(
-            Optional<Long> currentPage,
+            Long currentPage,
             HttpRequest request
     ) {
-        Long _currentPage = currentPage.orElse(1L);
         Limit<SelectShowBlog> limit = Limit.defaultLimit(
                 vueBlogConfig.getVueBlogBeforeWebPageSize(),
-                _currentPage
+                currentPage
         );
 
         try (StructuredTaskScope scope = new StructuredTaskScope()) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPage(
-                        CommonUtil.calcLimit(_currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
+                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
                         vueBlogConfig.getVueBlogBeforeWebPageSize()
                 );
 
@@ -136,5 +134,42 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         }
 
         return selectBlogInfo;
+    }
+
+    /**
+     * 根据指定标签分页查询所有文章
+     *
+     * @param currentPage 当前页
+     * @param tagId       标签ID
+     * @return 指定标签下的所有文章
+     */
+    @Override
+    public Limit<SelectShowBlog> selectBlogPageByTagId(Long currentPage, Long tagId) {
+        Limit<SelectShowBlog> limit = Limit.defaultLimit(
+                vueBlogConfig.getVueBlogBeforeWebPageSize(),
+                currentPage
+        );
+
+        try (StructuredTaskScope scope = new StructuredTaskScope()) {
+            scope.execute(() -> {
+                List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageByTagId(
+                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
+                        vueBlogConfig.getVueBlogBeforeWebPageSize(),
+                        tagId
+                );
+
+                blogParseTag(selectShowBlogList);
+
+                limit.setDataList(selectShowBlogList);
+            });
+
+            scope.execute(() -> {
+                final long blogCount = getBaseMapper().selectBlogCountByTagId(tagId);
+                limit.setTotalCount(blogCount);
+                limit.setPageCount(CommonUtil.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
+            });
+        }
+
+        return limit;
     }
 }

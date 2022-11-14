@@ -26,6 +26,11 @@ public class SortController {
         this.sortService = sortService;
     }
 
+    /**
+     * 查询所有分类
+     *
+     * @return 所有分类
+     */
     @Get("/list")
     @ProducesJson
     public Result<?> selectAllSort() {
