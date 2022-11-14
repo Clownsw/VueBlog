@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.OtherDao;
+import cn.smilex.vueblog.common.entity.AboutMe;
 import cn.smilex.vueblog.common.entity.Other;
 import cn.smilex.vueblog.common.entity.SelectPageFooter;
 import cn.smilex.vueblog.common.service.OtherService;
@@ -32,5 +33,20 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
 
                 )
         );
+    }
+
+    /**
+     * 获取关于我信息
+     *
+     * @return 关于我信息
+     */
+    @Override
+    public AboutMe aboutMe() {
+        Other other = this.getOne(
+                new QueryWrapper<Other>()
+                        .select("id", "title", "content")
+                        .eq("`order`", 0)
+        );
+        return AboutMe.fromOther(other);
     }
 }

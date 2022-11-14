@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
+import cn.smilex.vueblog.common.entity.AboutMe;
 import cn.smilex.vueblog.common.entity.Other;
 import cn.smilex.vueblog.common.entity.SelectPageFooter;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -18,4 +19,11 @@ public interface OtherService extends IService<Other> {
      * @return 页面底部脚本
      */
     SelectPageFooter selectPageFooter();
+
+    /**
+     * 获取关于我信息
+     *
+     * @return 关于我信息
+     */
+    AboutMe aboutMe();
 }

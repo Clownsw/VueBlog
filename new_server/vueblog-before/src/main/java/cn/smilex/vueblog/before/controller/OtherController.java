@@ -37,4 +37,15 @@ public class OtherController {
     public Result<?> footer() {
         return Result.success(otherService.selectPageFooter());
     }
+
+    /**
+     * 获取关于我信息
+     *
+     * @return 关于我信息
+     */
+    @Get("/me")
+    @ProducesJson
+    public Result<?> aboutMe() {
+        return Result.success(otherService.aboutMe());
+    }
 }

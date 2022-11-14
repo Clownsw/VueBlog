@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     getMe() {
-      this.$axios.get("me")
+      this.$axios.get("/other/me")
           .then(resp => {
             this.me = resp.data.data
           })
