@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VueBlogConfig {
+    private String dataSourceJdbcUrl;
+    private String dataSourceUserName;
+    private String datasourcePassWord;
     private String jwtKey;
     private Integer jwtDayNumber;
     private Long vueBlogBeforeWebPageSize;

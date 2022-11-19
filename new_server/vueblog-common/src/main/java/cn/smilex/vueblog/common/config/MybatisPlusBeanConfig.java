@@ -1,10 +1,13 @@
 package cn.smilex.vueblog.common.config;
 
+import cn.smilex.vueblog.common.entity.VueBlogConfig;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.NotNull;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.sql.DataSource;
@@ -14,6 +17,7 @@ import javax.sql.DataSource;
  * @date 2022/11/11/21:20
  * @since 1.0
  */
+@SuppressWarnings("all")
 @Configuration
 public class MybatisPlusBeanConfig {
 
@@ -25,12 +29,13 @@ public class MybatisPlusBeanConfig {
     }
 
     @Bean
-    public DataSource dataSource() {
+    @DependsOn("vueBlogConfig")
+    public DataSource dataSource(@NotNull VueBlogConfig vueBlogConfig) {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        hikariDataSource.setJdbcUrl("jdbc:mysql://localhost:3306/vueblog");
-        hikariDataSource.setUsername("root");
-        hikariDataSource.setPassword("123123");
+        hikariDataSource.setJdbcUrl(vueBlogConfig.getDataSourceJdbcUrl());
+        hikariDataSource.setUsername(vueBlogConfig.getDataSourceUserName());
+        hikariDataSource.setPassword(vueBlogConfig.getDatasourcePassWord());
         return hikariDataSource;
     }
 

@@ -7,8 +7,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;
 import io.micrometer.core.instrument.util.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * @author smilex
@@ -18,10 +24,24 @@ import org.springframework.context.annotation.Configuration;
 @SuppressWarnings("all")
 @Configuration
 public class CommonBeanConfig {
-    @Bean
+
+    @Bean("vueBlogConfig")
     public VueBlogConfig vueBlogConfig() throws JsonProcessingException {
+        InputStream vueBlogConfigInputStream;
+        String vueBlogConfigPath = System.getProperty("vueblog.config.path");
+
+        if (StringUtils.isNoneBlank(vueBlogConfigPath)) {
+            try {
+                vueBlogConfigInputStream = new FileInputStream(new File(vueBlogConfigPath));
+            } catch (FileNotFoundException ignore) {
+                vueBlogConfigInputStream = null;
+            }
+        } else {
+            vueBlogConfigInputStream = CommonBeanConfig.class.getResourceAsStream("/vueblog-config.json");
+        }
+
         return CommonUtil.OBJECT_MAPPER.readValue(
-                IOUtils.toString(CommonBeanConfig.class.getResourceAsStream("/vueblog-config.json")),
+                IOUtils.toString(vueBlogConfigInputStream),
                 new TypeReference<VueBlogConfig>() {
                 }
         );
