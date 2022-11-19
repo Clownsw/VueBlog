@@ -18,4 +18,8 @@ public class VueBlogConfig {
     private Long vueBlogBeforeWebPageSize;
     private String vueBlogFriendDefaultHref;
     private String vueBlogFriendDefaultAvatar;
+    private String searchServer;
+    private String searchKey;
+    private String[] searchAttributesToHighlight;
+    private Integer searchLimit;
 }

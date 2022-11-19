@@ -31,6 +31,8 @@
         <req.version>0.11</req.version>
         <guava.version>31.1-jre</guava.version>
         <jctools.version>4.0.1</jctools.version>
+        <meilisearch.version>0.8.0</meilisearch.version>
+        <okhttp.version>4.10.0</okhttp.version>
     </properties>
 
     <dependencies>
@@ -130,6 +132,17 @@
             <version>${jctools.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.meilisearch.sdk</groupId>
+            <artifactId>meilisearch-java</artifactId>
+            <version>${meilisearch.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

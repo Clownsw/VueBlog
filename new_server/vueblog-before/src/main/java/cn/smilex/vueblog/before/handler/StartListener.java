@@ -21,6 +21,7 @@ public class StartListener {
     private FriendController friendController;
     private SystemController systemController;
     private OtherController otherController;
+    private SearchController searchController;
 
     @Autowired
     public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
@@ -57,6 +58,11 @@ public class StartListener {
         this.otherController = otherController;
     }
 
+    @Autowired
+    public void setSearchController(SearchController searchController) {
+        this.searchController = searchController;
+    }
+
     public void start() {
         Server server = Server.builder()
                 .http(8888)
@@ -67,6 +73,7 @@ public class StartListener {
                 .annotatedService(friendController)
                 .annotatedService(systemController)
                 .annotatedService(otherController)
+                .annotatedService(searchController)
                 .build();
 
         server.start()

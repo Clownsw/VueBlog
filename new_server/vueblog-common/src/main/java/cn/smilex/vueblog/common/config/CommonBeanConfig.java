@@ -4,6 +4,8 @@ import cn.smilex.vueblog.common.entity.VueBlogConfig;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.meilisearch.sdk.Client;
+import com.meilisearch.sdk.Config;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,16 @@ public class CommonBeanConfig {
         return new JwtConfig(
                 vueBlogConfig.getJwtKey(),
                 vueBlogConfig.getJwtDayNumber()
+        );
+    }
+
+    @Bean
+    public Client meilisearchClient(VueBlogConfig vueBlogConfig) {
+        return new Client(
+                new Config(
+                        vueBlogConfig.getSearchServer(),
+                        vueBlogConfig.getSearchKey()
+                )
         );
     }
 }
