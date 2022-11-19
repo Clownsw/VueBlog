@@ -1,4 +1,4 @@
-use actix_web::{get, HttpRequest, post, Responder, web};
+use actix_web::{get, post, web, HttpRequest, Responder};
 use qstring::QString;
 
 use crate::{
@@ -35,26 +35,33 @@ use crate::{
  */
 #[get("/blogs")]
 pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Responder {
-    let mut current: i64 = 1;
+    let global_config = GLOBAL_CONFIG.get().unwrap();
+    let mut currnet_page: i64 = 1;
+    let mut page_size: i64 = global_config.blog_limit_num;
 
     let qs = QString::from(req.query_string());
 
     if let Some(v) = qs.get("currentPage") {
         if let Ok(v) = v.parse::<i64>() {
-            current = v;
+            currnet_page = v;
+        }
+    }
+
+    if let Some(v) = qs.get("pageSize") {
+        if let Ok(v) = v.parse::<i64>() {
+            page_size = v;
         }
     }
 
     let is_login = is_login_return(&req, &data.db_pool).await.1 == None;
 
-    let global_config = GLOBAL_CONFIG.get().unwrap();
-    let blogs =
-        select_all_limit(
-            &data.db_pool,
-            (current - 1) * global_config.blog_limit_num,
-            global_config.blog_limit_num,
-            is_login,
-        ).await;
+    let blogs = select_all_limit(
+        &data.db_pool,
+        (currnet_page - 1) * page_size,
+        page_size,
+        is_login,
+    )
+    .await;
 
     let select_count = match select_all_count(&data.db_pool, qs.get("queryStr")).await {
         Ok(v) => v,
@@ -66,9 +73,10 @@ pub async fn blog_list(req: HttpRequest, data: web::Data<AppState>) -> impl Resp
             build_response_ok_data(Limit::from_unknown_datas(
                 global_config.blog_limit_num,
                 select_count.count,
-                current,
+                currnet_page,
                 v,
-            )).await
+            ))
+            .await
         }
         Err(_) => build_response_ok_message(String::from("null")).await,
     }
@@ -117,7 +125,7 @@ pub async fn blog_detail_key(
         None,
         None,
     )
-        .await
+    .await
 }
 
 /**
@@ -182,7 +190,8 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
         (current - 1) * global_config.blog_sort_limit_num,
         global_config.blog_sort_limit_num,
         sort_id,
-    ).await;
+    )
+    .await;
 
     let count = match select_sort_all_count(&data.db_pool, sort_id).await {
         Ok(v) => v,
@@ -195,7 +204,8 @@ pub async fn blog_sort_list(req: HttpRequest, data: web::Data<AppState>) -> impl
             count.count,
             current,
             v,
-        )).await
+        ))
+        .await
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }
@@ -229,7 +239,8 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
         (current - 1) * global_config.blog_tag_limit_num,
         global_config.blog_tag_limit_num,
         tag_id,
-    ).await;
+    )
+    .await;
 
     let count = match select_tag_all_count(&data.db_pool, tag_id).await {
         Ok(v) => v,
@@ -242,7 +253,8 @@ pub async fn blog_tag_list(req: HttpRequest, data: web::Data<AppState>) -> impl 
             count.count,
             current,
             v,
-        )).await
+        ))
+        .await
     } else {
         build_response_ok_data(Vec::<SelectBlogSortTag>::new()).await
     }
@@ -290,7 +302,8 @@ pub async fn blog_edit(
                     Err(_) => {
                         build_response_baq_request_message(String::from(
                             error_util::INCOMPLETE_REQUEST,
-                        )).await
+                        ))
+                        .await
                     }
                 }
             })
@@ -300,7 +313,7 @@ pub async fn blog_edit(
         Some(body),
         None,
     )
-        .await
+    .await
 }
 
 /**
@@ -324,11 +337,14 @@ pub async fn blog_deletes(
                 let mut transaction = db_pool_clone.begin().await.unwrap();
 
                 if let Err(_) = delete_key_by_ids_tran(&mut transaction, ids.clone()).await {}
-                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await).await {
+                if !sql_run_is_success(delete_by_ids_tran(&mut transaction, ids.clone()).await)
+                    .await
+                {
                     transaction.rollback().await.unwrap();
                     return build_response_baq_request_message(String::from(
                         error_util::ERROR_UNKNOWN,
-                    )).await;
+                    ))
+                    .await;
                 }
 
                 blog_index.delete_documents(&ids).await.unwrap();
@@ -341,5 +357,5 @@ pub async fn blog_deletes(
         Some(body),
         None,
     )
-        .await
+    .await
 }

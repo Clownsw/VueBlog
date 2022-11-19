@@ -38,7 +38,7 @@ pub async fn select_blog_statistics(
 ) -> Result<Vec<StatisticsBlog>, sqlx::Error> {
     sqlx::query::<MySql>(
         r#"
-            SELECT id, DATE_FORMAT(day, '%Y-%m-%d') AS day, view_count FROM m_blog_statistics
+            SELECT id, DATE_FORMAT(day, '%Y-%m-%d') AS day, view_count FROM m_blog_statistics ORDER BY day DESC LIMIT 15
         "#,
     )
     .map(|row| {

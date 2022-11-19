@@ -9,7 +9,7 @@
           {{ item.title }}
         </router-link>
       </h3>
-      
+
       <p class="blog-description">{{ item.description }}</p>
 
       <router-link :to="{ name: 'BlogsTag', params: { tagId: tag.id } }" v-for="tag in item.tags" :key="tag.id">
@@ -89,8 +89,16 @@ export default {
     this.systemInfo = this.$store.getters.getSystemInfo
     document.title = this.systemInfo.title
 
-    this.sortId = this.$route.params.id === undefined ? null : this.$route.params.id
-    this.tagId = this.$route.params.tagId === undefined ? null : this.$route.params.tagId
+    if (this.$route.params.tagId === undefined) {
+      this.tagId = null;
+      if (this.$route.params.id === undefined) {
+        this.sortId = this.$store.getters.getSortList[0].id
+      } else {
+        this.sortId = this.$route.params.id
+      }
+    } else {
+      this.tagId = this.$route.params.tagId
+    }
 
     this.page(1, null)
   }

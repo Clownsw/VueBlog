@@ -2,7 +2,7 @@
   "name": "after",
   "version": "0.7.11-dev",
   "license": "MIT",
-  "description": "after",
+  "description": "VueBlog Admin Page",
   "author": "smilex <msmliexx1@gmail.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

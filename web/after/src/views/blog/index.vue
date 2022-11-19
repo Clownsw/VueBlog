@@ -13,7 +13,7 @@
     </el-form>
 
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe
-      @selection-change="handleSelectionChange" class="data-table">
+              @selection-change="handleSelectionChange" class="data-table">
       <el-table-column type="selection" align="center">
       </el-table-column>
 
@@ -31,7 +31,10 @@
 
       <el-table-column prop="status" label="状态" width="180" show-overflow-tooltip align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status === 0 ? 'success' : 'danger'">{{ scope.row.status === 0 ? '未加密' : '已加密' }}</el-tag>
+          <el-tag :type="scope.row.status === 0 ? 'success' : 'danger'">{{
+              scope.row.status === 0 ? '未加密' : '已加密'
+            }}
+          </el-tag>
         </template>
       </el-table-column>
 
@@ -43,7 +46,7 @@
           <el-button type="primary" @click="editWord(scope.row.id)">编辑</el-button>
 
           <el-popconfirm confirm-button-text='删除' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
-            title="您确定要删除该文章吗？" style="margin-left: 5px" @confirm="deleteBlog(scope.row.id)">
+                         title="您确定要删除该文章吗？" style="margin-left: 5px" @confirm="deleteBlog(scope.row.id)">
             <el-button type="danger" slot="reference">删除</el-button>
           </el-popconfirm>
         </template>
@@ -51,18 +54,23 @@
     </el-table>
 
     <div class="limit">
-      <el-pagination background layout="prev, pager, next"
-        :page-size="size"
-        :currnet-page="current" 
-        :total="total"
-        @current-change=getBlogs>
-        </el-pagination>
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :currnet-page="currentPage"
+        :page-sizes="[10, 50, 100, 500]"
+        :page-size="pageSize"
+        layout="sizes, prev, pager, next"
+        :total="total">>
+      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 import blogApi from '@/api/blog'
+
 export default {
   name: 'BlogIndex',
   data() {
@@ -70,16 +78,16 @@ export default {
       searchName: '',
       deleteStatus: true,
       total: 0,
-      size: 0,
-      current: 1,
+      pageSize: 10,
+      currentPage: 1,
       pages: 0,
       tableData: [],
       multipleSelection: [],
     }
   },
   methods: {
-    fetchGetBlogList(currentPage) {
-      return blogApi.getBlogList(currentPage)
+    fetchGetBlogList(currentPage, pageSize) {
+      return blogApi.getBlogList(currentPage, pageSize)
     },
     fetchBatchDeleteBlogByIds(ids) {
       return blogApi.batchDeleteBlogByIds(ids)
@@ -99,12 +107,19 @@ export default {
     addBlog() {
       this.$router.push("/blog/edit")
     },
-    getBlogs(currentPage) {
-      this.fetchGetBlogList(currentPage).then(resp => {
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.getBlogs()
+    },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage
+      this.getBlogs()
+    },
+    getBlogs() {
+      this.fetchGetBlogList(this.currentPage, this.pageSize).then(resp => {
         this.total = resp.data.total
-        this.size = resp.data.size
         this.pages = resp.data.pages
-        this.current = resp.data.current
+        this.currentPage = resp.data.current
         this.tableData = resp.data.datas
 
         for (let i = 0; i < this.tableData.length; i++) {
@@ -141,7 +156,7 @@ export default {
     },
   },
   created() {
-    this.getBlogs(1)
+    this.getBlogs()
   }
 }
 </script>

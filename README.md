@@ -24,5 +24,8 @@ Rust + Actix Web + Sqlx + MySQL + Redis + Vue.js
 - 备份管理(将数据库备份到又拍云OSS)
 - 系统管理
 
+## 相关项目
+- [VueBlogNeteaseCloudMusicApi](https://github.com/Clownsw/VueBlogNeteaseCloudMusicApi)
+
 ## example
 [Smilex' Blog](https://www.smilex.cn)
