@@ -169,4 +169,14 @@
         WHERE
             sort_id = #{sortId}
     </select>
+
+    <select id="selectBlogByIdAndKey" resultType="Blog">
+        SELECT
+            blog.*
+        FROM
+            m_blog AS blog
+        LEFT JOIN m_blog_key AS mbk ON blog.id = mbk.id
+        WHERE
+            blog.id = #{id} AND mbk.`key` = #{key}
+    </select>
 </mapper>

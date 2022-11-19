@@ -10,8 +10,10 @@ import lombok.Getter;
 @SuppressWarnings("unused")
 @Getter
 public enum ResultCode {
-    SUCCESS(200, "success"),
-    UNKNOWN_ERROR(500, "unknown error");
+    SUCCESS(200, "成功"),
+    UNKNOWN_ERROR(500, "未知错误"),
+
+    ERROR_REQUEST_PARAM_ERROR(1000, "错误, 请求参数错误");
 
     final int code;
     final String message;

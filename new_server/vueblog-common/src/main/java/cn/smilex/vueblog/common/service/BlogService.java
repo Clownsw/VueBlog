@@ -52,4 +52,13 @@ public interface BlogService extends IService<Blog> {
      * @return 指定分类下的所有文章
      */
     Limit<SelectShowBlog> selectBlogPageBySortId(Long currentPage, Integer sortId);
+
+    /**
+     * 根据ID和秘钥查询文章信息
+     *
+     * @param id  id
+     * @param key 秘钥
+     * @return 文章信息
+     */
+    Blog selectBlogByIdAndKey(Long id, String key);
 }

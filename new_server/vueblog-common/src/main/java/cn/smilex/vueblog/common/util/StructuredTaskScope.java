@@ -17,12 +17,11 @@ public final class StructuredTaskScope implements AutoCloseable {
         this.threadList = new LinkedList<>();
     }
 
-    public StructuredTaskScope execute(Runnable runnable) {
+    public void execute(Runnable runnable) {
         this.threadList.add(
                 Thread.ofVirtual()
                         .start(runnable)
         );
-        return this;
     }
 
     @Override
@@ -30,8 +29,7 @@ public final class StructuredTaskScope implements AutoCloseable {
         for (Thread thread : threadList) {
             try {
                 thread.join();
-            } catch (Exception e) {
-                log.error("", e);
+            } catch (Exception ignore) {
             }
         }
     }

@@ -209,4 +209,16 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
         return limit;
     }
+
+    /**
+     * 根据ID和秘钥查询文章信息
+     *
+     * @param id  id
+     * @param key 秘钥
+     * @return 文章信息
+     */
+    @Override
+    public Blog selectBlogByIdAndKey(Long id, String key) {
+        return getBaseMapper().selectBlogByIdAndKey(id, key);
+    }
 }

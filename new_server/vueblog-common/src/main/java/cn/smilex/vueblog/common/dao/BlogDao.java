@@ -81,4 +81,16 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @return 文章个数
      */
     long selectBlogCountBySortId(@Param("sortId") Integer sortId);
+
+    /**
+     * 根据ID和秘钥查询文章信息
+     *
+     * @param id  id
+     * @param key 秘钥
+     * @return 文章信息
+     */
+    Blog selectBlogByIdAndKey(
+            @Param("id") Long id,
+            @Param("key") String key
+    );
 }

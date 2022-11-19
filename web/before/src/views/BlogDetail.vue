@@ -108,13 +108,18 @@ export default {
       if (this.key !== '' && this.key.length <= 100) {
         this.$axios.get(`blog/key/${this.blog.id}/${this.key}`)
         .then(resp => {
+          if (resp.data.code !== 200) {
+            this.$message.error('秘钥错误!')
+            return
+          }
+
           this.blog.title = resp.data.data.title
           this.blog.content = resp.data.data.content
           this.blog.status = 0
 
           document.title = this.blog.title + ' - ' + this.systemInfo.title;
         })
-        .catch(err => {
+        .catch(_ => {
           this.$message.error('秘钥错误!')
         })
       }

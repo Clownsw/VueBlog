@@ -1,6 +1,9 @@
 package cn.smilex.vueblog.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 /**
  * @author smilex
@@ -54,5 +57,33 @@ public final class CommonUtil {
         }
 
         return pageCount;
+    }
+
+    /**
+     * object集合检查存在null
+     *
+     * @param objectList object集合
+     * @return 检查存在null
+     */
+    public static boolean objectListCheckHaveNull(Object... objectList) {
+        for (Object object : objectList) {
+            if (object == null) {
+                return true;
+            }
+
+            if (object instanceof String) {
+                if (StringUtils.isBlank((String) object)) {
+                    return true;
+                }
+            }
+
+            if (object instanceof Optional) {
+                if (((Optional<?>) object).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
