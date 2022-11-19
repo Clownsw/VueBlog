@@ -3,8 +3,11 @@ package cn.smilex.vueblog.common.service.impl;
 import cn.smilex.vueblog.common.dao.SortDao;
 import cn.smilex.vueblog.common.entity.Sort;
 import cn.smilex.vueblog.common.service.SortService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author smilex
@@ -14,4 +17,17 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("unused")
 @Service
 public class SortServiceImpl extends ServiceImpl<SortDao, Sort> implements SortService {
+
+    /**
+     * 查询分类集合
+     *
+     * @return 分类集合
+     */
+    @Override
+    public List<Sort> selectSortList() {
+        return this.list(
+                new QueryWrapper<Sort>()
+                        .orderByDesc("`order`")
+        );
+    }
 }

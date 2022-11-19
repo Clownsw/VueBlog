@@ -4,7 +4,7 @@
   "datasourcePassWord": "123123",
   "jwtKey": "1ZnSR3QY68t011iYIdozXMG5OYckmeuL",
   "jwtDayNumber": 1,
-  "vueBlogBeforeWebPageSize": 1,
+  "vueBlogBeforeWebPageSize": 7,
   "vueBlogFriendDefaultHref": "https://www.smilex.cn/",
   "vueBlogFriendDefaultAvatar": "https://avatars.githubusercontent.com/u/28394742?v=4",
   "searchServer": "http://127.0.0.1:7700",

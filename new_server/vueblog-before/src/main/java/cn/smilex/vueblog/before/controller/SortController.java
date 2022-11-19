@@ -44,7 +44,7 @@ public class SortController {
     @Get("/list")
     @ProducesJson
     public Result<?> list() {
-        return Result.success(sortService.list());
+        return Result.success(sortService.selectSortList());
     }
 
     /**

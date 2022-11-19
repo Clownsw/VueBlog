@@ -37,6 +37,7 @@ export default {
   },
   data() {
     return {
+      activeIndex: '',
       sorts: this.$store.getters.getSortList,
     }
   },
