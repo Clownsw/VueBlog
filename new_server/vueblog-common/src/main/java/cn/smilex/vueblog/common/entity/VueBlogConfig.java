@@ -16,4 +16,6 @@ public class VueBlogConfig {
     private String jwtKey;
     private Integer jwtDayNumber;
     private Long vueBlogBeforeWebPageSize;
+    private String vueBlogFriendDefaultHref;
+    private String vueBlogFriendDefaultAvatar;
 }

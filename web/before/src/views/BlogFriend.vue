@@ -18,6 +18,7 @@
 
 <script>
 import Header from "@/components/Header";
+import friendApi from "@/api/friend";
 
 export default {
   name: "BlogFriend",
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     getFriends() {
-      this.$axios.get("friends").then(resp => {
+      friendApi.getFriendList().then(resp => {
         this.friends = resp.data.data
       })
     },

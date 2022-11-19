@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public final class CommonUtil {
     public static final String EMPTY_STRING = "";
+    public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

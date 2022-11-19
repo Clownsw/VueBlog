@@ -18,6 +18,7 @@ public class StartListener {
     private BlogController blogController;
     private SortController sortController;
     private TagController tagController;
+    private FriendController friendController;
     private SystemController systemController;
     private OtherController otherController;
 
@@ -42,6 +43,11 @@ public class StartListener {
     }
 
     @Autowired
+    public void setFriendController(FriendController friendController) {
+        this.friendController = friendController;
+    }
+
+    @Autowired
     public void setSystemController(SystemController systemController) {
         this.systemController = systemController;
     }
@@ -58,6 +64,7 @@ public class StartListener {
                 .annotatedService(blogController)
                 .annotatedService(sortController)
                 .annotatedService(tagController)
+                .annotatedService(friendController)
                 .annotatedService(systemController)
                 .annotatedService(otherController)
                 .build();
