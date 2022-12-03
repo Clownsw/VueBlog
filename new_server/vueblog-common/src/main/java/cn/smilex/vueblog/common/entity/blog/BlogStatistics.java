@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.blog;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -14,36 +14,21 @@ import java.time.LocalDateTime;
 
 /**
  * @author smilex
- * @date 2022/11/12/11:24
+ * @date 2022/11/12/11:28
  * @since 1.0
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("m_blog")
-public class Blog {
+@TableName("m_blog_statistics")
+public class BlogStatistics {
     @TableId(value = "id", type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @TableField("user_id")
-    private Long userId;
+    @TableField("day")
+    private LocalDateTime day;
 
-    @TableField("sort_id")
-    private Integer sortId;
-
-    @TableField("title")
-    private String title;
-
-    @TableField("description")
-    private String description;
-
-    @TableField("content")
-    private String content;
-
-    @TableField("created")
-    private LocalDateTime created;
-
-    @TableField("status")
-    private Boolean status;
+    @TableField("view_count")
+    private Long view_count;
 }

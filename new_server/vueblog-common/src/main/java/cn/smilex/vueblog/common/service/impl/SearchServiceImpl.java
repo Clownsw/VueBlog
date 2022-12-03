@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
-import cn.smilex.vueblog.common.entity.SearchBlogResult;
-import cn.smilex.vueblog.common.entity.VueBlogConfig;
+import cn.smilex.vueblog.common.entity.blog.SearchBlogResult;
+import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.service.SearchService;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;

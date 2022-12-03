@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.dao;
 
-import cn.smilex.vueblog.common.entity.Blog;
-import cn.smilex.vueblog.common.entity.SelectBlogInfo;
-import cn.smilex.vueblog.common.entity.SelectShowBlog;
+import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.blog.SelectBlogInfo;
+import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

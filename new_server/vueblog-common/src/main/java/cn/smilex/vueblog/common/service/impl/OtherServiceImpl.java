@@ -1,9 +1,9 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.OtherDao;
-import cn.smilex.vueblog.common.entity.AboutMe;
-import cn.smilex.vueblog.common.entity.Other;
-import cn.smilex.vueblog.common.entity.SelectPageFooter;
+import cn.smilex.vueblog.common.entity.other.AboutMe;
+import cn.smilex.vueblog.common.entity.other.Other;
+import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.service.OtherService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

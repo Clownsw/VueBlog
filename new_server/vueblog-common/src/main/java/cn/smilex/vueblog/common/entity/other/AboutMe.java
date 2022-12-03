@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.other;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

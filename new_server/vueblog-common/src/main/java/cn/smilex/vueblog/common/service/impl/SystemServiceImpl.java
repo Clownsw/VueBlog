@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.SystemDao;
-import cn.smilex.vueblog.common.entity.System;
+import cn.smilex.vueblog.common.entity.other.System;
 import cn.smilex.vueblog.common.service.SystemService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

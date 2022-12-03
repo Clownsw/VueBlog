@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.config;
 
-import cn.smilex.vueblog.common.entity.VueBlogConfig;
+import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

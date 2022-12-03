@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.SearchBlogResult;
+import cn.smilex.vueblog.common.entity.blog.SearchBlogResult;
 
 import java.util.List;
 

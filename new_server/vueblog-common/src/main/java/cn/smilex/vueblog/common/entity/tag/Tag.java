@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.tag;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.User;
+import cn.smilex.vueblog.common.entity.user.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
 

@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.Sort;
+import cn.smilex.vueblog.common.entity.sort.Sort;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.other;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -12,21 +12,27 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author smilex
- * @date 2022/11/12/11:27
+ * @date 2022/11/12/11:31
  * @since 1.0
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("m_blog_key")
-public class BlogKey {
+@TableName("m_friend")
+public class Friend {
     @TableId(value = "id", type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @TableField("title")
-    private String title;
+    @TableField("name")
+    private String name;
 
-    @TableField("key")
-    private String key;
+    @TableField("description")
+    private String description;
+
+    @TableField("href")
+    private String href;
+
+    @TableField("avatar")
+    private String avatar;
 }

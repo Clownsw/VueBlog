@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.Blog;
-import cn.smilex.vueblog.common.entity.Limit;
-import cn.smilex.vueblog.common.entity.SelectShowBlog;
+import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.common.Limit;
+import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
 

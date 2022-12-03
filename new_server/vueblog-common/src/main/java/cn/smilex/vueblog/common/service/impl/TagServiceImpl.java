@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.TagDao;
-import cn.smilex.vueblog.common.entity.Tag;
+import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.service.TagService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

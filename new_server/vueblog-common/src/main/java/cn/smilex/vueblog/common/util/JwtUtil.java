@@ -2,7 +2,7 @@ package cn.smilex.vueblog.common.util;
 
 import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.JwtConfig;
-import cn.smilex.vueblog.common.entity.Tuple;
+import cn.smilex.vueblog.common.entity.common.Tuple;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.extern.slf4j.Slf4j;
