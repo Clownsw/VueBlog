@@ -1,5 +1,7 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.blog;
 
+import cn.smilex.vueblog.common.entity.sort.Sort;
+import cn.smilex.vueblog.common.entity.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

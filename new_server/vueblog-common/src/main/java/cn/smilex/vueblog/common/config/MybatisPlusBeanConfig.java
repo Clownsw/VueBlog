@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.config;
 
-import cn.smilex.vueblog.common.entity.VueBlogConfig;
+import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;

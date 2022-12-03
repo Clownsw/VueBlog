@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.System;
+import cn.smilex.vueblog.common.entity.other.System;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

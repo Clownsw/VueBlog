@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.SortDao;
-import cn.smilex.vueblog.common.entity.Sort;
+import cn.smilex.vueblog.common.entity.sort.Sort;
 import cn.smilex.vueblog.common.service.SortService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.before.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
-import cn.smilex.vueblog.common.entity.Result;
+import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.service.SortService;
 import com.linecorp.armeria.server.annotation.Get;

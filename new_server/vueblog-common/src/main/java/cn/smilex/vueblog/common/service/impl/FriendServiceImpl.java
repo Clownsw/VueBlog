@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.FriendDao;
-import cn.smilex.vueblog.common.entity.Friend;
-import cn.smilex.vueblog.common.entity.VueBlogConfig;
+import cn.smilex.vueblog.common.entity.other.Friend;
+import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.service.FriendService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

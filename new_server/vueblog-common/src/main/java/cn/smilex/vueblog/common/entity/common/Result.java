@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.common;
 
 import cn.smilex.vueblog.common.config.ResultCode;
 import lombok.AllArgsConstructor;

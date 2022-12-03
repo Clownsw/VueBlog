@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.other;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,20 +10,23 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author smilex
- * @date 2022/11/12/11:34
+ * @date 2022/11/12/11:36
  * @since 1.0
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("m_sort")
-public class Sort {
+@TableName("m_system")
+public class System {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @TableField("`order`")
-    private Integer order;
+    @TableField("welcome")
+    private String welcome;
 
-    @TableField("name")
-    private String name;
+    @TableField("title")
+    private String title;
+
+    @TableField("description")
+    private String description;
 }

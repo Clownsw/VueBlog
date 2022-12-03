@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.entity;
+package cn.smilex.vueblog.common.entity.other;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,40 +10,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 /**
  * @author smilex
- * @date 2022/11/12/11:38
+ * @date 2022/11/12/11:33
  * @since 1.0
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("m_user")
-public class User {
+@TableName("m_other")
+public class Other {
     @TableId(value = "id", type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @TableField("username")
-    private String userName;
+    @TableField("order")
+    private Short order;
 
-    @TableField("avatar")
-    private String avatar;
+    @TableField("title")
+    private String title;
 
-    @TableField("email")
-    private String email;
-
-    @TableField("password")
-    private String password;
-
-    @TableField("status")
-    private Integer status;
-
-    @TableField("created")
-    private LocalDateTime created;
-
-    @TableField("last_login")
-    private LocalDateTime lastLogin;
+    @TableField("content")
+    private String content;
 }

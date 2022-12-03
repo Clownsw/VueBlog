@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.Friend;
+import cn.smilex.vueblog.common.entity.other.Friend;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

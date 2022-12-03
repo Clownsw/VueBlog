@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.UserDao;
-import cn.smilex.vueblog.common.entity.Tuple;
-import cn.smilex.vueblog.common.entity.User;
+import cn.smilex.vueblog.common.entity.common.Tuple;
+import cn.smilex.vueblog.common.entity.user.User;
 import cn.smilex.vueblog.common.service.UserService;
 import cn.smilex.vueblog.common.util.JwtUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

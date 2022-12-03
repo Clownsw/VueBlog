@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.handler;
 
-import cn.smilex.vueblog.common.entity.Result;
+import cn.smilex.vueblog.common.entity.common.Result;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;

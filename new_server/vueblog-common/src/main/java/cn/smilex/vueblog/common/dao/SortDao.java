@@ -1,6 +1,6 @@
 package cn.smilex.vueblog.common.dao;
 
-import cn.smilex.vueblog.common.entity.Sort;
+import cn.smilex.vueblog.common.entity.sort.Sort;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

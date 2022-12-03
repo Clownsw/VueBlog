@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.service;
 
-import cn.smilex.vueblog.common.entity.AboutMe;
-import cn.smilex.vueblog.common.entity.Other;
-import cn.smilex.vueblog.common.entity.SelectPageFooter;
+import cn.smilex.vueblog.common.entity.other.AboutMe;
+import cn.smilex.vueblog.common.entity.other.Other;
+import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
