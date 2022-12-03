@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author smilex
@@ -15,6 +19,15 @@ public final class CommonUtil {
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();
+
+    public static Future<?> submitToThreadPool(Runnable runnable) {
+        return THREAD_POOL.submit(runnable);
+    }
+
+    public static Future<?> submitToThreadPool(Callable<?> callable) {
+        return THREAD_POOL.submit(callable);
+    }
 
     public static boolean isInForArray(Class<?> clazz, Class<?>[] array) {
         for (Class<?> aClass : array) {
@@ -78,7 +91,7 @@ public final class CommonUtil {
             }
 
             if (object instanceof Optional) {
-                if (((Optional<?>) object).isEmpty()) {
+                if (!((Optional<?>) object).isPresent()) {
                     return true;
                 }
             }

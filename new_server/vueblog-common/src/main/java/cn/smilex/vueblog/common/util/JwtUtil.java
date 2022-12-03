@@ -47,7 +47,7 @@ public final class JwtUtil {
 
     public static Tuple<Boolean, Map<String, Object>> signJWTToken(String token) {
         try {
-            var data = JWT.require(getJwtConfig().getAlgorithm())
+            Map<String, Object> data = JWT.require(getJwtConfig().getAlgorithm())
                     .build()
                     .verify(token)
                     .getClaim("data")
