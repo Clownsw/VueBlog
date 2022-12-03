@@ -4,6 +4,7 @@ import cn.smilex.vueblog.common.dao.BlogDao;
 import cn.smilex.vueblog.common.entity.*;
 import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.ListUtil;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linecorp.armeria.common.HttpRequest;
@@ -130,7 +131,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         SelectBlogInfo selectBlogInfo = getBaseMapper().selectBlogById(id);
 
         if (selectBlogInfo != null) {
-            blogParseTag(List.of(selectBlogInfo));
+            blogParseTag(ListUtil.of(selectBlogInfo));
         }
 
         return selectBlogInfo;
