@@ -1,5 +1,7 @@
 package cn.smilex.vueblog.common.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -68,14 +70,9 @@ public final class ClassUtil {
                 continue;
             }
 
-            if (type == String.class) {
-                String temp = (String) field.get(obj);
-                if (temp == null || temp.isEmpty()) {
-                    return true;
-                }
-            } else if (type.getSuperclass() == getSuperClassByClass(StringBuilder.class)) {
+            if (type.getSuperclass() == getSuperClassByClass(StringBuilder.class)) {
                 CharSequence o = (CharSequence) field.get(obj);
-                if (o == null || o.length() <= 0) {
+                if (StringUtils.isBlank(o)) {
                     return true;
                 }
             } else if (field.get(obj) == null) {
