@@ -13,7 +13,9 @@ public enum ResultCode {
     SUCCESS(200, "成功"),
     UNKNOWN_ERROR(500, "未知错误"),
 
-    ERROR_REQUEST_PARAM_ERROR(1000, "错误, 请求参数错误");
+    ERROR_REQUEST_PARAM_ERROR(1000, "错误, 请求参数错误"),
+    ERROR_LOGIN_NOT_FOUND_USER(2000, "错误, 登录失败未查询到该用户"),
+    ERROR_LOGIN_PASSWORD_ERROR(2001, "错误, 登录失败密码错误");
 
     final int code;
     final String message;

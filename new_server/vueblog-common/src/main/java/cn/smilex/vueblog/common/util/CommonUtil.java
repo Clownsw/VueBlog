@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.util;
 
+import cn.smilex.vueblog.common.entity.common.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -98,5 +99,40 @@ public final class CommonUtil {
         }
 
         return false;
+    }
+
+    @FunctionalInterface
+    public interface TryRunTask<T> {
+        T run();
+    }
+
+    @FunctionalInterface
+    public interface TryRunExceptionHandler<T> {
+        Optional<T> handler(Throwable e);
+    }
+
+    /**
+     * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理
+     *
+     * @param task                   任务
+     * @param tryRunExceptionHandler 异常处理
+     * @param <T>                    unknown type1
+     * @param <K>                    unknown type2
+     * @return 结果
+     */
+    @SuppressWarnings("all")
+    public static <T, K> Result<?> tryRun(TryRunTask<T> task, Optional<TryRunExceptionHandler<K>> exceptionHandler) {
+        try {
+            return Result.success(task.run());
+        } catch (Exception e) {
+            if (exceptionHandler.isPresent()) {
+                Optional<K> result = exceptionHandler.get().handler(e);
+
+                if (result.isPresent()) {
+                    return Result.error(result.get());
+                }
+            }
+            return Result.error();
+        }
     }
 }
