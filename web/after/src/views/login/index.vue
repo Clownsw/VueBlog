@@ -67,7 +67,7 @@ export default {
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
             this.$router.push({ path: '/' })
-          }).catch(() => {
+          }).catch(_ => {
             this.loading = false
             this.$message.error('登录失败, 用户名或密码错误!')
           })
