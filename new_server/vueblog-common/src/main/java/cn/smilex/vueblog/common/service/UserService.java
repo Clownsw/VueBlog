@@ -19,4 +19,12 @@ public interface UserService extends IService<User> {
      * @return 是否登录
      */
     boolean isLogin(HttpRequest request);
+
+    /**
+     * 获取当前token中的用户信息
+     *
+     * @param request 请求对象
+     * @return 用户信息
+     */
+    User getUserInfoByToken(HttpRequest request);
 }

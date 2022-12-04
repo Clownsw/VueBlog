@@ -15,5 +15,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @AdditionalHeader(name = "Access-Control-Allow-Origin", value = "*")
+@AdditionalHeader(name = "Access-Control-Allow-Credentials", value = "true")
+@AdditionalHeader(name = "Access-Control-Allow-Methods", value = "*")
+@AdditionalHeader(name = "Access-Control-Allow-Headers", value = "*")
+@AdditionalHeader(name = "Access-Control-Expose-Headers", value = "*")
 public @interface CrossOrigin {
 }

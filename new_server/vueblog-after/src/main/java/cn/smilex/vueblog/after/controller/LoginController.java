@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.after.controller;
 
+import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.user.LoginUser;
@@ -20,8 +21,10 @@ import java.util.Optional;
  */
 @SuppressWarnings("unused")
 @Slf4j
+@CrossOrigin
 @PathPrefix("/admin")
 @RequestConverter(JacksonRequestConverterFunction.class)
+@ProducesJson
 @Component
 public class LoginController {
     private LoginService loginService;
@@ -37,8 +40,8 @@ public class LoginController {
      * @param loginUser 用户
      * @return token
      */
+    @Options("/login")
     @Post("/login")
-    @ProducesJson
     public Result<?> login(Optional<LoginUser> loginUser, HttpRequest request) throws IllegalAccessException {
         if (!loginUser.isPresent() || ClassUtil.objIsNull(LoginUser.class, loginUser.get())) {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
@@ -50,5 +53,18 @@ public class LoginController {
                         e -> Optional.of(e.getMessage())
                 )
         );
+    }
+
+    /**
+     * 验证token有效性
+     *
+     * @param token token
+     * @return 有效性
+     */
+    @Options("/token")
+    @Post("/token")
+    public Result<?> token(Optional<String> token) {
+        token.ifPresent(s -> log.info("token: {}", s));
+        return Result.success();
     }
 }
