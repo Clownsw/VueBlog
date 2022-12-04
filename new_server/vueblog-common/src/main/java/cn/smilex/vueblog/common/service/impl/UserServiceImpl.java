@@ -1,13 +1,17 @@
 package cn.smilex.vueblog.common.service.impl;
 
+import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.dao.UserDao;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.entity.user.User;
+import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.UserService;
 import cn.smilex.vueblog.common.util.JwtUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linecorp.armeria.common.HttpHeaderNames;
 import com.linecorp.armeria.common.HttpRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ import java.util.Map;
  * @since 1.0
  */
 @SuppressWarnings("unused")
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
 
@@ -39,5 +44,38 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
         Tuple<Boolean, Map<String, Object>> result = JwtUtil.signJWTToken(token);
         return result.getLeft();
+    }
+
+    /**
+     * 获取当前token中的用户信息
+     *
+     * @param request 请求对象
+     * @return 用户信息
+     */
+    @Override
+    public User getUserInfoByToken(HttpRequest request) {
+        String token = request.headers()
+                .get("authorization");
+
+        log.info("headers: {}", request.headers());
+        log.info("token: {}", token);
+
+        if (StringUtils.isBlank(token)) {
+            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
+        }
+
+        Tuple<Boolean, Map<String, Object>> signResult = JwtUtil.signJWTToken(token);
+
+        if (!signResult.getLeft()) {
+            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
+        }
+
+        return getOne(
+                new LambdaQueryWrapper<User>()
+                        .eq(
+                                User::getId, signResult.getRight()
+                                        .get("id")
+                        )
+        );
     }
 }
