@@ -1,11 +1,10 @@
 package cn.smilex.vueblog.common.service.impl;
 
-import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.dao.UserDao;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.entity.user.User;
-import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.UserService;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import cn.smilex.vueblog.common.util.JwtUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -54,27 +53,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      */
     @Override
     public User getUserInfoByToken(HttpRequest request) {
-        String token = request.headers()
-                .get("authorization");
-
-        log.info("headers: {}", request.headers());
-        log.info("token: {}", token);
-
-        if (StringUtils.isBlank(token)) {
-            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
-        }
-
-        Tuple<Boolean, Map<String, Object>> signResult = JwtUtil.signJWTToken(token);
-
-        if (!signResult.getLeft()) {
-            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
-        }
-
         return getOne(
                 new LambdaQueryWrapper<User>()
                         .eq(
-                                User::getId, signResult.getRight()
-                                        .get("id")
+                                User::getId, CommonUtil.checkTokenAndGetData(request).get("id")
                         )
         );
     }

@@ -12,6 +12,7 @@ import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import cn.smilex.vueblog.common.util.ListUtil;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linecorp.armeria.common.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -49,13 +50,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
                 if ((tagIds = selectShowBlog.getTagIds()) != null && (tagNames = selectShowBlog.getTagNames()) != null) {
                     List<Long> tagIdList = Arrays.stream(
-                            tagIds.split(CommonUtil.COMMA))
+                                    tagIds.split(CommonUtil.COMMA))
                             .map(Long::parseLong)
                             .collect(Collectors.toList()
                             );
 
                     List<String> tagNameList = Arrays.stream(
-                            tagNames.split(CommonUtil.COMMA))
+                                    tagNames.split(CommonUtil.COMMA))
                             .collect(Collectors.toList()
                             );
 
@@ -227,5 +228,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     @Override
     public Blog selectBlogByIdAndKey(Long id, String key) {
         return getBaseMapper().selectBlogByIdAndKey(id, key);
+    }
+
+    /**
+     * 分页查询博文列表
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @return 博文列表
+     */
+    @Override
+    public Page<Blog> blogPage(Long currentPage, Long pageSize) {
+        return this.page(new Page<>(currentPage, pageSize));
     }
 }

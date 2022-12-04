@@ -63,8 +63,8 @@ public class LoginController {
      */
     @Options("/token")
     @Post("/token")
+    @ProducesJson
     public Result<?> token(Optional<String> token) {
-        token.ifPresent(s -> log.info("token: {}", s));
-        return Result.success();
+        return loginService.signToken(token);
     }
 }

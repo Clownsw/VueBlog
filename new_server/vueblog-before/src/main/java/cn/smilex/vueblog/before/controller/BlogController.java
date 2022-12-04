@@ -4,11 +4,13 @@ import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
-import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.common.HttpRequest;
-import com.linecorp.armeria.server.annotation.*;
+import com.linecorp.armeria.server.annotation.Get;
+import com.linecorp.armeria.server.annotation.Param;
+import com.linecorp.armeria.server.annotation.PathPrefix;
+import com.linecorp.armeria.server.annotation.ProducesJson;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,7 +25,6 @@ import java.util.Optional;
 @SuppressWarnings("all")
 @CrossOrigin
 @PathPrefix("/blog")
-@Decorator(AuthService.class)
 @Component
 public class BlogController {
     private BlogService blogService;

@@ -11,8 +11,10 @@ import lombok.Getter;
 @Getter
 public enum ResultCode {
     SUCCESS(200, "成功"),
+    FORBIDDEN(403, "无权访问"),
+    NOT_FOUND(404, "未找到"),
+    METHOD_NOT_ALLOWED(405, "错误的请求方式"),
     UNKNOWN_ERROR(500, "未知错误"),
-
     ERROR_REQUEST_PARAM_ERROR(1000, "错误, 请求参数错误"),
     ERROR_LOGIN_NOT_FOUND_USER(2000, "错误, 登录失败未查询到该用户"),
     ERROR_LOGIN_PASSWORD_ERROR(2001, "错误, 登录失败密码错误"),

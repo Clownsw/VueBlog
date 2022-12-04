@@ -2,16 +2,20 @@ package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.HashMapBuilder;
+import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.user.LoginUser;
 import cn.smilex.vueblog.common.entity.user.User;
 import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.LoginService;
 import cn.smilex.vueblog.common.service.UserService;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import cn.smilex.vueblog.common.util.JwtUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.linecorp.armeria.common.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * @author smilex
@@ -56,5 +60,24 @@ public class LoginServiceImpl implements LoginService {
                         .add("status", user.getStatus())
                         .build()
         );
+    }
+
+    /**
+     * 验证token有效性
+     *
+     * @param token token
+     * @return 结果
+     */
+    @Override
+    public Result<?> signToken(Optional<String> token) {
+        if (token.isPresent()) {
+            try {
+                CommonUtil.checkTokenAndGetData(token.get());
+                return Result.success();
+            } catch (Exception ignore) {
+            }
+        }
+
+        return Result.error();
     }
 }

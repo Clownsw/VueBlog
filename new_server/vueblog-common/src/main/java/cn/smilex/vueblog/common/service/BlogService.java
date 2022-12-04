@@ -1,10 +1,13 @@
 package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.blog.Blog;
-import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
+import cn.smilex.vueblog.common.entity.common.Limit;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
+
+import java.util.List;
 
 /**
  * @author smilex
@@ -61,4 +64,13 @@ public interface BlogService extends IService<Blog> {
      * @return 文章信息
      */
     Blog selectBlogByIdAndKey(Long id, String key);
+
+    /**
+     * 分页查询博文列表
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @return 博文列表
+     */
+    Page<Blog> blogPage(Long currentPage, Long pageSize);
 }

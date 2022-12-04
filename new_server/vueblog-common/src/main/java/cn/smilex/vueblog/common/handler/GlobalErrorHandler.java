@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.handler;
 
+import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
@@ -23,18 +24,36 @@ public class GlobalErrorHandler implements ServerErrorHandler {
 
     @Override
     public @Nullable HttpResponse onServiceException(@Nullable ServiceRequestContext ctx, @Nullable Throwable cause) {
-
         if (cause != null) {
             if (cause instanceof HttpStatusException) {
                 HttpStatusException e = (HttpStatusException) cause;
-                if (e.httpStatus().code() == 404) {
-                    return HttpResponse.ofJson(HttpStatus.OK, MediaType.JSON_UTF_8, new Result<>(404, "not found!", null));
+
+                final int code = e.httpStatus().code();
+
+                if (code == 404) {
+                    return HttpResponse.ofJson(
+                            HttpStatus.OK,
+                            MediaType.JSON_UTF_8,
+                            Result.fromResultCode(ResultCode.NOT_FOUND)
+                    );
                 }
-            } else {
-                cause.printStackTrace();
+
+                if (code == 405) {
+                    return HttpResponse.ofJson(
+                            HttpStatus.OK,
+                            MediaType.JSON_UTF_8,
+                            Result.fromResultCode(ResultCode.METHOD_NOT_ALLOWED)
+                    );
+                }
             }
+
+            cause.printStackTrace();
         }
 
-        return HttpResponse.ofJson(HttpStatus.OK, MediaType.JSON_UTF_8, new Result<>(500, "unknown error!", null));
+        return HttpResponse.ofJson(
+                HttpStatus.OK,
+                MediaType.JSON_UTF_8,
+                Result.fromResultCode(ResultCode.UNKNOWN_ERROR)
+        );
     }
 }

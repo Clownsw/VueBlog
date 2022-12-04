@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.after.handler;
 
+import cn.smilex.vueblog.after.controller.BlogController;
 import cn.smilex.vueblog.after.controller.LoginController;
 import cn.smilex.vueblog.after.controller.UserController;
 import cn.smilex.vueblog.common.handler.GlobalErrorHandler;
@@ -19,6 +20,7 @@ public class StartListener {
     private GlobalErrorHandler globalErrorHandler;
     private LoginController loginController;
     private UserController userController;
+    private BlogController blogController;
 
     @Autowired
     public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
@@ -35,12 +37,18 @@ public class StartListener {
         this.loginController = loginController;
     }
 
+    @Autowired
+    public void setBlogController(BlogController blogController) {
+        this.blogController = blogController;
+    }
+
     public void start() {
         Server server = Server.builder()
                 .http(9999)
                 .errorHandler(globalErrorHandler)
                 .annotatedService(loginController)
                 .annotatedService(userController)
+                .annotatedService(blogController)
                 .build();
 
         server.start()

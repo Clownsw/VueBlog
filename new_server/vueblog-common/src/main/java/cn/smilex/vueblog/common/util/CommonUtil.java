@@ -1,9 +1,14 @@
 package cn.smilex.vueblog.common.util;
 
+import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.entity.common.Tuple;
+import cn.smilex.vueblog.common.exception.VueBlogException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linecorp.armeria.common.HttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -134,5 +139,38 @@ public final class CommonUtil {
             }
             return Result.error();
         }
+    }
+
+    /**
+     * 检查请求对象中的token有效性
+     *
+     * @param request 请求对象
+     * @return 有效性
+     */
+    public static Map<String, Object> checkTokenAndGetData(HttpRequest request) {
+        return checkTokenAndGetData(
+                request.headers()
+                        .get("authorization")
+        );
+    }
+
+    /**
+     * 检查token有效性
+     *
+     * @param token token
+     * @return 有效性
+     */
+    public static Map<String, Object> checkTokenAndGetData(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
+        }
+
+        Tuple<Boolean, Map<String, Object>> signResult = JwtUtil.signJWTToken(token);
+
+        if (!signResult.getLeft()) {
+            throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
+        }
+
+        return signResult.getRight();
     }
 }
