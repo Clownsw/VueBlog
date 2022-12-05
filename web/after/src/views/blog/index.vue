@@ -120,7 +120,7 @@ export default {
         this.total = resp.data.total
         this.pages = resp.data.pages
         this.currentPage = resp.data.current
-        this.tableData = resp.data.datas
+        this.tableData = resp.data.records
 
         for (let i = 0; i < this.tableData.length; i++) {
           this.tableData[i].created = new Date(this.tableData[i].created).toLocaleString()
