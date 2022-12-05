@@ -10,6 +10,7 @@ import java.util.Optional;
  * @author smilex
  * @date 2022/12/3/23:18
  */
+@SuppressWarnings("all")
 public interface LoginService {
 
     /**

@@ -1,11 +1,11 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.OtherDao;
+import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.Other;
-import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.service.OtherService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +27,9 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
     public SelectPageFooter selectPageFooter() {
         return SelectPageFooter.fromOther(
                 getOne(
-                        new QueryWrapper<Other>()
-                                .select("content")
-                                .eq("`order`", 1)
+                        new LambdaQueryWrapper<Other>()
+                                .select(Other::getContent)
+                                .eq(Other::getOrder, 1)
 
                 )
         );
@@ -43,9 +43,9 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
     @Override
     public AboutMe aboutMe() {
         Other other = this.getOne(
-                new QueryWrapper<Other>()
-                        .select("id", "title", "content")
-                        .eq("`order`", 0)
+                new LambdaQueryWrapper<Other>()
+                        .select(Other::getId, Other::getTitle, Other::getContent)
+                        .eq(Other::getOrder, 0)
         );
         return AboutMe.fromOther(other);
     }

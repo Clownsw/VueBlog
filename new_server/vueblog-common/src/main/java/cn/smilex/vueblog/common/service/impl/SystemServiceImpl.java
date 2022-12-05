@@ -3,7 +3,7 @@ package cn.smilex.vueblog.common.service.impl;
 import cn.smilex.vueblog.common.dao.SystemDao;
 import cn.smilex.vueblog.common.entity.other.System;
 import cn.smilex.vueblog.common.service.SystemService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,8 @@ public class SystemServiceImpl extends ServiceImpl<SystemDao, System> implements
     @Override
     public System selectSystemInfo() {
         return getOne(
-                new QueryWrapper<System>()
-                        .eq("id", 1)
+                new LambdaQueryWrapper<System>()
+                        .eq(System::getId, 1)
         );
     }
 }
