@@ -1,22 +1,28 @@
 package cn.smilex.vueblog.common.util;
 
 import cn.smilex.vueblog.common.config.ResultCode;
+import cn.smilex.vueblog.common.entity.blog.SearchBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.Triplet;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.exception.VueBlogException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.armeria.common.HttpRequest;
+import com.linecorp.armeria.common.HttpResponse;
+import com.linecorp.armeria.common.HttpStatus;
+import com.linecorp.armeria.common.ResponseHeaders;
+import com.meilisearch.sdk.Client;
+import com.meilisearch.sdk.Index;
+import com.meilisearch.sdk.exceptions.MeilisearchException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author smilex
@@ -28,15 +34,6 @@ public final class CommonUtil {
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    public static final ExecutorService THREAD_POOL = Executors.newCachedThreadPool();
-
-    public static Future<?> submitToThreadPool(Runnable runnable) {
-        return THREAD_POOL.submit(runnable);
-    }
-
-    public static Future<?> submitToThreadPool(Callable<?> callable) {
-        return THREAD_POOL.submit(callable);
-    }
 
     public static boolean isInForArray(Class<?> clazz, Class<?>[] array) {
         for (Class<?> aClass : array) {
@@ -100,7 +97,7 @@ public final class CommonUtil {
             }
 
             if (object instanceof Optional) {
-                if (!((Optional<?>) object).isPresent()) {
+                if (((Optional<?>) object).isEmpty()) {
                     return true;
                 }
             }
@@ -218,5 +215,131 @@ public final class CommonUtil {
         }
 
         return new Triplet<>(_del, _add, _default);
+    }
+
+    /**
+     * 生成一个允许跨域的响应对象
+     *
+     * @return 响应对象
+     */
+    public static HttpResponse createCrossOriginHttpResponse() {
+        return HttpResponse.of(
+                ResponseHeaders.of(HttpStatus.OK)
+                        .toBuilder()
+                        .add("Access-Control-Allow-Origin", "*")
+                        .add("Access-Control-Allow-Credentials", "true")
+                        .add("Access-Control-Allow-Methods", "*")
+                        .add("Access-Control-Allow-Headers", "*")
+                        .add("Access-Control-Expose-Headers", "*")
+                        .build()
+        );
+    }
+
+    @FunctionalInterface
+    public interface CollectionToStrMap<T> {
+        String map(T t);
+    }
+
+    /**
+     * 集合转字符串
+     *
+     * @param collection 集合
+     * @param handler    处理方法
+     * @param splice     分隔符
+     * @param <T>        unknown type
+     * @return 字符串
+     */
+    public static <T> String collectionToStr(Collection<T> collection, CollectionToStrMap<T> handler, String splice) {
+        StringBuilder sb = new StringBuilder();
+        for (T t : collection) {
+            sb.append(handler.map(t))
+                    .append(splice);
+        }
+
+        return collection.size() == 0 ? EMPTY_STRING : sb.substring(0, sb.length() - 1);
+    }
+
+    /**
+     * JsonNode转集合
+     *
+     * @param collection 集合
+     * @param jsonNode   JsonNode
+     * @param handler    处理方法
+     * @param <R>        unknown type
+     * @return 集合
+     */
+    public static <R> Collection<R> jsonNodeToCollection(Collection<R> collection, JsonNode jsonNode, Function<JsonNode, R> handler) {
+        for (JsonNode node : jsonNode) {
+            collection.add(handler.apply(node));
+        }
+        return collection;
+    }
+
+    /**
+     * obj是否在集合中存在
+     *
+     * @param collection 集合
+     * @param handler    处理方法
+     * @param <T>        unknown type
+     * @return 是否存在
+     */
+    public static <T> boolean objInCollectionExists(Collection<T> collection, Predicate<T> handler) {
+        for (T t : collection) {
+            if (handler.test(t)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 搜索客户端添加或更新
+     *
+     * @param client     客户端对象
+     * @param document   内容
+     * @param searchBlog 实体
+     * @throws MeilisearchException    unknown execption
+     * @throws JsonProcessingException unknown execption
+     */
+    public static void searchClientAddOrUpdate(Client client, String document, SearchBlog searchBlog) throws MeilisearchException, JsonProcessingException {
+        final String primaryKey = "id";
+        Index blog = client.index("blog");
+        JsonNode root = OBJECT_MAPPER.readTree(blog.getDocuments());
+
+        if (root.size() == 0) {
+            blog.addDocuments(document, primaryKey);
+            return;
+        }
+
+        List<SearchBlog> searchBlogList = jsonNodeToCollection(
+                new LinkedList<>(),
+                root,
+                node -> {
+                    try {
+                        return OBJECT_MAPPER.readValue(
+                                node.toString(),
+                                new TypeReference<SearchBlog>() {
+                                }
+                        );
+                    } catch (JsonProcessingException e) {
+                        return null;
+                    }
+                }
+        ).stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (
+                objInCollectionExists(
+                        searchBlogList,
+                        searchBlogDocument -> searchBlog.getId().equals(searchBlogDocument.getId())
+                )
+        ) {
+            blog.updateDocuments(document, primaryKey);
+            return;
+        }
+
+        blog.addDocuments(document, primaryKey);
     }
 }

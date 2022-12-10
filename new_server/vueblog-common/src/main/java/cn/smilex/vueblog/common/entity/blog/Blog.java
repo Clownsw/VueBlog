@@ -45,5 +45,16 @@ public class Blog {
     private LocalDateTime created;
 
     @TableField("status")
-    private Boolean status;
+    private Short status;
+
+    public static Blog fromRequestBlog(RequestBlog requestBlog) {
+        Blog blog = new Blog();
+        blog.setId(requestBlog.getId());
+        blog.setSortId(requestBlog.getSortId());
+        blog.setTitle(requestBlog.getTitle());
+        blog.setContent(requestBlog.getContent());
+        blog.setDescription(requestBlog.getDescription());
+        blog.setStatus(requestBlog.getStatus());
+        return blog;
+    }
 }

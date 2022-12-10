@@ -18,13 +18,13 @@
       <el-form-item label="博客标签" prop="content">
         <draggable v-model="tags">
           <el-tag :key="tag.id" v-for="tag in tags" closable :disable-transitions="false" @close="handleClose(tag)"
-            class="tag">
+                  class="tag">
             {{ tag.name }}
           </el-tag>
         </draggable>
 
         <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
-          @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
+                  @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
         </el-input>
         <el-button v-else class="button-new-tag" size="small" @click="showInput">添加新标签</el-button>
       </el-form-item>
@@ -43,13 +43,14 @@
       </el-form-item>
 
       <el-form-item label="博文内容" prop="content">
-        <mavon-editor :boxShadow="true" :code-style="'github-dark'" :externalLink="externalLink" v-model="blog.content" class="blog-body">
+        <mavon-editor :boxShadow="true" :code-style="'github-dark'" :externalLink="externalLink" v-model="blog.content"
+                      class="blog-body">
         </mavon-editor>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click.native="submitForm('blog')">{{ buttonName }}</el-button>
-        <el-button @click="resetForm('blog')">重置</el-button>
+        <el-button type="primary" @click.native="submitForm('blog')" size="mini">{{ buttonName }}</el-button>
+        <el-button @click="resetForm('blog')" size="mini">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -77,7 +78,7 @@ export default {
         sort: {
           id: null
         },
-        status: 0,
+        status: 0
       },
       rules: {
         title: [
@@ -85,17 +86,17 @@ export default {
           { min: 1, max: 255, message: '长度在 1 到 255 个字符', trigger: 'blur' }
         ],
         description: [
-          { required: true, message: '请输入博文描述', trigger: 'blur' },
+          { required: true, message: '请输入博文描述', trigger: 'blur' }
         ],
         content: [
-          { required: true, message: '请输入博文内容', trigger: 'blur' },
+          { required: true, message: '请输入博文内容', trigger: 'blur' }
         ],
         sort: [
-          { required: true, message: '请选择分类', trigger: 'blur' },
+          { required: true, message: '请选择分类', trigger: 'blur' }
         ],
         status: [
-          { required: true, message: '请输入博文内容', trigger: 'blur' },
-        ],
+          { required: true, message: '请输入博文内容', trigger: 'blur' }
+        ]
       },
       buttonName: '',
       tags: [],
@@ -104,31 +105,31 @@ export default {
       key_title: '',
       inputVisible: false,
       inputValue: '',
-	  externalLink: {
-		markdown_css: function() {
-			// 这是你的markdown css文件路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/markdown/github-markdown.min.css';
-		},
-		hljs_js: function() {
-			// 这是你的hljs文件路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/highlight.min.js';
-		},
-		hljs_css: function(css) {
-			// 这是你的代码高亮配色文件路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/styles/' + css + '.min.css';
-		},
-		hljs_lang: function(lang) {
-			// 这是你的代码高亮语言解析路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/languages/' + lang + '.css';
-		},
-		katex_css: function() {
-			// 这是你的katex配色方案路径路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.css';
-		},
-		katex_js: function() {
-			// 这是你的katex.js路径
-			return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.js';
-		},
+      externalLink: {
+        markdown_css: function() {
+          // 这是你的markdown css文件路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/markdown/github-markdown.min.css'
+        },
+        hljs_js: function() {
+          // 这是你的hljs文件路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/highlight.min.js'
+        },
+        hljs_css: function(css) {
+          // 这是你的代码高亮配色文件路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/styles/' + css + '.min.css'
+        },
+        hljs_lang: function(lang) {
+          // 这是你的代码高亮语言解析路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/highlightjs/languages/' + lang + '.css'
+        },
+        katex_css: function() {
+          // 这是你的katex配色方案路径路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.css'
+        },
+        katex_js: function() {
+          // 这是你的katex.js路径
+          return 'https://cdn.smilex.cn/cdn/mavon-editor/katex/katex.min.js'
+        }
       }
     }
   },
@@ -174,13 +175,13 @@ export default {
           if (this.id === -1) {
             this.addBlog()
           } else {
-            this.updateBlog();
+            this.updateBlog()
           }
 
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     updateBlog() {
       let obj = {
@@ -222,21 +223,21 @@ export default {
       })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleClose(tag) {
-      this.tags.splice(this.tags.indexOf(tag), 1);
+      this.tags.splice(this.tags.indexOf(tag), 1)
     },
     showInput() {
-      this.inputVisible = true;
+      this.inputVisible = true
       this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     },
     handleInputConfirm() {
-      let inputValue = this.inputValue;
+      let inputValue = this.inputValue
       if (inputValue) {
-        let r = async () => {
+        let r = async() => {
           let resp = await this.fetchExistsTagByName(inputValue)
           // 存在
           if (resp.data) {
@@ -244,20 +245,19 @@ export default {
           }
           // 不存在
           else {
-            await tagApi.saveTag({
-              name: inputValue
-            })
+            await tagApi.saveTag(inputValue)
             await this.localAddTag(inputValue)
           }
         }
 
-        r().then(() => { })
+        r().then(() => {
+        })
       }
-      this.inputVisible = false;
-      this.inputValue = '';
+      this.inputVisible = false
+      this.inputValue = ''
     },
     getBlogTags(id) {
-      this.$axios.get("tag/" + id)
+      this.$axios.get('tag/' + id)
         .then(resp => {
           this.tags = resp.data.data
         })
@@ -265,18 +265,12 @@ export default {
     async localAddTag(inputValue) {
       let resp = await this.fetchGetTagIdByName(inputValue)
 
-      let tag = resp.data
-      if (tag.id === -1) {
-        this.tags.push({
-          id: -1,
-          name: inputValue
-        })
-      } else {
-        this.tags.push({
-          id: tag.id,
-          name: inputValue
-        })
+      if (resp.code !== 200) {
+        this.$message.error(resp.message)
+        return
       }
+
+      this.tags.push(resp.data)
     }
   },
   watch: {

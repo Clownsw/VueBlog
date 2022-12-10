@@ -108,4 +108,14 @@ public interface BlogService extends IService<Blog> {
      * @param requestBlog 请求博文对象
      */
     void insertBlog(RequestBlog requestBlog);
+
+    /**
+     * 根据博文ID更新加密文章秘钥信息
+     *
+     * @param blogId   博文ID
+     * @param key      秘钥
+     * @param keyTitle 加密文章标题
+     * @return 是否成功
+     */
+    boolean updateBlogKeyById(Long blogId, String key, String keyTitle);
 }

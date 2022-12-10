@@ -93,4 +93,18 @@ public interface BlogDao extends BaseMapper<Blog> {
             @Param("id") Long id,
             @Param("key") String key
     );
+
+    /**
+     * 根据博文ID更新加密文章秘钥信息
+     *
+     * @param blogId   博文ID
+     * @param key      秘钥
+     * @param keyTitle 加密文章标题
+     * @return 是否成功
+     */
+    int updateBlogKeyById(
+            @Param("blogId") Long blogId,
+            @Param("key") String key,
+            @Param("keyTitle") String keyTitle
+    );
 }

@@ -45,7 +45,8 @@ public class MybatisPlusBeanConfig {
         sqlSessionFactory.setDataSource(dataSource);
         sqlSessionFactory.setTypeAliasesPackage("cn.smilex.vueblog.common.entity");
         sqlSessionFactory.setMapperLocations(
-                new ClassPathResource("mappers/BlogDaoMapper.xml")
+                new ClassPathResource("mappers/BlogDaoMapper.xml"),
+                new ClassPathResource("mappers/TagDaoMapper.xml")
         );
         return sqlSessionFactory;
     }

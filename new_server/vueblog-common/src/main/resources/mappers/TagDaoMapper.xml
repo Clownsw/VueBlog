@@ -9,6 +9,22 @@
             m_tag.`name` as name
         FROM
             m_tag
-        RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = ${blogId} ) AS r ON m_tag.id = r.tagId
+        RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = #{blogId} ) AS r ON m_tag.id = r.tagId
     </select>
+
+    <delete id="batchRemoveBlogTag">
+        DELETE FROM m_blogtag WHERE blogId = #{blogId} AND tagId in (${tagIdList})
+    </delete>
+
+    <insert id="batchAddBlogTag">
+        INSERT INTO m_blogtag(blogId, tagId, sort)
+        VALUES ${values}
+    </insert>
+
+    <insert id="batchUpdateBlogTag">
+        UPDATE m_blogtag
+        SET sort = CASE tagId
+        ${values}
+        WHERE blogId = #{blogId} AND tagId IN (${tagIdList})
+    </insert>
 </mapper>

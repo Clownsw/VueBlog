@@ -1,10 +1,7 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.BlogDao;
-import cn.smilex.vueblog.common.entity.blog.Blog;
-import cn.smilex.vueblog.common.entity.blog.RequestBlog;
-import cn.smilex.vueblog.common.entity.blog.SelectBlogInfo;
-import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
+import cn.smilex.vueblog.common.entity.blog.*;
 import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.common.Triplet;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
@@ -19,7 +16,9 @@ import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.meilisearch.sdk.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +40,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
     private VueBlogConfig vueBlogConfig;
     private TagService tagService;
+    private Client searchClient;
 
     @Autowired
     public void setVueBlogConfig(VueBlogConfig vueBlogConfig) {
@@ -52,6 +52,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         this.tagService = tagService;
     }
 
+    @Autowired
+    public void setSearchClient(Client searchClient) {
+        this.searchClient = searchClient;
+    }
+
     private void blogParseTag(List<SelectShowBlog> selectShowBlogList) {
         // 解析标签
         for (SelectShowBlog selectShowBlog : selectShowBlogList) {
@@ -61,13 +66,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
                 if ((tagIds = selectShowBlog.getTagIds()) != null && (tagNames = selectShowBlog.getTagNames()) != null) {
                     List<Long> tagIdList = Arrays.stream(
-                                    tagIds.split(CommonUtil.COMMA))
+                            tagIds.split(CommonUtil.COMMA))
                             .map(Long::parseLong)
                             .collect(Collectors.toList()
                             );
 
                     List<String> tagNameList = Arrays.stream(
-                                    tagNames.split(CommonUtil.COMMA))
+                            tagNames.split(CommonUtil.COMMA))
                             .collect(Collectors.toList()
                             );
 
@@ -295,6 +300,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             }
             return true;
         } catch (Exception e) {
+            log.error("", e);
             return false;
         }
     }
@@ -314,13 +320,60 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
         Blog blog = this.selectBlogById(requestBlog.getId());
         if (blog != null) {
-            List<Long> oldTagIdList = tagService.selectTagByBlogId(requestBlog.getId())
+            List<Long> oldTagIdList = tagService.selectTagListByBlogId(requestBlog.getId())
                     .stream()
                     .map(Tag::getId)
                     .collect(Collectors.toList());
 
             Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(oldTagIdList, idList);
 
+            if (tagCalcResult.getLeft().size() > 0) {
+                tagService.batchRemoveBlogTag(requestBlog.getId(), tagCalcResult.getLeft());
+            }
+
+            List<SelectBlogTag> addSelectBlogTagList = requestBlog.getTag()
+                    .stream()
+                    .filter(tag -> tagCalcResult.getMiddle().contains(tag.getId()))
+                    .collect(Collectors.toList());
+            if (addSelectBlogTagList.size() > 0) {
+                tagService.batchAddBlogTag(
+                        requestBlog.getId(),
+                        addSelectBlogTagList
+                );
+            }
+
+            List<SelectBlogTag> defaultSelectBlogTagList = requestBlog.getTag()
+                    .stream()
+                    .filter(tag -> tagCalcResult.getRight().contains(tag.getId()))
+                    .collect(Collectors.toList());
+            if (defaultSelectBlogTagList.size() > 0) {
+                tagService.batchUpdateBlogTag(
+                        requestBlog.getId(),
+                        defaultSelectBlogTagList
+                );
+            }
+
+            // 更新加密文章的KEY和KEY title
+            if (StringUtils.isNotBlank(requestBlog.getKey()) && StringUtils.isNotBlank(requestBlog.getKeyTitle())) {
+                this.updateBlogKeyById(requestBlog.getId(), requestBlog.getKey(), requestBlog.getKeyTitle());
+            }
+
+            this.updateById(Blog.fromRequestBlog(requestBlog));
+
+            Thread.startVirtualThread(() -> {
+                try {
+                    SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
+                    CommonUtil.searchClientAddOrUpdate(
+                            searchClient,
+                            CommonUtil.OBJECT_MAPPER.writeValueAsString(
+                                    searchBlog
+                            ),
+                            searchBlog
+                    );
+                } catch (Exception e) {
+                    log.error("", e);
+                }
+            });
         }
     }
 
@@ -331,6 +384,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
      */
     @Override
     public void insertBlog(RequestBlog requestBlog) {
+        
+    }
 
+    /**
+     * 根据博文ID更新加密文章秘钥信息
+     *
+     * @param blogId   博文ID
+     * @param key      秘钥
+     * @param keyTitle 加密文章标题
+     * @return 是否成功
+     */
+    @Override
+    public boolean updateBlogKeyById(Long blogId, String key, String keyTitle) {
+        return this.getBaseMapper()
+                .updateBlogKeyById(blogId, key, keyTitle) > 0;
     }
 }

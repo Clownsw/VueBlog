@@ -21,16 +21,19 @@ public class AuthService implements DecoratingHttpServiceFunction {
     @NotNull
     @Override
     public HttpResponse serve(@NotNull HttpService delegate, @NotNull ServiceRequestContext ctx, @NotNull HttpRequest req) throws Exception {
-        if (req.method() != HttpMethod.OPTIONS) {
-            try {
-                CommonUtil.checkTokenAndGetData(req);
-            } catch (Exception e) {
-                return HttpResponse.ofJson(
-                        HttpStatus.OK,
-                        MediaType.JSON_UTF_8,
-                        Result.fromResultCode(ResultCode.FORBIDDEN)
-                );
-            }
+
+        if (req.method() == HttpMethod.OPTIONS) {
+            return CommonUtil.createCrossOriginHttpResponse();
+        }
+
+        try {
+            CommonUtil.checkTokenAndGetData(req);
+        } catch (Exception e) {
+            return HttpResponse.ofJson(
+                    HttpStatus.OK,
+                    MediaType.JSON_UTF_8,
+                    Result.fromResultCode(ResultCode.FORBIDDEN)
+            );
         }
 
         return delegate.serve(ctx, req);

@@ -9,15 +9,14 @@ export default {
   },
   getTagIdByName(name) {
     return request({
-      url: 'tag/id/' + name,
+      url: 'tag/' + name,
       method: 'GET'
     })
   },
   saveTag(tag) {
     return request({
-      url: 'tag/add',
-      method: 'POST',
-      data: tag
+      url: 'tag/add/' + tag,
+      method: 'GET'
     })
   },
   updateTagById(tag) {
@@ -35,7 +34,7 @@ export default {
   },
   existsTagByName(name) {
     return request({
-      url: 'tag/exist/' + name,
+      url: 'tag/exists/' + name,
       method: 'GET'
     })
   },

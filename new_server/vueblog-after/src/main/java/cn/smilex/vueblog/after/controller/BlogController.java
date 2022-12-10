@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /**
  * @author smilex
  * @date 2022/12/10/12:56
@@ -47,6 +49,18 @@ public class BlogController {
     }
 
     /**
+     * 根据ID查询SelectShowBlog
+     *
+     * @param id ID
+     * @return SelectShowBlog
+     */
+    @Get("/:id")
+    @Options("/:id")
+    public Result<?> info(@Param("id") Long id) {
+        return Result.success(blogService.selectSelectShowBlogById(id));
+    }
+
+    /**
      * 添加或编辑博文
      *
      * @param requestBlog 请求博文对象
@@ -54,7 +68,11 @@ public class BlogController {
      */
     @Post("/edit")
     @Options("/edit")
-    public Result<?> edit(@RequestObject RequestBlog requestBlog) {
-        return blogService.edit(requestBlog) ? Result.success() : Result.error();
+    public Result<?> edit(@RequestObject Optional<RequestBlog> requestBlog) {
+        if (requestBlog.isEmpty()) {
+            return Result.error();
+        }
+
+        return blogService.edit(requestBlog.get()) ? Result.success() : Result.error();
     }
 }

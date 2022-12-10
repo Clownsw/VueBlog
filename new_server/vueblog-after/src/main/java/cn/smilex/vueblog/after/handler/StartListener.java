@@ -1,9 +1,6 @@
 package cn.smilex.vueblog.after.handler;
 
-import cn.smilex.vueblog.after.controller.BlogController;
-import cn.smilex.vueblog.after.controller.LoginController;
-import cn.smilex.vueblog.after.controller.SortController;
-import cn.smilex.vueblog.after.controller.UserController;
+import cn.smilex.vueblog.after.controller.*;
 import cn.smilex.vueblog.common.handler.GlobalErrorHandler;
 import com.linecorp.armeria.server.Server;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +20,7 @@ public class StartListener {
     private UserController userController;
     private BlogController blogController;
     private SortController sortController;
+    private TagController tagController;
 
     @Autowired
     public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
@@ -49,6 +47,11 @@ public class StartListener {
         this.sortController = sortController;
     }
 
+    @Autowired
+    public void setTagController(TagController tagController) {
+        this.tagController = tagController;
+    }
+
     public void start() {
         Server server = Server.builder()
                 .http(9999)
@@ -57,6 +60,7 @@ public class StartListener {
                 .annotatedService(userController)
                 .annotatedService(blogController)
                 .annotatedService(sortController)
+                .annotatedService(tagController)
                 .build();
 
         server.start()

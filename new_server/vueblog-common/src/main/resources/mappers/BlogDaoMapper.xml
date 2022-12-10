@@ -179,4 +179,8 @@
         WHERE
             blog.id = #{id} AND mbk.`key` = #{key}
     </select>
+
+    <update id="updateBlogKeyById">
+        REPLACE INTO m_blog_key(id, title, `key`) VALUES(#{blogId}, #{key}, #{keyTitle})
+    </update>
 </mapper>
