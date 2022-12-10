@@ -57,4 +57,11 @@ public class Blog {
         blog.setStatus(requestBlog.getStatus());
         return blog;
     }
+
+    public static Blog copyFromRequestBlog(RequestBlog requestBlog) {
+        Blog blog = fromRequestBlog(requestBlog);
+        blog.setUserId(requestBlog.getUserId());
+        blog.setCreated(LocalDateTime.now());
+        return blog;
+    }
 }

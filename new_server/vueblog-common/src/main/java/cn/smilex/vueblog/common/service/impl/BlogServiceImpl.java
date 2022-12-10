@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.service.impl;
 
+import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.dao.BlogDao;
 import cn.smilex.vueblog.common.entity.blog.*;
 import cn.smilex.vueblog.common.entity.common.Limit;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.meilisearch.sdk.Client;
+import com.meilisearch.sdk.Index;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -384,7 +386,35 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
      */
     @Override
     public void insertBlog(RequestBlog requestBlog) {
-        
+        Blog blog = Blog.copyFromRequestBlog(requestBlog);
+        if (!this.save(blog)) {
+            return;
+        }
+
+        // 更新加密文章的KEY和KEY title
+        if (StringUtils.isNotBlank(requestBlog.getKey()) && StringUtils.isNotBlank(requestBlog.getKeyTitle())) {
+            this.updateBlogKeyById(requestBlog.getId(), requestBlog.getKey(), requestBlog.getKeyTitle());
+        }
+
+        if (requestBlog.getTag() != null && requestBlog.getTag().size() > 0) {
+            tagService.batchAddBlogTag(
+                    blog.getId(),
+                    requestBlog.getTag()
+            );
+        }
+
+        try {
+            Index blogIndex = searchClient.index("blog");
+            SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
+            searchBlog.setId(blog.getId());
+
+            blogIndex.addDocuments(
+                    CommonUtil.OBJECT_MAPPER.writeValueAsString(searchBlog),
+                    CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY
+            );
+        } catch (Exception e) {
+            log.error("", e);
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.util;
 
+import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.blog.SearchBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
@@ -303,12 +304,11 @@ public final class CommonUtil {
      * @throws JsonProcessingException unknown execption
      */
     public static void searchClientAddOrUpdate(Client client, String document, SearchBlog searchBlog) throws MeilisearchException, JsonProcessingException {
-        final String primaryKey = "id";
         Index blog = client.index("blog");
         JsonNode root = OBJECT_MAPPER.readTree(blog.getDocuments());
 
         if (root.size() == 0) {
-            blog.addDocuments(document, primaryKey);
+            blog.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
             return;
         }
 
@@ -336,10 +336,10 @@ public final class CommonUtil {
                         searchBlogDocument -> searchBlog.getId().equals(searchBlogDocument.getId())
                 )
         ) {
-            blog.updateDocuments(document, primaryKey);
+            blog.updateDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
             return;
         }
 
-        blog.addDocuments(document, primaryKey);
+        blog.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
     }
 }
