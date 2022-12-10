@@ -44,10 +44,9 @@ public class BlogController {
     @Get("/list")
     @ProducesJson
     public Result<?> list(
-            @Param("currentPage") Optional<Long> currentPage,
-            HttpRequest request
+            @Param("currentPage") Optional<Long> currentPage
     ) {
-        return Result.success(blogService.selectBlogPage(currentPage.orElse(1L), request));
+        return Result.success(blogService.selectBlogPage(currentPage.orElse(1L)));
     }
 
     /**

@@ -10,19 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 /**
  * @author smilex
- * @date 2022/12/4/16:24
- * @since 1.0
+ * @date 2022/12/10/12:56
  */
 @SuppressWarnings("unused")
 @Slf4j
 @PathPrefix("/blog")
 @ProducesJson
-@Decorator(AuthService.class)
 @RequestConverter(JacksonRequestConverterFunction.class)
+@Decorator(AuthService.class)
 @CrossOrigin
 @Component
 public class BlogController {
@@ -40,18 +37,13 @@ public class BlogController {
      * @param pageSize    每页大小
      * @return 博文列表
      */
-    @Options("/page")
-    @Get("/page")
-    public Result<?> page(
-            @Param("currentPage") Optional<Long> currentPage,
-            @Param("pageSize") Optional<Long> pageSize
+    @Get("/list")
+    @Options("/list")
+    public Result<?> list(
+            @Param("currentPage") Long currentPage,
+            @Param("pageSize") Long pageSize
     ) {
-        return Result.success(
-                blogService.blogPage(
-                        currentPage.orElse(1L),
-                        pageSize.orElse(10L)
-                )
-        );
+        return Result.success(blogService.selectBlogPage(currentPage, pageSize));
     }
 
     /**

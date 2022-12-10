@@ -9,7 +9,7 @@ export default {
   },
   getBlogList(currentPage, pageSize) {
     return request({
-      url: `/blog/page?currentPage=${currentPage}&pageSize=${pageSize}`,
+      url: `blog/list?currentPage=${currentPage}&pageSize=${pageSize}`,
       method: 'GET',
     })
   },

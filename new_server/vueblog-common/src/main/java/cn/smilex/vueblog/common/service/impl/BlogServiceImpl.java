@@ -19,7 +19,6 @@ import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.linecorp.armeria.common.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,24 +101,35 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
      * 分页查询博文
      *
      * @param currentPage 当前页
-     * @param request     请求对象
+     * @return 博文集合
+     */
+    @Override
+    public Limit<SelectShowBlog> selectBlogPage(Long currentPage) {
+        return selectBlogPage(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize());
+    }
+
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
      * @return 博文集合
      */
     @Override
     public Limit<SelectShowBlog> selectBlogPage(
             Long currentPage,
-            HttpRequest request
+            Long pageSize
     ) {
         Limit<SelectShowBlog> limit = Limit.defaultLimit(
-                vueBlogConfig.getVueBlogBeforeWebPageSize(),
+                pageSize,
                 currentPage
         );
 
         try (StructuredTaskScope scope = new StructuredTaskScope()) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPage(
-                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
-                        vueBlogConfig.getVueBlogBeforeWebPageSize()
+                        CommonUtil.calcLimit(currentPage, pageSize),
+                        pageSize
                 );
 
                 blogParseTag(selectShowBlogList);
@@ -130,10 +140,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             scope.execute(() -> {
                 final long blogCount = this.count();
                 limit.setTotalCount(blogCount);
-                limit.setPageCount(CommonUtil.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
+                limit.setPageCount(CommonUtil.calcPageCount(blogCount, pageSize));
             });
         }
-
 
         return limit;
     }

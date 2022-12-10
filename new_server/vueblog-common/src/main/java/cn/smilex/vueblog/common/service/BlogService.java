@@ -6,7 +6,6 @@ import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import cn.smilex.vueblog.common.entity.common.Limit;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.linecorp.armeria.common.HttpRequest;
 
 /**
  * @author smilex
@@ -20,12 +19,20 @@ public interface BlogService extends IService<Blog> {
      * 分页查询博文
      *
      * @param currentPage 当前页
-     * @param request     请求对象
+     * @return 博文集合
+     */
+    Limit<SelectShowBlog> selectBlogPage(Long currentPage);
+
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
      * @return 博文集合
      */
     Limit<SelectShowBlog> selectBlogPage(
             Long currentPage,
-            HttpRequest request
+            Long pageSize
     );
 
     /**

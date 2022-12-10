@@ -2,6 +2,7 @@ package cn.smilex.vueblog.after.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.UserService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.common.HttpRequest;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Slf4j
 @PathPrefix("/user")
 @RequestConverter(JacksonRequestConverterFunction.class)
+@Decorator(AuthService.class)
 @ProducesJson
 @CrossOrigin
 @Component
