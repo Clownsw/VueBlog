@@ -2,22 +2,28 @@ package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.BlogDao;
 import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.blog.SelectBlogInfo;
 import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import cn.smilex.vueblog.common.entity.common.Limit;
+import cn.smilex.vueblog.common.entity.common.Triplet;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.entity.sort.Sort;
+import cn.smilex.vueblog.common.entity.tag.SelectBlogTag;
 import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.service.BlogService;
+import cn.smilex.vueblog.common.service.TagService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import cn.smilex.vueblog.common.util.ListUtil;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linecorp.armeria.common.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,10 +41,16 @@ import java.util.stream.Collectors;
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
 
     private VueBlogConfig vueBlogConfig;
+    private TagService tagService;
 
     @Autowired
     public void setVueBlogConfig(VueBlogConfig vueBlogConfig) {
         this.vueBlogConfig = vueBlogConfig;
+    }
+
+    @Autowired
+    public void setTagService(TagService tagService) {
+        this.tagService = tagService;
     }
 
     private void blogParseTag(List<SelectShowBlog> selectShowBlogList) {
@@ -129,12 +141,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     /**
      * 根据ID获取文章信息
      *
-     * @param id      id
-     * @param request 请求对象
+     * @param id id
      * @return 文章信息
      */
     @Override
-    public SelectBlogInfo selectBlogById(Long id, HttpRequest request) {
+    public SelectBlogInfo selectSelectShowBlogById(Long id) {
         SelectBlogInfo selectBlogInfo = getBaseMapper().selectBlogById(id);
 
         if (selectBlogInfo != null) {
@@ -142,6 +153,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         }
 
         return selectBlogInfo;
+    }
+
+    /**
+     * 根据ID查询博文
+     *
+     * @param id ID
+     * @return 博文
+     */
+    @Override
+    public Blog selectBlogById(Long id) {
+        return this.getOne(
+                new LambdaQueryWrapper<Blog>()
+                        .eq(Blog::getId, id)
+        );
     }
 
     /**
@@ -240,5 +265,63 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     @Override
     public Page<Blog> blogPage(Long currentPage, Long pageSize) {
         return this.page(new Page<>(currentPage, pageSize));
+    }
+
+    /**
+     * 添加或编辑博文
+     *
+     * @param requestBlog 请求博文对象
+     * @return 结果
+     */
+    @Override
+    public boolean edit(RequestBlog requestBlog) {
+        try {
+            // 添加
+            if (requestBlog.getId() == null) {
+                insertBlog(requestBlog);
+            }
+            // 编辑
+            else {
+                updateBlog(requestBlog);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 更新博文
+     *
+     * @param requestBlog 请求博文对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateBlog(RequestBlog requestBlog) {
+        List<Long> idList = requestBlog.getTag()
+                .stream()
+                .map(SelectBlogTag::getId)
+                .collect(Collectors.toList());
+
+        Blog blog = this.selectBlogById(requestBlog.getId());
+        if (blog != null) {
+            List<Long> oldTagIdList = tagService.selectTagByBlogId(requestBlog.getId())
+                    .stream()
+                    .map(Tag::getId)
+                    .collect(Collectors.toList());
+
+            Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(oldTagIdList, idList);
+
+        }
+    }
+
+    /**
+     * 添加博文
+     *
+     * @param requestBlog 请求博文对象
+     */
+    @Override
+    public void insertBlog(RequestBlog requestBlog) {
+
     }
 }

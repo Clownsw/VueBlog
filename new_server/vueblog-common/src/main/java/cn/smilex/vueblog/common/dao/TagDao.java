@@ -3,6 +3,9 @@ package cn.smilex.vueblog.common.dao;
 import cn.smilex.vueblog.common.entity.tag.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author smilex
@@ -12,4 +15,12 @@ import org.apache.ibatis.annotations.Mapper;
 @SuppressWarnings("unused")
 @Mapper
 public interface TagDao extends BaseMapper<Tag> {
+
+    /**
+     * 根据博文ID查询所有标签
+     *
+     * @param blogId 博文ID
+     * @return 所有标签
+     */
+    List<Tag> selectTagByBlogId(@Param("blogId") Long blogId);
 }

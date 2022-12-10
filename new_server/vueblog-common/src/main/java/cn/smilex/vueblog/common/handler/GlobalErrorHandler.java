@@ -5,6 +5,7 @@ import cn.smilex.vueblog.common.entity.common.Result;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
+import com.linecorp.armeria.common.ResponseHeaders;
 import com.linecorp.armeria.common.annotation.Nullable;
 import com.linecorp.armeria.server.HttpStatusException;
 import com.linecorp.armeria.server.ServerErrorHandler;
@@ -47,7 +48,7 @@ public class GlobalErrorHandler implements ServerErrorHandler {
                 }
             }
 
-            cause.printStackTrace();
+            log.error("", cause);
         }
 
         return HttpResponse.ofJson(

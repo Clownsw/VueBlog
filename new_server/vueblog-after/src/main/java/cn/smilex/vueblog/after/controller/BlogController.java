@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.after.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
+import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.BlogService;
@@ -41,7 +42,6 @@ public class BlogController {
      */
     @Options("/page")
     @Get("/page")
-    @ProducesJson
     public Result<?> page(
             @Param("currentPage") Optional<Long> currentPage,
             @Param("pageSize") Optional<Long> pageSize
@@ -52,5 +52,17 @@ public class BlogController {
                         pageSize.orElse(10L)
                 )
         );
+    }
+
+    /**
+     * 添加或编辑博文
+     *
+     * @param requestBlog 请求博文对象
+     * @return 结果
+     */
+    @Post("/edit")
+    @Options("/edit")
+    public Result<?> edit(@RequestObject RequestBlog requestBlog) {
+        return blogService.edit(requestBlog) ? Result.success() : Result.error();
     }
 }

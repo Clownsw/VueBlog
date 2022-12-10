@@ -2,12 +2,15 @@ package cn.smilex.vueblog.common.util;
 
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.entity.common.Triplet;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.exception.VueBlogException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.armeria.common.HttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -172,5 +175,48 @@ public final class CommonUtil {
         }
 
         return signResult.getRight();
+    }
+
+    /**
+     * 计算a集合和b集合中被删除、新添加、未变动集合
+     *
+     * @param a   a集合
+     * @param b   b集合
+     * @param <T> unknown type
+     * @return 集合
+     */
+    public static <T> Triplet<List<T>, List<T>, List<T>> getDelAndAddAndDefaultList(List<T> a, List<T> b) {
+        List<T> _del = new ArrayList<>();
+        List<T> _add = new ArrayList<>();
+        List<T> _default = new ArrayList<>();
+
+        // del
+        for (T v : a) {
+            if (!b.contains(v)) {
+                _del.add(v);
+            }
+        }
+
+        // add
+        for (T v : b) {
+            if (!a.contains(v)) {
+                _add.add(v);
+            }
+        }
+
+        // default
+        for (T v : a) {
+            if (!_del.contains(v) && !_add.contains(v) && !_default.contains(v)) {
+                _default.add(v);
+            }
+        }
+
+        for (T v : b) {
+            if (!_del.contains(v) && !_add.contains(v) && !_default.contains(v)) {
+                _default.add(v);
+            }
+        }
+
+        return new Triplet<>(_del, _add, _default);
     }
 }

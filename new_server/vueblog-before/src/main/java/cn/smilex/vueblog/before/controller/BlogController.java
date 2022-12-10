@@ -60,10 +60,9 @@ public class BlogController {
     @Get("/:id")
     @ProducesJson
     public Result<?> selectBlogById(
-            @Param("id") Long id,
-            HttpRequest request
+            @Param("id") Long id
     ) {
-        return Result.success(blogService.selectBlogById(id, request));
+        return Result.success(blogService.selectSelectShowBlogById(id));
     }
 
     /**

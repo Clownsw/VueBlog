@@ -1,13 +1,12 @@
 package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import cn.smilex.vueblog.common.entity.common.Limit;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.linecorp.armeria.common.HttpRequest;
-
-import java.util.List;
 
 /**
  * @author smilex
@@ -32,11 +31,18 @@ public interface BlogService extends IService<Blog> {
     /**
      * 根据ID获取文章信息
      *
-     * @param id      id
-     * @param request 请求对象
+     * @param id id
      * @return 文章信息
      */
-    SelectShowBlog selectBlogById(Long id, HttpRequest request);
+    SelectShowBlog selectSelectShowBlogById(Long id);
+
+    /**
+     * 根据ID查询博文
+     *
+     * @param id ID
+     * @return 博文
+     */
+    Blog selectBlogById(Long id);
 
     /**
      * 根据指定标签分页查询所有文章
@@ -73,4 +79,26 @@ public interface BlogService extends IService<Blog> {
      * @return 博文列表
      */
     Page<Blog> blogPage(Long currentPage, Long pageSize);
+
+    /**
+     * 添加或编辑博文
+     *
+     * @param requestBlog 请求博文对象
+     * @return 结果
+     */
+    boolean edit(RequestBlog requestBlog);
+
+    /**
+     * 更新博文
+     *
+     * @param requestBlog 请求博文对象
+     */
+    void updateBlog(RequestBlog requestBlog);
+
+    /**
+     * 添加博文
+     *
+     * @param requestBlog 请求博文对象
+     */
+    void insertBlog(RequestBlog requestBlog);
 }

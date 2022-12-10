@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smilex.vueblog.common.dao.TagDao">
+    <select id="selectTagByBlogId" resultType="Tag">
+        SELECT
+            m_tag.id as id,
+            m_tag.`name` as name
+        FROM
+            m_tag
+        RIGHT JOIN ( SELECT * FROM m_blogtag WHERE blogId = ${blogId} ) AS r ON m_tag.id = r.tagId
+    </select>
+</mapper>
