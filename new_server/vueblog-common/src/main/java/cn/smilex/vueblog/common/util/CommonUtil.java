@@ -15,7 +15,6 @@ import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.ResponseHeaders;
-import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import org.apache.commons.lang3.StringUtils;
@@ -297,18 +296,17 @@ public final class CommonUtil {
     /**
      * 搜索客户端添加或更新
      *
-     * @param client     客户端对象
+     * @param blogIndex  博文索引
      * @param document   内容
      * @param searchBlog 实体
-     * @throws MeilisearchException    unknown execption
-     * @throws JsonProcessingException unknown execption
+     * @throws MeilisearchException    unknown exception
+     * @throws JsonProcessingException unknown exception
      */
-    public static void searchClientAddOrUpdate(Client client, String document, SearchBlog searchBlog) throws MeilisearchException, JsonProcessingException {
-        Index blog = client.index("blog");
-        JsonNode root = OBJECT_MAPPER.readTree(blog.getDocuments());
+    public static void searchClientAddOrUpdate(Index blogIndex, String document, SearchBlog searchBlog) throws MeilisearchException, JsonProcessingException {
+        JsonNode root = OBJECT_MAPPER.readTree(blogIndex.getDocuments());
 
         if (root.size() == 0) {
-            blog.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
+            blogIndex.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
             return;
         }
 
@@ -336,10 +334,10 @@ public final class CommonUtil {
                         searchBlogDocument -> searchBlog.getId().equals(searchBlogDocument.getId())
                 )
         ) {
-            blog.updateDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
+            blogIndex.updateDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
             return;
         }
 
-        blog.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
+        blogIndex.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
     }
 }

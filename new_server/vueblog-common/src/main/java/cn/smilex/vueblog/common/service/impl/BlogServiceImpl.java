@@ -17,7 +17,6 @@ import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +41,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
     private VueBlogConfig vueBlogConfig;
     private TagService tagService;
-    private Client searchClient;
+    private Index blogIndex;
 
     @Autowired
     public void setVueBlogConfig(VueBlogConfig vueBlogConfig) {
@@ -55,8 +54,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     }
 
     @Autowired
-    public void setSearchClient(Client searchClient) {
-        this.searchClient = searchClient;
+    public void setBlogIndex(Index blogIndex) {
+        this.blogIndex = blogIndex;
     }
 
     private void blogParseTag(List<SelectShowBlog> selectShowBlogList) {
@@ -68,13 +67,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
                 if ((tagIds = selectShowBlog.getTagIds()) != null && (tagNames = selectShowBlog.getTagNames()) != null) {
                     List<Long> tagIdList = Arrays.stream(
-                            tagIds.split(CommonUtil.COMMA))
+                                    tagIds.split(CommonUtil.COMMA))
                             .map(Long::parseLong)
                             .collect(Collectors.toList()
                             );
 
                     List<String> tagNameList = Arrays.stream(
-                            tagNames.split(CommonUtil.COMMA))
+                                    tagNames.split(CommonUtil.COMMA))
                             .collect(Collectors.toList()
                             );
 
@@ -327,6 +326,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                     .map(Tag::getId)
                     .collect(Collectors.toList());
 
+            // TODO 计算 删除、添加、默认 标签集合
             Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(oldTagIdList, idList);
 
             if (tagCalcResult.getLeft().size() > 0) {
@@ -366,7 +366,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 try {
                     SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
                     CommonUtil.searchClientAddOrUpdate(
-                            searchClient,
+                            blogIndex,
                             CommonUtil.OBJECT_MAPPER.writeValueAsString(
                                     searchBlog
                             ),
@@ -404,7 +404,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         }
 
         try {
-            Index blogIndex = searchClient.index("blog");
             SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
             searchBlog.setId(blog.getId());
 

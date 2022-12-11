@@ -3,7 +3,6 @@ package cn.smilex.vueblog.common.service.impl;
 import cn.smilex.vueblog.common.entity.blog.SearchBlogResult;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.service.SearchService;
-import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.SearchRequest;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
@@ -25,7 +24,7 @@ import java.util.List;
 public class SearchServiceImpl implements SearchService {
 
     private VueBlogConfig vueBlogConfig;
-    private Client searchClient;
+    private Index blogIndex;
 
     @Autowired
     public void setVueBlogConfig(VueBlogConfig vueBlogConfig) {
@@ -33,8 +32,8 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Autowired
-    public void setSearchClient(Client searchClient) {
-        this.searchClient = searchClient;
+    public void setBlogIndex(Index blogIndex) {
+        this.blogIndex = blogIndex;
     }
 
     private List<SearchBlogResult> searchResultToVec(ArrayList<HashMap<String, Object>> hitList) {
@@ -66,7 +65,6 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<SearchBlogResult> search(String q) {
         try {
-            Index blogIndex = searchClient.index("blog");
             SearchResult search = blogIndex.search(
                     new SearchRequest(q)
                             .setAttributesToHighlight(vueBlogConfig.getSearchAttributesToHighlight())

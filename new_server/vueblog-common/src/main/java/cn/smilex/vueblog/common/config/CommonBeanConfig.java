@@ -6,10 +6,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;
+import com.meilisearch.sdk.Index;
+import com.meilisearch.sdk.exceptions.MeilisearchException;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +58,7 @@ public class CommonBeanConfig {
         );
     }
 
-    @Bean
+    @Bean("client")
     public Client meilisearchClient(VueBlogConfig vueBlogConfig) {
         return new Client(
                 new Config(
@@ -63,5 +66,11 @@ public class CommonBeanConfig {
                         vueBlogConfig.getSearchKey()
                 )
         );
+    }
+
+    @Bean
+    @DependsOn("client")
+    public Index blogIndex(Client client) throws MeilisearchException {
+        return client.index("blog");
     }
 }
