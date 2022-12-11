@@ -1,7 +1,10 @@
 .DS_Store
+dist/
 /target
 /web/before/dist
 /web/before/node_modules
+/web/new-after/dist
+node_modules/
 
 # local env files
 .env.local
