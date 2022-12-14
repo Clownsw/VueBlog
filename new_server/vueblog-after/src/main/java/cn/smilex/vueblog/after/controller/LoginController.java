@@ -47,7 +47,7 @@ public class LoginController {
     @Options("/login")
     @Post("/login")
     public Result<?> login(Optional<LoginUser> loginUser, HttpRequest request) throws IllegalAccessException {
-        if (loginUser.isEmpty() || ClassUtil.objIsNull(LoginUser.class, loginUser.get())) {
+        if (!loginUser.isPresent() || ClassUtil.objIsNull(LoginUser.class, loginUser.get())) {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
 
@@ -69,7 +69,7 @@ public class LoginController {
     @Post("/token")
     @ProducesJson
     public Result<?> token(Optional<String> token) {
-        if (token.isEmpty() || StringUtils.isBlank(token.get())) {
+        if (!token.isPresent() || StringUtils.isBlank(token.get())) {
             return Result.error();
         }
 

@@ -3,7 +3,6 @@ package cn.smilex.vueblog.after.controller;
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
-import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.TagService;
 import com.linecorp.armeria.server.annotation.*;
@@ -43,11 +42,8 @@ public class TagController {
     @Get("/exists/:tagName")
     @Options("/exists/:tagName")
     public Result<?> exists(@Param("tagName") Optional<String> tagName) {
-        if (tagName.isEmpty()) {
-            return Result.success(false);
-        }
+        return tagName.map(s -> Result.success(tagService.tagExistsByName(s))).orElseGet(() -> Result.success(false));
 
-        return Result.success(tagService.tagExistsByName(tagName.get()));
     }
 
     /**
@@ -75,7 +71,7 @@ public class TagController {
     @Get("/:tagName")
     @Options("/:tagName")
     public Result<?> info(@Param("tagName") Optional<String> tagName) {
-        if (tagName.isEmpty() || StringUtils.isBlank(tagName.get())) {
+        if (!tagName.isPresent() || StringUtils.isBlank(tagName.get())) {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
         return Result.success(tagService.selectTagByTagName(tagName.get()));

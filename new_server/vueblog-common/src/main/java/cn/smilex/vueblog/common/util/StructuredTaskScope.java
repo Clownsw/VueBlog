@@ -2,7 +2,9 @@ package cn.smilex.vueblog.common.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author smilex
@@ -11,21 +13,21 @@ import java.util.LinkedList;
  */
 @Slf4j
 public final class StructuredTaskScope implements AutoCloseable {
-    private final LinkedList<Thread> threadList;
+    private final List<Future<?>> futureList;
 
     public StructuredTaskScope() {
-        this.threadList = new LinkedList<>();
+        this.futureList = new ArrayList<>();
     }
 
     public void execute(Runnable runnable) {
-        this.threadList.add(Thread.startVirtualThread(runnable));
+        this.futureList.add(CommonUtil.createTask(runnable));
     }
 
     @Override
     public void close() {
-        for (Thread thread : threadList) {
+        for (Future<?> future : futureList) {
             try {
-                thread.join();
+                future.get();
             } catch (Exception ignore) {
             }
         }

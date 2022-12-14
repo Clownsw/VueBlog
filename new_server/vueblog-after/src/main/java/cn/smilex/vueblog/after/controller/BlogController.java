@@ -69,10 +69,7 @@ public class BlogController {
     @Post("/edit")
     @Options("/edit")
     public Result<?> edit(@RequestObject Optional<RequestBlog> requestBlog) {
-        if (requestBlog.isEmpty()) {
-            return Result.error();
-        }
-
-        return blogService.edit(requestBlog.get()) ? Result.success() : Result.error();
+        return requestBlog.filter(blog -> blogService.edit(blog)).<Result<?>>map(blog -> Result.success())
+                .orElseGet(Result::error);
     }
 }

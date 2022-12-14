@@ -39,7 +39,7 @@ public class SearchController {
     @Get("")
     @ProducesJson
     public Result<?> search(@Param("q") Optional<String> q) {
-        if (q.isEmpty() || StringUtils.isBlank(q.get())) {
+        if (!q.isPresent() || StringUtils.isBlank(q.get())) {
             return Result.error();
         }
         return Result.success(searchService.search(q.get()));

@@ -20,6 +20,9 @@ import com.meilisearch.sdk.exceptions.MeilisearchException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -34,6 +37,11 @@ public final class CommonUtil {
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool();
+
+    public static Future<?> createTask(Runnable runnable) {
+        return COMMON_THREAD_POOL.submit(runnable);
+    }
 
     public static boolean isInForArray(Class<?> clazz, Class<?>[] array) {
         for (Class<?> aClass : array) {
@@ -97,7 +105,7 @@ public final class CommonUtil {
             }
 
             if (object instanceof Optional) {
-                if (((Optional<?>) object).isEmpty()) {
+                if (!((Optional<?>) object).isPresent()) {
                     return true;
                 }
             }

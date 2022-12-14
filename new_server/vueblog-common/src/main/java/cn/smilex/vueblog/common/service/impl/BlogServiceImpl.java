@@ -362,7 +362,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
             this.updateById(Blog.fromRequestBlog(requestBlog));
 
-            Thread.startVirtualThread(() -> {
+            CommonUtil.createTask(() -> {
                 try {
                     SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
                     CommonUtil.searchClientAddOrUpdate(
