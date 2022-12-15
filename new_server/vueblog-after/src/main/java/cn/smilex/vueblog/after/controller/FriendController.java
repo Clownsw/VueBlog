@@ -63,11 +63,11 @@ public class FriendController {
     @Options("/add")
     public Result<?> add(@RequestObject Optional<Friend> friend) {
         if (CommonUtil.isEmpty(friend)) {
-            friendService.save(friend.get());
-            return Result.success();
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
 
-        return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
+        friendService.save(friend.get());
+        return Result.success();
     }
 
     /**
@@ -80,11 +80,11 @@ public class FriendController {
     @Options("/update")
     public Result<?> update(@RequestObject Optional<Friend> friend) {
         if (CommonUtil.isEmpty(friend)) {
-            friendService.updateById(friend.get());
-            return Result.success();
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
 
-        return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
+        friendService.updateById(friend.get());
+        return Result.success();
     }
 
     /**

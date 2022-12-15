@@ -126,6 +126,7 @@ export default {
             return friendApi.saveFriend(this.ruleForm)
         },
         fetchUpdateFriendById() {
+            this.ruleForm.id = Number(this.ruleForm.id)
             return friendApi.updateFriendById(this.ruleForm)
         },
         fetchBatchDeleteByIds(ids) {
