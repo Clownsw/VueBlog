@@ -362,20 +362,23 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
             this.updateById(Blog.fromRequestBlog(requestBlog));
 
-            CommonUtil.createTask(() -> {
-                try {
-                    SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
-                    CommonUtil.searchClientAddOrUpdate(
-                            blogIndex,
-                            CommonUtil.OBJECT_MAPPER.writeValueAsString(
-                                    searchBlog
-                            ),
-                            searchBlog
-                    );
-                } catch (Exception e) {
-                    log.error("", e);
-                }
-            });
+            // 如果当前是公开文章, 则更新到搜索引擎
+            if (blog.getStatus() == 0) {
+                CommonUtil.createTask(() -> {
+                    try {
+                        SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
+                        CommonUtil.searchClientAddOrUpdate(
+                                blogIndex,
+                                CommonUtil.OBJECT_MAPPER.writeValueAsString(
+                                        searchBlog
+                                ),
+                                searchBlog
+                        );
+                    } catch (Exception e) {
+                        log.error("", e);
+                    }
+                });
+            }
         }
     }
 
