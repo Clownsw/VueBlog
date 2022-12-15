@@ -74,6 +74,7 @@ public class SearchServiceImpl implements SearchService {
             return searchResultToVec(search.getHits());
         } catch (MeilisearchException ignore) {
         }
+
         return new ArrayList<>(0);
     }
 }

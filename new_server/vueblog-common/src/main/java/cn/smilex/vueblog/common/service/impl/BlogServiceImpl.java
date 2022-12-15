@@ -327,7 +327,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                     .collect(Collectors.toList());
 
             // TODO 计算 删除、添加、默认 标签集合
-            Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(oldTagIdList, idList);
+            Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(Long.class, oldTagIdList, idList);
 
             if (tagCalcResult.getLeft().size() > 0) {
                 tagService.batchRemoveBlogTag(requestBlog.getId(), tagCalcResult.getLeft());

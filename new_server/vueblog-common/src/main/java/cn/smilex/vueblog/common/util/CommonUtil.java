@@ -17,6 +17,7 @@ import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.ResponseHeaders;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
+import com.zaxxer.hikari.util.FastList;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -190,10 +191,10 @@ public final class CommonUtil {
      * @param <T> unknown type
      * @return 集合
      */
-    public static <T> Triplet<List<T>, List<T>, List<T>> getDelAndAddAndDefaultList(List<T> a, List<T> b) {
-        List<T> _del = new ArrayList<>();
-        List<T> _add = new ArrayList<>();
-        List<T> _default = new ArrayList<>();
+    public static <T> Triplet<List<T>, List<T>, List<T>> getDelAndAddAndDefaultList(Class<?> clazz, List<T> a, List<T> b) {
+        List<T> _del = new FastList<>(clazz);
+        List<T> _add = new FastList<>(clazz);
+        List<T> _default = new FastList<>(clazz);
 
         // del
         for (T v : a) {
@@ -319,7 +320,7 @@ public final class CommonUtil {
         }
 
         List<SearchBlog> searchBlogList = jsonNodeToCollection(
-                new LinkedList<>(),
+                new FastList<>(SearchBlog.class),
                 root,
                 node -> {
                     try {

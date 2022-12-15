@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.util;
 
+import com.zaxxer.hikari.util.FastList;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -16,7 +16,7 @@ public final class StructuredTaskScope implements AutoCloseable {
     private final List<Future<?>> futureList;
 
     public StructuredTaskScope() {
-        this.futureList = new ArrayList<>();
+        this.futureList = new FastList<>(Future.class);
     }
 
     public void execute(Runnable runnable) {
