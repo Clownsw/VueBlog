@@ -23,7 +23,7 @@ export default {
   },
   batchDeleteByIds(ids) {
     return request({
-      url: 'friend/deletes',
+      url: 'friend/batchDelete',
       method: 'POST',
       data: ids
     })

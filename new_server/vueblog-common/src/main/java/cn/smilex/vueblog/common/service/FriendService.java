@@ -2,7 +2,6 @@ package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.other.Friend;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -29,4 +28,11 @@ public interface FriendService extends IService<Friend> {
      * @return 友链列表
      */
     Limit<Friend> selectFriendPage(Long currentPage);
+
+    /**
+     * 根据ID集合批量删除友链
+     *
+     * @param idList ID集合
+     */
+    void batchDelete(List<Long> idList);
 }

@@ -370,4 +370,16 @@ public final class CommonUtil {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 判断一个Optional内的值是否为空
+     *
+     * @param value 值
+     * @param <T>   unknwon type
+     * @return Optional值是否为空
+     */
+    @SuppressWarnings("all")
+    public static <T> boolean isEmpty(Optional<T> value) {
+        return !value.isPresent();
+    }
 }

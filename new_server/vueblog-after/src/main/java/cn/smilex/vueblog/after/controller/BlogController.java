@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.after.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
+import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.handler.AuthService;
@@ -71,7 +72,7 @@ public class BlogController {
     @Options("/edit")
     public Result<?> edit(@RequestObject Optional<RequestBlog> requestBlog) {
         return requestBlog.filter(blog -> blogService.edit(blog)).<Result<?>>map(blog -> Result.success())
-                .orElseGet(Result::error);
+                .orElseGet(() -> Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR));
     }
 
     /**
@@ -88,6 +89,6 @@ public class BlogController {
                     blogService.batchRemove(v);
                     return Result.success();
                 })
-                .orElseGet(Result::error);
+                .orElseGet(() -> Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR));
     }
 }

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -96,5 +97,23 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
         }
 
         return limit;
+    }
+
+    /**
+     * 根据ID集合批量删除友链
+     *
+     * @param idList ID集合
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void batchDelete(List<Long> idList) {
+        this.getBaseMapper()
+                .batchDelete(
+                        CommonUtil.collectionToStr(
+                                idList,
+                                Object::toString,
+                                ","
+                        )
+                );
     }
 }
