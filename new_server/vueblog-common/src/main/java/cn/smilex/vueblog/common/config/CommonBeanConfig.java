@@ -13,7 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.jdbc.support.JdbcTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,5 +76,10 @@ public class CommonBeanConfig {
     @DependsOn("client")
     public Index blogIndex(Client client) throws MeilisearchException {
         return client.index("blog");
+    }
+
+    @Bean
+    public TransactionManager transactionManager(DataSource dataSource) {
+        return new JdbcTransactionManager(dataSource);
     }
 }

@@ -6,6 +6,7 @@ import com.linecorp.armeria.server.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author smilex
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @since 1.0
  */
 @Slf4j
+@EnableTransactionManagement(proxyTargetClass = true)
 @Component
 public class StartListener {
     private GlobalErrorHandler globalErrorHandler;
