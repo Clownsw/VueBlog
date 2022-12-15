@@ -3,13 +3,13 @@ import request from '@/utils/request'
 export default {
   getMe() {
     return request({
-      url: 'me',
+      url: '/other/me',
       method: 'GET'
     })
   },
   updateMe(me) {
     return request({
-      url: 'me/update',
+      url: '/other/me/update',
       method: 'POST',
       data: me
     })

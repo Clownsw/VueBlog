@@ -47,7 +47,8 @@ public class MybatisPlusBeanConfig {
         sqlSessionFactory.setMapperLocations(
                 new ClassPathResource("mappers/BlogDaoMapper.xml"),
                 new ClassPathResource("mappers/TagDaoMapper.xml"),
-                new ClassPathResource("mappers/FriendDaoMapper.xml")
+                new ClassPathResource("mappers/FriendDaoMapper.xml"),
+                new ClassPathResource("mappers/OtherDaoMapper.xml")
         );
         return sqlSessionFactory;
     }

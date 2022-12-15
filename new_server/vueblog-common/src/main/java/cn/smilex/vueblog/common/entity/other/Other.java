@@ -24,7 +24,7 @@ public class Other {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
-    @TableField("order")
+    @TableField("`order`")
     private Short order;
 
     @TableField("title")

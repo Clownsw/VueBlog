@@ -24,6 +24,7 @@ public class StartListener {
     private SortController sortController;
     private TagController tagController;
     private FriendController friendController;
+    private OtherController otherController;
 
     @Autowired
     public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
@@ -60,6 +61,11 @@ public class StartListener {
         this.friendController = friendController;
     }
 
+    @Autowired
+    public void setOtherController(OtherController otherController) {
+        this.otherController = otherController;
+    }
+
     public void start() {
         Server server = Server.builder()
                 .http(9999)
@@ -70,6 +76,7 @@ public class StartListener {
                 .annotatedService(sortController)
                 .annotatedService(tagController)
                 .annotatedService(friendController)
+                .annotatedService(otherController)
                 .build();
 
         server.start()

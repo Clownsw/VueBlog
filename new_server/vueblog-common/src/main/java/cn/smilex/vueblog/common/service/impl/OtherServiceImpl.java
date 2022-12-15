@@ -49,4 +49,16 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
         );
         return AboutMe.fromOther(other);
     }
+
+    /**
+     * 更新关于我
+     *
+     * @param aboutMe 关于我
+     * @return 是否成功
+     */
+    @Override
+    public boolean updateMe(AboutMe aboutMe) {
+        return this.getBaseMapper()
+                .updateMe(aboutMe);
+    }
 }

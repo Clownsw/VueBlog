@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.dao;
 
+import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.Other;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,4 +13,12 @@ import org.apache.ibatis.annotations.Mapper;
 @SuppressWarnings("unused")
 @Mapper
 public interface OtherDao extends BaseMapper<Other> {
+
+    /**
+     * 更新关于我
+     *
+     * @param aboutMe 关于我
+     * @return 是否成功
+     */
+    boolean updateMe(AboutMe aboutMe);
 }
