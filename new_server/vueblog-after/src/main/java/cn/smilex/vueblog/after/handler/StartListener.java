@@ -1,7 +1,9 @@
 package cn.smilex.vueblog.after.handler;
 
 import cn.smilex.vueblog.after.controller.*;
+import cn.smilex.vueblog.after.lisiener.ApplicationStartListener;
 import cn.smilex.vueblog.common.handler.GlobalErrorHandler;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.server.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class StartListener {
     private TagController tagController;
     private FriendController friendController;
     private OtherController otherController;
+    private ApplicationStartListener applicationStartListener;
 
     @Autowired
     public void setGlobalErrorHandler(GlobalErrorHandler globalErrorHandler) {
@@ -66,6 +69,11 @@ public class StartListener {
         this.otherController = otherController;
     }
 
+    @Autowired
+    public void setApplicationStartListener(ApplicationStartListener applicationStartListener) {
+        this.applicationStartListener = applicationStartListener;
+    }
+
     public void start() {
         Server server = Server.builder()
                 .http(9999)
@@ -78,6 +86,9 @@ public class StartListener {
                 .annotatedService(friendController)
                 .annotatedService(otherController)
                 .build();
+
+        // 启动时, 任务
+        CommonUtil.createTask(() -> applicationStartListener.handler());
 
         server.start()
                 .join();
