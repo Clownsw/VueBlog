@@ -1,10 +1,13 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.FriendDao;
-import cn.smilex.vueblog.common.entity.other.Friend;
+import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
+import cn.smilex.vueblog.common.entity.other.Friend;
 import cn.smilex.vueblog.common.service.FriendService;
 import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.StructuredTaskScope;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +52,49 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
         }
 
         return friendList;
+    }
+
+    /**
+     * 分页查询友链列表
+     *
+     * @param currentPage 当前页
+     * @return 友链列表
+     */
+    @Override
+    public Limit<Friend> selectFriendPage(Long currentPage) {
+        Limit<Friend> limit = Limit.defaultLimit(
+                vueBlogConfig.getVueBlogAfterFriendPageSize(),
+                currentPage
+        );
+
+        try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
+            scope.execute(() -> limit.setDataList(
+                    this.list(
+                            new QueryWrapper<Friend>()
+                                    .last(
+                                            String.format(
+                                                    "LIMIT %d, %d",
+                                                    CommonUtil.calcLimit(
+                                                            currentPage,
+                                                            vueBlogConfig.getVueBlogAfterFriendPageSize()
+                                                    ),
+                                                    vueBlogConfig.getVueBlogAfterFriendPageSize()
+                                            )
+                                    )
+                    )
+            ));
+
+            scope.execute(() -> {
+                limit.setTotalCount(this.count());
+                limit.setPageCount(
+                        CommonUtil.calcPageCount(
+                                limit.getTotalCount(),
+                                vueBlogConfig.getVueBlogAfterFriendPageSize()
+                        )
+                );
+            });
+        }
+
+        return limit;
     }
 }

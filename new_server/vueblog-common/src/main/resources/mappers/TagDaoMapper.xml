@@ -27,4 +27,8 @@
         ${values}
         WHERE blogId = #{blogId} AND tagId IN (${tagIdList})
     </insert>
+
+    <delete id="batchRemoveBlogTagByBlogIdList">
+        DELETE FROM m_blogtag WHERE blogId IN(${idList})
+    </delete>
 </mapper>

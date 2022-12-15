@@ -349,4 +349,25 @@ public final class CommonUtil {
 
         blogIndex.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
     }
+
+    /**
+     * 空任务 Lambda Interface
+     */
+    @FunctionalInterface
+    public interface EmptyTask {
+        void handler() throws Exception;
+    }
+
+    /**
+     * 捕获异常转运行时异常, 避免直接抛出异常
+     *
+     * @param emptyTask 任务
+     */
+    public static void exceptionToRunTimeException(EmptyTask emptyTask) {
+        try {
+            emptyTask.handler();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

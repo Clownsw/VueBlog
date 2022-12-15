@@ -11,12 +11,17 @@ import java.util.concurrent.Future;
  * @date 2022/11/12/19:01
  * @since 1.0
  */
+@SuppressWarnings("unused")
 @Slf4j
 public final class StructuredTaskScope implements AutoCloseable {
     private final List<Future<?>> futureList;
 
     public StructuredTaskScope() {
         this.futureList = new FastList<>(Future.class);
+    }
+
+    public StructuredTaskScope(int capacity) {
+        this.futureList = new FastList<>(Future.class, capacity);
     }
 
     public void execute(Runnable runnable) {
@@ -31,5 +36,7 @@ public final class StructuredTaskScope implements AutoCloseable {
             } catch (Exception ignore) {
             }
         }
+
+        this.futureList.clear();
     }
 }

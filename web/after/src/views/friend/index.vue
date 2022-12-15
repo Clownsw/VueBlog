@@ -196,11 +196,18 @@ export default {
         },
         getFriends(currentPage) {
             this.fetchGetFriendList(currentPage).then(resp => {
-                this.total = resp.data.total
-                this.size = resp.data.size
-                this.pages = resp.data.pages
-                this.current = resp.data.current
-                this.tableData = resp.data.datas
+                if (resp.code !== 200) {
+                    this.$message.error(resp.message)
+                    return
+                }
+
+                resp = resp.data
+
+                this.total = resp.totalCount
+                this.size = resp.pageSize
+                this.pages = resp.pageCount
+                this.current = resp.currentPage
+                this.tableData = resp.dataList
             })
         }
     },

@@ -7,6 +7,8 @@ import cn.smilex.vueblog.common.entity.common.Limit;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * @author smilex
  * @date 2022/11/12/11:44
@@ -118,4 +120,11 @@ public interface BlogService extends IService<Blog> {
      * @return 是否成功
      */
     boolean updateBlogKeyById(Long blogId, String key, String keyTitle);
+
+    /**
+     * 根据ID批量删除
+     *
+     * @param idList ID集合
+     */
+    void batchRemove(List<Long> idList);
 }

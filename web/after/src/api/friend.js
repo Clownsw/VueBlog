@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   getFriendList(currentPage) {
     return request({
-      url: "friend/limit?currentPage=" + currentPage,
+      url: "friend/list?currentPage=" + currentPage,
       method: 'GET'
     })
   },

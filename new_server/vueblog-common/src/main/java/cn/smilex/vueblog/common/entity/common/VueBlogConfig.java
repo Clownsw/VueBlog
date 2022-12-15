@@ -21,6 +21,7 @@ public class VueBlogConfig {
     private Long vueBlogBeforeWebPageSize;
     private String vueBlogFriendDefaultHref;
     private String vueBlogFriendDefaultAvatar;
+    private Long vueBlogAfterFriendPageSize;
     private String searchServer;
     private String searchKey;
     private String[] searchAttributesToHighlight;

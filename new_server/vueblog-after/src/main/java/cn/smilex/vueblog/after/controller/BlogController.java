@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -70,6 +71,23 @@ public class BlogController {
     @Options("/edit")
     public Result<?> edit(@RequestObject Optional<RequestBlog> requestBlog) {
         return requestBlog.filter(blog -> blogService.edit(blog)).<Result<?>>map(blog -> Result.success())
+                .orElseGet(Result::error);
+    }
+
+    /**
+     * 根据ID集合批量删除博文
+     *
+     * @param idList ID集合
+     * @return 结果
+     */
+    @Post("/batchDelete")
+    @Options("/batchDelete")
+    public Result<?> batchDelete(@RequestObject Optional<List<Long>> idList) {
+        return idList.filter(v -> v.size() > 0)
+                .<Result<?>>map(v -> {
+                    blogService.batchRemove(v);
+                    return Result.success();
+                })
                 .orElseGet(Result::error);
     }
 }

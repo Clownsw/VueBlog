@@ -57,4 +57,12 @@ public interface TagDao extends BaseMapper<Tag> {
             @Param("blogId") Long blogId,
             @Param("tagIdList") String tagIdList
     );
+
+    /**
+     * 根据博文ID集合删除博文标签引用
+     *
+     * @param idList ID集合
+     * @return 影响行数
+     */
+    long batchRemoveBlogTagByBlogIdList(@Param("idList") String idList);
 }

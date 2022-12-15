@@ -29,7 +29,7 @@ export default {
   },
   batchDeleteBlogByIds(ids) {
     return request({
-      url: 'blog/deletes',
+      url: 'blog/batchDelete',
       method: 'POST',
       data: ids
     })

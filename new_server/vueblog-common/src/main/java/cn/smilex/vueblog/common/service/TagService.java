@@ -72,4 +72,12 @@ public interface TagService extends IService<Tag> {
      * @return 是否成功
      */
     boolean addTag(String tagName);
+
+    /**
+     * 根据博文ID集合删除博文标签引用
+     *
+     * @param idList ID集合
+     * @return 影响行数
+     */
+    long batchRemoveBlogTagByBlogIdList(List<Long> idList);
 }

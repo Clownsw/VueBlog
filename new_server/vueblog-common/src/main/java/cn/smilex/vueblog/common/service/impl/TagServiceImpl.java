@@ -133,4 +133,22 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
         }
         return false;
     }
+
+    /**
+     * 根据博文ID集合删除博文标签引用
+     *
+     * @param idList ID集合
+     * @return 影响行数
+     */
+    @Override
+    public long batchRemoveBlogTagByBlogIdList(List<Long> idList) {
+        return this.getBaseMapper()
+                .batchRemoveBlogTagByBlogIdList(
+                        CommonUtil.collectionToStr(
+                                idList,
+                                Object::toString,
+                                ","
+                        )
+                );
+    }
 }

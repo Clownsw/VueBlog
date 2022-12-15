@@ -131,7 +131,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 currentPage
         );
 
-        try (StructuredTaskScope scope = new StructuredTaskScope()) {
+        try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPage(
                         CommonUtil.calcLimit(currentPage, pageSize),
@@ -198,7 +198,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 currentPage
         );
 
-        try (StructuredTaskScope scope = new StructuredTaskScope()) {
+        try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageByTagId(
                         CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
@@ -235,7 +235,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 currentPage
         );
 
-        try (StructuredTaskScope scope = new StructuredTaskScope()) {
+        try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageBySortId(
                         CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
@@ -428,5 +428,28 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     public boolean updateBlogKeyById(Long blogId, String key, String keyTitle) {
         return this.getBaseMapper()
                 .updateBlogKeyById(blogId, key, keyTitle) > 0;
+    }
+
+    /**
+     * 根据ID批量删除
+     *
+     * @param idList ID集合
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void batchRemove(List<Long> idList) {
+        // 删除博文
+        this.removeBatchByIds(idList);
+
+        // 删除博文相关标签引用
+        tagService.batchRemoveBlogTagByBlogIdList(idList);
+
+        CommonUtil.exceptionToRunTimeException(
+                () -> blogIndex.deleteDocuments(
+                        idList.stream()
+                                .map(String::valueOf)
+                                .collect(Collectors.toList())
+                )
+        );
     }
 }
