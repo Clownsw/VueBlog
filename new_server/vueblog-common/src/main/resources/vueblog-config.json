@@ -1,5 +1,5 @@
 {
-  "dataSourceJdbcUrl": "jdbc:mysql://localhost:3306/vueblog",
+  "dataSourceJdbcUrl": "jdbc:mysql://localhost:3306/vueblog_back",
   "dataSourceUserName": "root",
   "datasourcePassWord": "123123",
   "jwtKey": "1ZnSR3QY68t011iYIdozXMG5OYckmeuL",
@@ -7,6 +7,7 @@
   "vueBlogBeforeWebPageSize": 7,
   "vueBlogFriendDefaultHref": "https://www.smilex.cn/",
   "vueBlogFriendDefaultAvatar": "https://avatars.githubusercontent.com/u/28394742?v=4",
+  "vueBlogAfterFriendPageSize": 8,
   "searchServer": "http://127.0.0.1:7700",
   "searchAttributesToHighlight": [
     "id",
