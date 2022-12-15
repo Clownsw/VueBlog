@@ -41,8 +41,10 @@ public class TagController {
      */
     @Get("/exists/:tagName")
     @Options("/exists/:tagName")
-    public Result<?> exists(@Param("tagName") Optional<String> tagName) {
-        return tagName.map(s -> Result.success(tagService.tagExistsByName(s))).orElseGet(() -> Result.success(false));
+    public Result<?> exists(@Param("tagName") String tagName) {
+        return Optional.ofNullable(tagName)
+                .map(s -> Result.success(tagService.tagExistsByName(s)))
+                .orElseGet(() -> Result.success(false));
 
     }
 
@@ -54,9 +56,9 @@ public class TagController {
      */
     @Get("/add/:tagName")
     @Options("/add/:tagName")
-    public Result<?> add(@Param("tagName") Optional<String> tagName) {
-        if (tagName.isPresent() && StringUtils.isNotBlank(tagName.get())) {
-            tagService.addTag(tagName.get());
+    public Result<?> add(@Param("tagName") String tagName) {
+        if (StringUtils.isNotBlank(tagName)) {
+            tagService.addTag(tagName);
         }
 
         return Result.success();
@@ -70,10 +72,10 @@ public class TagController {
      */
     @Get("/:tagName")
     @Options("/:tagName")
-    public Result<?> info(@Param("tagName") Optional<String> tagName) {
-        if (!tagName.isPresent() || StringUtils.isBlank(tagName.get())) {
+    public Result<?> info(@Param("tagName") String tagName) {
+        if (StringUtils.isBlank(tagName)) {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
-        return Result.success(tagService.selectTagByTagName(tagName.get()));
+        return Result.success(tagService.selectTagByTagName(tagName));
     }
 }
