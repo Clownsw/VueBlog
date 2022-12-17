@@ -110,4 +110,17 @@ public class TagController {
         tagService.updateById(tag.get());
         return Result.success();
     }
+
+    /**
+     * 根据标签ID删除标签
+     *
+     * @param tagId 标签ID
+     * @return 结果
+     */
+    @Get("/delete/:tagId")
+    @Options("/delete/:tagId")
+    public Result<?> delete(@Param("tagId") Long tagId) {
+        tagService.removeById(tagId);
+        return Result.success();
+    }
 }

@@ -69,9 +69,7 @@ export default {
       })
     },
     fetchSaveTag() {
-      return tagApi.saveTag({
-        name: this.ruleForm.name
-      })
+      return tagApi.saveTag(this.ruleForm.name)
     },
     fetchUpdateTagByID() {
       return tagApi.updateTagById({
