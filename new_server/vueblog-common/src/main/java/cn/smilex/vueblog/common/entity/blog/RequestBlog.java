@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.entity.blog;
 
 import cn.smilex.vueblog.common.entity.tag.SelectBlogTag;
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,10 +19,10 @@ import java.util.List;
 public class RequestBlog {
     private Long id;
 
-    @JsonAlias("user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JsonAlias("sort_id")
+    @JsonProperty("sort_id")
     private Integer sortId;
 
     private String title;
@@ -32,6 +32,6 @@ public class RequestBlog {
     private Short status;
     private String key;
 
-    @JsonAlias("key_title")
+    @JsonProperty("key_title")
     private String keyTitle;
 }

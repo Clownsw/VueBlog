@@ -4,9 +4,12 @@ import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
+import cn.smilex.vueblog.common.entity.other.BackUp;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.OtherService;
 import cn.smilex.vueblog.common.util.ClassUtil;
+import cn.smilex.vueblog.common.util.CommonUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.linecorp.armeria.server.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,7 @@ import java.util.Optional;
  * @author smilex
  * @date 2022/12/15/16:18
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "OptionalGetWithoutIsPresent"})
 @Slf4j
 @PathPrefix("/other")
 @ProducesJson
@@ -66,5 +69,33 @@ public class OtherController {
                     return Result.success();
                 })
                 .orElseGet(() -> Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR));
+    }
+
+    /**
+     * 查询备份信息
+     *
+     * @return 备份信息
+     */
+    @Get("/backUp/info")
+    @Options("/backUp/info")
+    public Result<?> backUpInfo() throws JsonProcessingException {
+        return Result.success(otherService.selectBackUpInfo());
+    }
+
+    /**
+     * 更新备份信息
+     *
+     * @return 结果
+     */
+    @Post("/backUp/update")
+    @Options("/backUp/update")
+    public Result<?> backUpUpdate(@RequestObject Optional<BackUp> backUp) throws IllegalAccessException, JsonProcessingException {
+        if (CommonUtil.isEmpty(backUp) || ClassUtil.objIsNull(BackUp.class, backUp.get())) {
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
+        }
+
+        otherService.updateBackUp(backUp.get());
+
+        return Result.success();
     }
 }

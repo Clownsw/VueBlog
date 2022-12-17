@@ -2,8 +2,10 @@ package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
+import cn.smilex.vueblog.common.entity.other.BackUp;
 import cn.smilex.vueblog.common.entity.other.Other;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author smilex
@@ -34,4 +36,19 @@ public interface OtherService extends IService<Other> {
      * @return 是否成功
      */
     boolean updateMe(AboutMe aboutMe);
+
+    /**
+     * 查询备份信息
+     *
+     * @return 备份信息
+     */
+    BackUp selectBackUpInfo() throws JsonProcessingException;
+
+    /**
+     * 更新备份信息
+     *
+     * @param backUp 备份信息
+     * @return 是否成功
+     */
+    boolean updateBackUp(BackUp backUp) throws JsonProcessingException;
 }
