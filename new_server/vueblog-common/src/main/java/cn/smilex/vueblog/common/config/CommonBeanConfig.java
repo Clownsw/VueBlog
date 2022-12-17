@@ -2,14 +2,13 @@ package cn.smilex.vueblog.common.config;
 
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.util.CommonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
-import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +19,7 @@ import org.springframework.transaction.TransactionManager;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -33,7 +33,7 @@ import java.io.InputStream;
 public class CommonBeanConfig {
 
     @Bean("vueBlogConfig")
-    public VueBlogConfig vueBlogConfig() throws JsonProcessingException {
+    public VueBlogConfig vueBlogConfig() throws IOException {
         InputStream vueBlogConfigInputStream = null;
         String vueBlogConfigPath = System.getProperty("vueblog.config.path");
 
