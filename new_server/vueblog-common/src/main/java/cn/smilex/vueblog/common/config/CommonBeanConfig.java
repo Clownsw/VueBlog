@@ -9,6 +9,7 @@ import com.meilisearch.sdk.Config;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import io.micrometer.core.instrument.util.IOUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,6 @@ import org.springframework.transaction.TransactionManager;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -28,22 +28,27 @@ import java.io.InputStream;
  * @since 1.0
  */
 @SuppressWarnings("all")
+@Slf4j
 @Configuration
 public class CommonBeanConfig {
 
     @Bean("vueBlogConfig")
     public VueBlogConfig vueBlogConfig() throws JsonProcessingException {
-        InputStream vueBlogConfigInputStream;
+        InputStream vueBlogConfigInputStream = null;
         String vueBlogConfigPath = System.getProperty("vueblog.config.path");
 
-        if (StringUtils.isNoneBlank(vueBlogConfigPath)) {
-            try {
+        try {
+            if (StringUtils.isNoneBlank(vueBlogConfigPath)) {
                 vueBlogConfigInputStream = new FileInputStream(new File(vueBlogConfigPath));
-            } catch (FileNotFoundException ignore) {
-                vueBlogConfigInputStream = null;
+            } else {
+                vueBlogConfigInputStream = CommonBeanConfig.class.getResourceAsStream("/vueblog-config.json");
             }
-        } else {
-            vueBlogConfigInputStream = CommonBeanConfig.class.getResourceAsStream("/vueblog-config.json");
+        } catch (Exception ignore) {
+        }
+
+        if (vueBlogConfigInputStream == null) {
+            log.error("Not found \"vueblog_config.json\" file!");
+            System.exit(1);
         }
 
         return CommonUtil.OBJECT_MAPPER.readValue(
