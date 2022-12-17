@@ -27,10 +27,10 @@
           </el-form-item>
 
           <el-form-item class="tag-dlalog" style="margin-left: 0; text-align: center;">
-            <el-button type="primary" @click="submitForm('ruleForm')">
+            <el-button type="primary" @click="submitForm('ruleForm')" size="mini">
               {{ formBtnName }}
             </el-button>
-            <el-button type="danger" v-show="delBtnStatus" @click="deleteForm">删除</el-button>
+            <el-button type="danger" v-show="delBtnStatus" @click="deleteForm" size="mini">删除</el-button>
           </el-form-item>
         </el-form>
 
@@ -107,7 +107,11 @@ export default {
             })
           } else {
             this.fetchUpdateTagByID().then(resp => {
-              this.$message.success(resp.message)
+              if (resp.code === 200) {
+                this.$message.success(resp.message)
+              } else {
+                this.$message.error(resp.message)
+              }
 
               // 刷新
               this.fetchGetTags()

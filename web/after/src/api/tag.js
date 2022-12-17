@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   getTagList() {
     return request({
-      url: 'tags',
+      url: '/tag/list',
       method: 'GET'
     })
   },

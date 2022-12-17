@@ -3,8 +3,11 @@ package cn.smilex.vueblog.after.controller;
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.TagService;
+import cn.smilex.vueblog.common.util.ClassUtil;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.server.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +20,7 @@ import java.util.Optional;
  * @author smilex
  * @date 2022/12/10/15:15
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "OptionalGetWithoutIsPresent"})
 @Slf4j
 @PathPrefix("/tag")
 @ProducesJson
@@ -77,5 +80,34 @@ public class TagController {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
         }
         return Result.success(tagService.selectTagByTagName(tagName));
+    }
+
+    /**
+     * 查询所有标签
+     *
+     * @return 标签集合
+     */
+    @Get("/list")
+    @Options("/list")
+    public Result<?> list() {
+        return Result.success(
+                tagService.list()
+        );
+    }
+
+    /**
+     * 更新标签
+     *
+     * @return 结果
+     */
+    @Post("/update")
+    @Options("/update")
+    public Result<?> update(@RequestObject Optional<Tag> tag) throws IllegalAccessException {
+        if (CommonUtil.isEmpty(tag) || ClassUtil.objIsNull(Tag.class, tag.get())) {
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
+        }
+
+        tagService.updateById(tag.get());
+        return Result.success();
     }
 }
