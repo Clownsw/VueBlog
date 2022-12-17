@@ -98,4 +98,15 @@ public class OtherController {
 
         return Result.success();
     }
+
+    /**
+     * 备份数据库
+     *
+     * @return 结果
+     */
+    @Get("/backUp/buy")
+    @Options("/backUp/buy")
+    public Result<?> backUpBuy() throws JsonProcessingException {
+        return otherService.backUpBuy();
+    }
 }

@@ -18,7 +18,7 @@ public class HashMapBuilder<T, K> {
         this.data = new HashMap<>(initialCapacity);
     }
 
-    public HashMapBuilder<T, K> add(T key, K value) {
+    public HashMapBuilder<T, K> put(T key, K value) {
         this.data
                 .put(key, value);
         return this;

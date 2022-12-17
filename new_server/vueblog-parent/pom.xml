@@ -35,6 +35,8 @@
         <meilisearch.version>0.8.0</meilisearch.version>
         <okhttp.version>4.10.0</okhttp.version>
         <common-lang3.version>3.12.0</common-lang3.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <upyun-sdk.version>4.2.3</upyun-sdk.version>
     </properties>
 
     <dependencies>
@@ -150,6 +152,18 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${common-lang3.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>${upyun-sdk.version}</version>
         </dependency>
     </dependencies>
 

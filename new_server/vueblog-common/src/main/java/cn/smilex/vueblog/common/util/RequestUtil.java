@@ -44,6 +44,15 @@ public final class RequestUtil {
             Requests.REQUEST_METHOD method,
             String url,
             HashMap<String, String> headers,
+            HttpBodyInterface body
+    ) {
+        return req(method, url, headers, new HashMap<>(0), body);
+    }
+
+    public static Optional<HttpResponse> req(
+            Requests.REQUEST_METHOD method,
+            String url,
+            HashMap<String, String> headers,
             HashMap<String, String> cookies,
             HttpBodyInterface body
     ) {

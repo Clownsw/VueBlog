@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
+import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.BackUp;
@@ -51,4 +52,9 @@ public interface OtherService extends IService<Other> {
      * @return 是否成功
      */
     boolean updateBackUp(BackUp backUp) throws JsonProcessingException;
+
+    /**
+     * 备份数据库
+     */
+    Result<?> backUpBuy() throws JsonProcessingException;
 }

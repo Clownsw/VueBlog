@@ -31,6 +31,10 @@ public class Result<T> {
         return fromResultCode(ResultCode.UNKNOWN_ERROR);
     }
 
+    public static Result<?> error(String message) {
+        return new Result<>(500, message, null);
+    }
+
     public static <T> Result<T> error(T data) {
         return fromResultCode(ResultCode.UNKNOWN_ERROR, data);
     }

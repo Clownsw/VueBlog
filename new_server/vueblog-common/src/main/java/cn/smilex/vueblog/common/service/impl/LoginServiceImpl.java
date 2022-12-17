@@ -55,9 +55,9 @@ public class LoginServiceImpl implements LoginService {
 
         return JwtUtil.createJWTToken(
                 new HashMapBuilder<String, Object>(3)
-                        .add("id", user.getId())
-                        .add("username", user.getUserName())
-                        .add("status", user.getStatus())
+                        .put("id", user.getId())
+                        .put("username", user.getUserName())
+                        .put("status", user.getStatus())
                         .build()
         );
     }

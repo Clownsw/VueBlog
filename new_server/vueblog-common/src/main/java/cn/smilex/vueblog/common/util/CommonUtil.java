@@ -17,8 +17,11 @@ import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.ResponseHeaders;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -380,5 +383,29 @@ public final class CommonUtil {
     @SuppressWarnings("all")
     public static <T> boolean isEmpty(Optional<T> value) {
         return !value.isPresent();
+    }
+
+    /**
+     * 备份数据库
+     *
+     * @param userName 数据库用户名
+     * @param passWord 数据库密码
+     * @param dataBase 数据库名称
+     * @return 数据库sql
+     * @throws IOException          unknown exception
+     * @throws InterruptedException unknown exception
+     */
+    public static String dumpSql(String userName, String passWord, String dataBase) throws IOException, InterruptedException {
+        Process exec = Runtime.getRuntime()
+                .exec(
+                        new String[]{
+                                "mysqldump",
+                                String.format("-u%s", userName),
+                                String.format("-p%s", passWord),
+                                dataBase
+                        }
+                );
+
+        return IOUtils.toString(exec.getInputStream(), StandardCharsets.UTF_8);
     }
 }
