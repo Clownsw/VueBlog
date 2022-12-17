@@ -5,12 +5,14 @@ import cn.smilex.vueblog.common.handler.GlobalErrorHandler;
 import com.linecorp.armeria.server.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author smilex
  * @date 2022/11/10/21:37
  * @since 1.0
  */
+@EnableTransactionManagement(proxyTargetClass = true)
 @Component
 public class StartListener {
 
