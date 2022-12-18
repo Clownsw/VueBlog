@@ -17,10 +17,9 @@
                         <template slot-scope="scope">
                             <el-button type="primary" size="mini" @click="editSort(scope.row)"
                                 style="margin-right: 5px">编辑
-
                             </el-button>
 
-                            <el-popconfirm title="这是一段内容确定删除吗？" @confirm="deleteSort(scope.row.id)">
+                            <el-popconfirm title="是否继续删除？" @confirm="deleteSort(scope.row.id)">
                                 <el-button type="danger" size="mini" slot="reference">删除</el-button>
                             </el-popconfirm>
                         </template>
@@ -42,9 +41,9 @@
                     </el-form-item>
 
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')">{{ mode === 0 ? '添加' : '修改' }}
+                        <el-button type="primary" @click="submitForm('ruleForm')" size="mini">{{ mode === 0 ? '添加' : '修改' }}
                         </el-button>
-                        <el-button v-if="mode !== 0" @click="resetMode">重置</el-button>
+                        <el-button v-if="mode !== 0" @click="resetMode" size="mini">重置</el-button>
                     </el-form-item>
                 </el-form>
             </el-card>
