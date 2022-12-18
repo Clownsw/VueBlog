@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,7 +18,7 @@ public final class ListUtil {
      * @return List
      */
     public static <T> List<T> of(T... values) {
-        LinkedList<T> list = new LinkedList<>();
+        List<T> list = new ArrayList<>(values.length);
         Collections.addAll(list, values);
         return list;
     }
