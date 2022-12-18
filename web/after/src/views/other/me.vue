@@ -10,8 +10,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('blog')">修改</el-button>
-        <el-button @click="resetForm('blog')">重置</el-button>
+        <el-button type="primary" @click="submitForm('blog')" size="mini">修改</el-button>
+        <el-button @click="resetForm('blog')" size="mini">重置</el-button>
       </el-form-item>
     </el-form>
   </div>

@@ -1,11 +1,8 @@
 package cn.smilex.vueblog.common.handler;
 
 import cn.smilex.vueblog.common.config.ResultCode;
-import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.common.HttpResponse;
-import com.linecorp.armeria.common.HttpStatus;
-import com.linecorp.armeria.common.MediaType;
-import com.linecorp.armeria.common.ResponseHeaders;
 import com.linecorp.armeria.common.annotation.Nullable;
 import com.linecorp.armeria.server.HttpStatusException;
 import com.linecorp.armeria.server.ServerErrorHandler;
@@ -31,30 +28,24 @@ public class GlobalErrorHandler implements ServerErrorHandler {
 
                 final int code = e.httpStatus().code();
 
-                if (code == 404) {
-                    return HttpResponse.ofJson(
-                            HttpStatus.OK,
-                            MediaType.JSON_UTF_8,
-                            Result.fromResultCode(ResultCode.NOT_FOUND)
-                    );
-                }
+                switch (code) {
+                    case 403: {
+                        return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.FORBIDDEN);
+                    }
 
-                if (code == 405) {
-                    return HttpResponse.ofJson(
-                            HttpStatus.OK,
-                            MediaType.JSON_UTF_8,
-                            Result.fromResultCode(ResultCode.METHOD_NOT_ALLOWED)
-                    );
+                    case 404: {
+                        return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.NOT_FOUND);
+                    }
+
+                    case 405: {
+                        return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.METHOD_NOT_ALLOWED);
+                    }
                 }
             }
 
             log.error("", cause);
         }
 
-        return HttpResponse.ofJson(
-                HttpStatus.OK,
-                MediaType.JSON_UTF_8,
-                Result.fromResultCode(ResultCode.UNKNOWN_ERROR)
-        );
+        return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.UNKNOWN_ERROR);
     }
 }

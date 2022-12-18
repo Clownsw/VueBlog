@@ -11,10 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.armeria.common.HttpRequest;
-import com.linecorp.armeria.common.HttpResponse;
-import com.linecorp.armeria.common.HttpStatus;
-import com.linecorp.armeria.common.ResponseHeaders;
+import com.linecorp.armeria.common.*;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import org.apache.commons.io.IOUtils;
@@ -406,5 +403,19 @@ public final class CommonUtil {
                 );
 
         return IOUtils.toString(exec.getInputStream(), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 构建一个JSON响应对象根据ResultCode
+     *
+     * @param resultCode resultCode
+     * @return 响应对象
+     */
+    public static HttpResponse buildJsonHttpResponseByResultCode(ResultCode resultCode) {
+        return HttpResponse.ofJson(
+                HttpStatus.OK,
+                MediaType.JSON_UTF_8,
+                Result.fromResultCode(resultCode)
+        );
     }
 }

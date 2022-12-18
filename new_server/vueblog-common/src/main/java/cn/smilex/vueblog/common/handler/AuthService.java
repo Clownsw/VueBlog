@@ -1,9 +1,10 @@
 package cn.smilex.vueblog.common.handler;
 
 import cn.smilex.vueblog.common.config.ResultCode;
-import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.util.CommonUtil;
-import com.linecorp.armeria.common.*;
+import com.linecorp.armeria.common.HttpMethod;
+import com.linecorp.armeria.common.HttpRequest;
+import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.DecoratingHttpServiceFunction;
 import com.linecorp.armeria.server.HttpService;
 import com.linecorp.armeria.server.ServiceRequestContext;
@@ -29,11 +30,7 @@ public class AuthService implements DecoratingHttpServiceFunction {
         try {
             CommonUtil.checkTokenAndGetData(req);
         } catch (Exception e) {
-            return HttpResponse.ofJson(
-                    HttpStatus.OK,
-                    MediaType.JSON_UTF_8,
-                    Result.fromResultCode(ResultCode.FORBIDDEN)
-            );
+            return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.FORBIDDEN);
         }
 
         return delegate.serve(ctx, req);

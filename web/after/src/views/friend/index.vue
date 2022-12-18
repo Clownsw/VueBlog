@@ -2,12 +2,12 @@
     <div class="app-container">
         <el-form :inline="true">
             <el-form-item>
-                <el-button type="primary" @click="addFriendDialog">新增</el-button>
+                <el-button type="primary" @click="addFriendDialog" size="mini">新增</el-button>
             </el-form-item>
 
             <el-form-item>
                 <el-popconfirm title="这是确定批量删除吗?" @confirm="deleteFriends">
-                    <el-button type="danger" slot="reference" :disabled="deleteStatus">批量删除</el-button>
+                    <el-button type="danger" slot="reference" :disabled="deleteStatus" size="mini">批量删除</el-button>
                 </el-popconfirm>
             </el-form-item>
         </el-form>
@@ -34,11 +34,11 @@
 
             <el-table-column prop="action" label="操作" width="200" show-overflow-tooltip align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" @click="editFriend(scope.row.id)">编辑</el-button>
+                    <el-button type="primary" @click="editFriend(scope.row.id)" size="mini">编辑</el-button>
 
                     <el-popconfirm confirm-button-text='删除' cancel-button-text='取消' icon="el-icon-info" icon-color="red"
                         title="您确定要删除该用户吗？" style="margin-left: 5px" @confirm="deleteFriends(scope.row.id)">
-                        <el-button type="danger" slot="reference">删除</el-button>
+                        <el-button type="danger" slot="reference" size="mini">删除</el-button>
                     </el-popconfirm>
                 </template>
             </el-table-column>
@@ -63,8 +63,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">{{ dialogTitle }}</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm')" size="mini">{{ dialogTitle }}</el-button>
+                    <el-button @click="resetForm('ruleForm')" size="mini">重置</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
