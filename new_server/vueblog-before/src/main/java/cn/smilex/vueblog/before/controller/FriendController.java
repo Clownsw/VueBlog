@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/friend")
+@ProducesJson
 @CrossOrigin
 @Component
 public class FriendController {
@@ -32,7 +33,6 @@ public class FriendController {
      * @return 所有友链
      */
     @Get("/list")
-    @ProducesJson
     public Result<?> list() {
         return Result.success(friendService.selectAllFriend());
     }

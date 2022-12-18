@@ -20,6 +20,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/sort")
+@ProducesJson
 @CrossOrigin
 @Component
 public class SortController {
@@ -42,7 +43,6 @@ public class SortController {
      * @return 所有分类
      */
     @Get("/list")
-    @ProducesJson
     public Result<?> list() {
         return Result.success(sortService.selectSortList());
     }
@@ -55,7 +55,6 @@ public class SortController {
      * @return 指定分类下的所有文章
      */
     @Get("/blogList")
-    @ProducesJson
     public Result<?> blogList(
             @Param("currentPage") Optional<Long> currentPage,
             @Param("sortId") Optional<Integer> sortId

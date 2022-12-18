@@ -18,8 +18,9 @@ import java.util.Optional;
  * @since 1.0
  */
 @SuppressWarnings("unused")
-@CrossOrigin
 @PathPrefix("/tag")
+@ProducesJson
+@CrossOrigin
 @Component
 public class TagController {
     private BlogService blogService;
@@ -37,7 +38,6 @@ public class TagController {
      * @return 指定标签下的所有文章
      */
     @Get("/blogList")
-    @ProducesJson
     public Result<?> blogList(
             @Param("currentPage") Optional<Long> currentPage,
             @Param("tagId") Optional<Long> tagId

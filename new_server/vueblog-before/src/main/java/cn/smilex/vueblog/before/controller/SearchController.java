@@ -20,6 +20,7 @@ import java.util.Optional;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/search")
+@ProducesJson
 @CrossOrigin
 @Component
 public class SearchController {
@@ -37,7 +38,6 @@ public class SearchController {
      * @return 搜索结果
      */
     @Get("")
-    @ProducesJson
     public Result<?> search(@Param("q") Optional<String> q) {
         if (!q.isPresent() || StringUtils.isBlank(q.get())) {
             return Result.error();

@@ -44,8 +44,8 @@ public class LoginController {
      * @param loginUser 用户
      * @return token
      */
-    @Options("/login")
     @Post("/login")
+    @Options("/login")
     public Result<?> login(Optional<LoginUser> loginUser, HttpRequest request) throws IllegalAccessException {
         if (!loginUser.isPresent() || ClassUtil.objIsNull(LoginUser.class, loginUser.get())) {
             return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
@@ -65,9 +65,8 @@ public class LoginController {
      * @param token token
      * @return 有效性
      */
-    @Options("/token")
     @Post("/token")
-    @ProducesJson
+    @Options("/token")
     public Result<?> token(Optional<String> token) {
         if (!token.isPresent() || StringUtils.isBlank(token.get())) {
             return Result.error();

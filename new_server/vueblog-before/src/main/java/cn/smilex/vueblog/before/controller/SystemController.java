@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/system")
+@ProducesJson
 @CrossOrigin
 @Component
 public class SystemController {
@@ -33,7 +34,6 @@ public class SystemController {
      * @return 系统信息
      */
     @Get("/info")
-    @ProducesJson
     public Result<?> info() {
         return Result.success(systemService.selectSystemInfo());
     }

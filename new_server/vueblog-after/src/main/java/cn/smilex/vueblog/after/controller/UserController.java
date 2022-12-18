@@ -40,8 +40,8 @@ public class UserController {
      * @param request 请求对象
      * @return 用户信息
      */
-    @Options("/info")
     @Post("/info")
+    @Options("/info")
     public Result<?> info(HttpRequest request) {
         return CommonUtil.tryRun(
                 () -> userService.getUserInfoByToken(request),

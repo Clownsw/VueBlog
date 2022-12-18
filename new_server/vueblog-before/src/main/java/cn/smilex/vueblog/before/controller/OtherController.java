@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @SuppressWarnings("unused")
 @PathPrefix("/other")
+@ProducesJson
 @CrossOrigin
 @Component
 public class OtherController {
@@ -33,7 +34,6 @@ public class OtherController {
      * @return 页面底部脚本
      */
     @Get("/footer")
-    @ProducesJson
     public Result<?> footer() {
         return Result.success(otherService.selectPageFooter());
     }
@@ -44,7 +44,6 @@ public class OtherController {
      * @return 关于我信息
      */
     @Get("/me")
-    @ProducesJson
     public Result<?> aboutMe() {
         return Result.success(otherService.aboutMe());
     }

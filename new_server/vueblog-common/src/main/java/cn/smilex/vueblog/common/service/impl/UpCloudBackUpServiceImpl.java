@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @author smilex
  * @date 2022/12/17/14:41
  */
-@SuppressWarnings("FieldMayBeFinal")
+@SuppressWarnings({"FieldMayBeFinal", "resource"})
 @Service
 public class UpCloudBackUpServiceImpl implements BackUpService {
 

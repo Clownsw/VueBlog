@@ -6,7 +6,6 @@ import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.util.CommonUtil;
-import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.Param;
 import com.linecorp.armeria.server.annotation.PathPrefix;
@@ -23,8 +22,9 @@ import java.util.Optional;
  * @since 1.0
  */
 @SuppressWarnings("all")
-@CrossOrigin
 @PathPrefix("/blog")
+@ProducesJson
+@CrossOrigin
 @Component
 public class BlogController {
     private BlogService blogService;
@@ -42,7 +42,6 @@ public class BlogController {
      * @return 博文集合
      */
     @Get("/list")
-    @ProducesJson
     public Result<?> list(
             @Param("currentPage") Optional<Long> currentPage
     ) {
@@ -57,7 +56,6 @@ public class BlogController {
      * @return 文章信息
      */
     @Get("/:id")
-    @ProducesJson
     public Result<?> selectBlogById(
             @Param("id") Long id
     ) {
@@ -72,7 +70,6 @@ public class BlogController {
      * @return 文章信息
      */
     @Get("/key/:id/:key")
-    @ProducesJson
     public Result<?> selectBlogByIdAndKey(
             @Param("id") Optional<Long> id,
             @Param("key") Optional<String> key

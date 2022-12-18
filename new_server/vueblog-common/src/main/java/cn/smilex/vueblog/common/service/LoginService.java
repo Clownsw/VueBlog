@@ -21,12 +21,4 @@ public interface LoginService {
      * @return 结果
      */
     String login(LoginUser loginUser, HttpRequest request);
-
-    /**
-     * 验证token有效性
-     *
-     * @param token token
-     * @return 结果
-     */
-    Result<?> signToken(Optional<String> token);
 }

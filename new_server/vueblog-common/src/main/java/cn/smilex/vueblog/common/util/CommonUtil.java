@@ -392,10 +392,9 @@ public final class CommonUtil {
      * @param passWord 数据库密码
      * @param dataBase 数据库名称
      * @return 数据库sql
-     * @throws IOException          unknown exception
-     * @throws InterruptedException unknown exception
+     * @throws IOException unknown exception
      */
-    public static String dumpSql(String userName, String passWord, String dataBase) throws IOException, InterruptedException {
+    public static String dumpSql(String userName, String passWord, String dataBase) throws IOException {
         Process exec = Runtime.getRuntime()
                 .exec(
                         new String[]{
