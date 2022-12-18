@@ -27,6 +27,7 @@ public class StartListener {
     private TagController tagController;
     private FriendController friendController;
     private OtherController otherController;
+    private SystemController systemController;
     private ApplicationStartListener applicationStartListener;
 
     @Autowired
@@ -70,6 +71,11 @@ public class StartListener {
     }
 
     @Autowired
+    public void setSystemController(SystemController systemController) {
+        this.systemController = systemController;
+    }
+
+    @Autowired
     public void setApplicationStartListener(ApplicationStartListener applicationStartListener) {
         this.applicationStartListener = applicationStartListener;
     }
@@ -85,6 +91,7 @@ public class StartListener {
                 .annotatedService(tagController)
                 .annotatedService(friendController)
                 .annotatedService(otherController)
+                .annotatedService(systemController)
                 .build();
 
         // 启动时, 任务

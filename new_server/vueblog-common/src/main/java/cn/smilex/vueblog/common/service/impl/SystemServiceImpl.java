@@ -1,11 +1,16 @@
 package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.dao.SystemDao;
+import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.System;
+import cn.smilex.vueblog.common.entity.other.SystemUpdateRequest;
+import cn.smilex.vueblog.common.service.OtherService;
 import cn.smilex.vueblog.common.service.SystemService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author smilex
@@ -15,6 +20,12 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("unused")
 @Service
 public class SystemServiceImpl extends ServiceImpl<SystemDao, System> implements SystemService {
+    private OtherService otherService;
+
+    @Autowired
+    public void setOtherService(OtherService otherService) {
+        this.otherService = otherService;
+    }
 
     /**
      * 查询系统信息
@@ -27,5 +38,20 @@ public class SystemServiceImpl extends ServiceImpl<SystemDao, System> implements
                 new LambdaQueryWrapper<System>()
                         .eq(System::getId, 1)
         );
+    }
+
+    /**
+     * 更新系统设置
+     *
+     * @param systemUpdateRequest 系统设置更新请求对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateSystem(SystemUpdateRequest systemUpdateRequest) {
+        System system = systemUpdateRequest.getSystem();
+        Footer footer = systemUpdateRequest.getFooter();
+
+        this.updateById(system);
+        otherService.updateFooter(footer);
     }
 }

@@ -18,8 +18,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('system')">修改</el-button>
-        <el-button @click="resetForm('system')">重置</el-button>
+        <el-button type="primary" @click="submitForm('system')" size="mini">修改</el-button>
+        <el-button @click="resetForm('system')" size="mini">重置</el-button>
       </el-form-item>
     </el-form>
   </div>

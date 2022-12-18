@@ -6,6 +6,7 @@ import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.BackUp;
+import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.Other;
 import cn.smilex.vueblog.common.service.OtherService;
 import cn.smilex.vueblog.common.util.CommonUtil;
@@ -140,5 +141,20 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
         }
 
         return Result.error();
+    }
+
+    /**
+     * 更新页面底部脚本
+     *
+     * @param footer 页面底部脚本
+     * @return 是否成功
+     */
+    @Override
+    public boolean updateFooter(Footer footer) {
+        return this.update(
+                new LambdaUpdateWrapper<Other>()
+                        .set(Other::getContent, footer.getContent())
+                        .eq(Other::getOrder, 1)
+        );
     }
 }

@@ -4,6 +4,7 @@ import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.BackUp;
+import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.Other;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,4 +58,12 @@ public interface OtherService extends IService<Other> {
      * 备份数据库
      */
     Result<?> backUpBuy() throws JsonProcessingException;
+
+    /**
+     * 更新页面底部脚本
+     *
+     * @param footer 页面底部脚本
+     * @return 是否成功
+     */
+    boolean updateFooter(Footer footer);
 }

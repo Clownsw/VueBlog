@@ -109,4 +109,15 @@ public class OtherController {
     public Result<?> backUpBuy() throws JsonProcessingException {
         return otherService.backUpBuy();
     }
+
+    /**
+     * 查询页面底部脚本
+     *
+     * @return 页面底部脚本
+     */
+    @Get("/footer")
+    @Options("/footer")
+    public Result<?> footer() {
+        return Result.success(otherService.selectPageFooter());
+    }
 }
