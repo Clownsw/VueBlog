@@ -1,9 +1,6 @@
 # VueBlog
 一个极简风格的个人博客系统。
 
-## 说明
-当前分支用于新版管理端开发
-
 ## 特点
 - 高性能
 - 低占用
@@ -11,7 +8,9 @@
 - 高稳定
 
 ## 技术架构
-Rust + Actix Web + Sqlx + MySQL + Redis + Vue.js
+旧版: Rust + Actix Web + Sqlx + MySQL + Redis + Vue.js
+
+新版: Java + Spring + Armeria + MybatisPlus + MySQL + Redis + Vue.js
 
 ## 功能
 - 文章管理
