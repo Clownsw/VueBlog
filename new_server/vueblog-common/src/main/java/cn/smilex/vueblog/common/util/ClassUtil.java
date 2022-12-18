@@ -70,12 +70,14 @@ public final class ClassUtil {
                 continue;
             }
 
-            if (type.getSuperclass() == getSuperClassByClass(StringBuilder.class)) {
+            if (CommonUtil.isInForArray(CharSequence.class, type.getInterfaces())) {
                 CharSequence o = (CharSequence) field.get(obj);
                 if (StringUtils.isBlank(o)) {
                     return true;
                 }
-            } else if (field.get(obj) == null) {
+            }
+
+            if (field.get(obj) == null) {
                 return true;
             }
         }
