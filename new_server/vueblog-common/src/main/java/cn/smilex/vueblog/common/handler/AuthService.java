@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.handler;
 
+import cn.smilex.vueblog.common.annotation.cache.Cache;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.common.HttpMethod;
@@ -10,6 +11,8 @@ import com.linecorp.armeria.server.HttpService;
 import com.linecorp.armeria.server.ServiceRequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Method;
 
 /**
  * @author smilex
@@ -32,6 +35,10 @@ public class AuthService implements DecoratingHttpServiceFunction {
         } catch (Exception e) {
             return CommonUtil.buildJsonHttpResponseByResultCode(ResultCode.FORBIDDEN);
         }
+
+        Method method = CommonUtil.getHttpServiceMethodField(delegate);
+        Cache cacheAnnotation = method.getAnnotation(Cache.class);
+        log.info("{}", cacheAnnotation);
 
         return delegate.serve(ctx, req);
     }

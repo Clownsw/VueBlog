@@ -12,12 +12,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.armeria.common.*;
+import com.linecorp.armeria.internal.server.annotation.AnnotatedService;
+import com.linecorp.armeria.server.HttpService;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -417,5 +421,24 @@ public final class CommonUtil {
                 MediaType.JSON_UTF_8,
                 Result.fromResultCode(resultCode)
         );
+    }
+
+    /**
+     * 获取HttpService的Method对象
+     *
+     * @param httpService HttpService
+     * @return Method对象
+     * @throws NoSuchFieldException   unknown exception
+     * @throws IllegalAccessException unknown exception
+     */
+    public static Method getHttpServiceMethodField(HttpService httpService) throws NoSuchFieldException, IllegalAccessException {
+        if (httpService instanceof AnnotatedService) {
+            AnnotatedService annotatedService = (AnnotatedService) httpService;
+            Field methodField = AnnotatedService.class.getDeclaredField("method");
+            methodField.setAccessible(true);
+            return (Method) methodField.get(annotatedService);
+        }
+
+        return null;
     }
 }

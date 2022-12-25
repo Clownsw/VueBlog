@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.after.controller;
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
+import cn.smilex.vueblog.common.annotation.cache.Cache;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
@@ -43,6 +44,7 @@ public class BlogController {
      */
     @Get("/list")
     @Options("/list")
+    @Cache(name = "aaa")
     public Result<?> list(
             @Param("currentPage") Long currentPage,
             @Param("pageSize") Long pageSize
