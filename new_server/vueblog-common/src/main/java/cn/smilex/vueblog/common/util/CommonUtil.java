@@ -16,10 +16,15 @@ import com.linecorp.armeria.internal.server.annotation.AnnotatedService;
 import com.linecorp.armeria.server.HttpService;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.exceptions.MeilisearchException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.lang.JoinPoint;
+import org.springframework.aop.ProxyMethodInvocation;
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -36,6 +41,7 @@ import java.util.stream.Collectors;
  * @date 2022/9/29/18:09
  * @since 1.0
  */
+@Slf4j
 public final class CommonUtil {
     public static final String EMPTY_STRING = "";
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
@@ -437,6 +443,39 @@ public final class CommonUtil {
             Field methodField = AnnotatedService.class.getDeclaredField("method");
             methodField.setAccessible(true);
             return (Method) methodField.get(annotatedService);
+        }
+
+        return null;
+    }
+
+    public static ProxyMethodInvocation getMethodInvocationByJoinPoint(JoinPoint joinPoint) throws NoSuchFieldException, IllegalAccessException {
+        if (joinPoint instanceof MethodInvocationProceedingJoinPoint) {
+            MethodInvocationProceedingJoinPoint methodInvocationProceedingJoinPoint = (MethodInvocationProceedingJoinPoint) joinPoint;
+            Field methodInvocationField = MethodInvocationProceedingJoinPoint.class.getDeclaredField("methodInvocation");
+            methodInvocationField.setAccessible(true);
+            return (ProxyMethodInvocation) methodInvocationField.get(methodInvocationProceedingJoinPoint);
+        }
+
+        return null;
+    }
+
+    public static Class<?> getClazzByMethod(Method method) throws IllegalAccessException, NoSuchFieldException {
+        Field clazzField = Method.class.getDeclaredField("clazz");
+        clazzField.setAccessible(true);
+        return (Class<?>) clazzField.get(method);
+    }
+
+    public static <T extends Annotation> T getAnnotationByMethodNameAndInterfaces(Class<T> annotation, String methodName, Class<?>[] methodParamTypes, Class<?>[] interfaces) {
+        for (Class<?> _interface : interfaces) {
+            try {
+                Method method = _interface.getDeclaredMethod(methodName, methodParamTypes);
+                T t;
+                if ((t = method.getAnnotation(annotation)) != null) {
+                    return t;
+                }
+            } catch (Exception e) {
+                log.error("", e);
+            }
         }
 
         return null;

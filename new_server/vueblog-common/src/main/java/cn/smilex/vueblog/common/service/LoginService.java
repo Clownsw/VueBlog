@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.service;
 
+import cn.smilex.vueblog.common.annotation.cache.Cache;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.user.LoginUser;
 import com.linecorp.armeria.common.HttpRequest;
@@ -20,5 +21,6 @@ public interface LoginService {
      * @param request   请求对象
      * @return 结果
      */
+    @Cache(name = "testCache")
     String login(LoginUser loginUser, HttpRequest request);
 }
