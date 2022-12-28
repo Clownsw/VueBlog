@@ -20,6 +20,7 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <spring.version>5.3.24</spring.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
         <armeria.version>1.20.3</armeria.version>
         <logback.version>1.3.5</logback.version>
         <slf4j.version>2.0.5</slf4j.version>
@@ -62,6 +63,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
 
         <dependency>
