@@ -5,7 +5,7 @@
     <parent>
         <artifactId>vueblog-parent</artifactId>
         <groupId>cn.smilex.vueblog.parent</groupId>
-        <version>1.0-dev</version>
+        <version>0.11-dev</version>
         <relativePath>../vueblog-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.smilex.vueblog.common</groupId>
             <artifactId>vueblog-common</artifactId>
-            <version>1.0-dev</version>
+            <version>0.11-dev</version>
         </dependency>
     </dependencies>
 
