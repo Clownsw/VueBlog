@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.common.dao;
 
 import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.blog.BlogKey;
 import cn.smilex.vueblog.common.entity.blog.SelectBlogInfo;
 import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -64,7 +65,18 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @param id id
      * @return 文章信息
      */
-    SelectBlogInfo selectBlogById(@Param("id") Long id);
+    SelectBlogInfo selectBlogById(
+            @Param("id") Long id,
+            @Param("isAdmin") boolean isAdmin
+    );
+
+    /**
+     * 根据ID获取文章信息 (包含content)
+     *
+     * @param id id
+     * @return 文章信息
+     */
+    SelectBlogInfo selectShowBlogById(Long id);
 
     /**
      * 根据标签ID查询文章个数
@@ -107,4 +119,12 @@ public interface BlogDao extends BaseMapper<Blog> {
             @Param("key") String key,
             @Param("keyTitle") String keyTitle
     );
+
+    /**
+     * 根据id查询BlogKey
+     *
+     * @param id id
+     * @return BlogKey
+     */
+    BlogKey selectBlogKeyById(@Param("id") Long id);
 }

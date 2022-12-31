@@ -160,8 +160,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
      * @return 文章信息
      */
     @Override
-    public SelectBlogInfo selectSelectShowBlogById(Long id) {
-        SelectBlogInfo selectBlogInfo = getBaseMapper().selectBlogById(id);
+    public SelectBlogInfo selectSelectShowBlogById(Long id, boolean isAdmin) {
+        SelectBlogInfo selectBlogInfo = getBaseMapper()
+                .selectBlogById(id, isAdmin);
 
         if (selectBlogInfo != null) {
             blogParseTag(ListUtil.of(selectBlogInfo));
@@ -454,5 +455,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                                 .collect(Collectors.toList())
                 )
         );
+    }
+
+    /**
+     * 根据id查询BlogKey
+     *
+     * @param id id
+     * @return BlogKey
+     */
+    @Override
+    public BlogKey selectBlogKeyById(Long id) {
+        return this.getBaseMapper()
+                .selectBlogKeyById(id);
     }
 }

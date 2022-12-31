@@ -121,8 +121,16 @@
             blog.user_id,
             blog.sort_id,
             IF(blog.status = 1, blog_key.title, blog.title) AS title,
-            IF(blog.status = 1, '', blog.content) AS content,
             IF(blog.status = 1, blog_key.title, blog.description) AS description,
+            <choose>
+                <when test="isAdmin">
+                    blog.content,
+                </when>
+
+                <otherwise>
+                    IF(blog.status = 1, '', blog.content) AS content,
+                </otherwise>
+            </choose>
             blog.created,
             blog.STATUS AS status,
             sort.NAME AS sort_name,
@@ -181,6 +189,15 @@
     </select>
 
     <update id="updateBlogKeyById">
-        REPLACE INTO m_blog_key(id, title, `key`) VALUES(#{blogId}, #{key}, #{keyTitle})
+        REPLACE INTO m_blog_key(id, title, `key`) VALUES(#{blogId}, #{keyTitle}, #{key})
     </update>
+
+    <select id="selectBlogKeyById" resultType="BlogKey">
+        SELECT
+            *
+        FROM
+            m_blog_key
+        WHERE
+            id = #{id}
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package cn.smilex.vueblog.common.service;
 
 import cn.smilex.vueblog.common.entity.blog.Blog;
+import cn.smilex.vueblog.common.entity.blog.BlogKey;
 import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.blog.SelectShowBlog;
 import cn.smilex.vueblog.common.entity.common.Limit;
@@ -43,7 +44,7 @@ public interface BlogService extends IService<Blog> {
      * @param id id
      * @return 文章信息
      */
-    SelectShowBlog selectSelectShowBlogById(Long id);
+    SelectShowBlog selectSelectShowBlogById(Long id, boolean isAdmin);
 
     /**
      * 根据ID查询博文
@@ -127,4 +128,12 @@ public interface BlogService extends IService<Blog> {
      * @param idList ID集合
      */
     void batchRemove(List<Long> idList);
+
+    /**
+     * 根据id查询BlogKey
+     *
+     * @param id id
+     * @return BlogKey
+     */
+    BlogKey selectBlogKeyById(Long id);
 }

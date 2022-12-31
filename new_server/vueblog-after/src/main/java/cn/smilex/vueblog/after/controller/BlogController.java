@@ -61,7 +61,19 @@ public class BlogController {
     @Get("/:id")
     @Options("/:id")
     public Result<?> info(@Param("id") Long id) {
-        return Result.success(blogService.selectSelectShowBlogById(id));
+        return Result.success(blogService.selectSelectShowBlogById(id, true));
+    }
+
+    /**
+     * 根据id查询BlogKey
+     *
+     * @param id id
+     * @return BlogKey
+     */
+    @Get("/key/:id")
+    @Options("/key/:id")
+    public Result<?> blogKey(@Param("id") Long id) {
+        return Result.success(blogService.selectBlogKeyById(id));
     }
 
     /**
@@ -73,7 +85,8 @@ public class BlogController {
     @Post("/edit")
     @Options("/edit")
     public Result<?> edit(@RequestObject Optional<RequestBlog> requestBlog) {
-        return requestBlog.filter(blog -> blogService.edit(blog)).<Result<?>>map(blog -> Result.success())
+        return requestBlog.filter(blog -> blogService.edit(blog))
+                .<Result<?>>map(blog -> Result.success())
                 .orElseGet(() -> Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR));
     }
 
