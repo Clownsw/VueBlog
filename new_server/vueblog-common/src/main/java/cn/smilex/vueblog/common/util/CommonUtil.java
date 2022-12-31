@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.linecorp.armeria.common.*;
 import com.linecorp.armeria.internal.server.annotation.AnnotatedService;
 import com.linecorp.armeria.server.HttpService;
@@ -48,6 +50,11 @@ public final class CommonUtil {
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool();
+
+    static {
+        OBJECT_MAPPER.registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule());
+    }
 
     public static Future<?> createTask(Runnable runnable) {
         return COMMON_THREAD_POOL.submit(runnable);
