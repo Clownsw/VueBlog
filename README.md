@@ -27,4 +27,4 @@
 - [VueBlogNeteaseCloudMusicApi](https://github.com/Clownsw/VueBlogNeteaseCloudMusicApi)
 
 ## example
-[Smilex' Blog](https://www.smilex.cn)
+[Smilex' Blog](https://www.smilex.vip)
