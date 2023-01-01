@@ -10,12 +10,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@moefe/vue-aplayer": "^2.0.0-beta.5",
     "axios": "^0.27.2",
     "element-ui": "^2.15.8",
     "mavon-editor": "^2.10.4",
     "v-viewer": "^1.6.4",
     "valine": "^1.4.18",
-    "vue": "^2.6.14",
+    "vue": "2.6.14",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2"
   },
@@ -23,7 +24,7 @@
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "vue-template-compiler": "^2.6.14"
+    "vue-template-compiler": "2.6.14"
   },
   "browserslist": [
     "> 1%",
