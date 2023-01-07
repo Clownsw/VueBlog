@@ -48,7 +48,7 @@ public class CommonBeanConfig {
 
         if (vueBlogConfigInputStream == null) {
             log.error("Not found \"vueblog_config.json\" file!");
-            System.exit(1);
+            System.exit(-1);
         }
 
         return CommonUtil.OBJECT_MAPPER.readValue(

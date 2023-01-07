@@ -124,7 +124,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
     public Result<?> backUpBuy() throws JsonProcessingException {
         BackUp backUp = selectBackUpInfo();
         try {
-            String sql = CommonUtil.dumpSql(backUp.getUserName(), backUp.getPassWord(), "vueblog_back");
+            String sql = CommonUtil.dumpSql(backUp.getUserName(), backUp.getPassWord(), "vueblog");
             if (StringUtils.isBlank(sql)) {
                 return Result.fromResultCode(ResultCode.ERROR_DUMP_ERROR_NOT_GET_DUMP_SQL);
             }

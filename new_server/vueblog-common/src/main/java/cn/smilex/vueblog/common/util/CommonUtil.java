@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.util;
 
+import cn.smilex.vueblog.common.concurrent.CounterThreadFactory;
 import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.blog.SearchBlog;
@@ -49,7 +50,9 @@ public final class CommonUtil {
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool();
+    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool(
+            new CounterThreadFactory("common-pool")
+    );
 
     static {
         OBJECT_MAPPER.registerModule(new Jdk8Module())
