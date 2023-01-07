@@ -30,17 +30,11 @@ export const constantRouterMap = [{
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
     redirect: '/home',
-    name: 'Dashboard',
     hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
-    }]
   },
   {
     path: '/home',
@@ -55,7 +49,7 @@ export const constantRouterMap = [{
       name: 'HomeIndex',
       component: () => import('@/views/home/index'),
       meta: {
-        title: '首页'
+        title: '控制台'
       }
     }]
   },
