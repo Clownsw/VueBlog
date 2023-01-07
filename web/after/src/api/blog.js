@@ -7,10 +7,11 @@ export default {
       method: 'GET'
     })
   },
-  getBlogList(currentPage, pageSize) {
+  getBlogList(currentPage, pageSize, queryObj) {
     return request({
       url: `blog/list?currentPage=${currentPage}&pageSize=${pageSize}`,
-      method: 'GET',
+      method: 'POST',
+      data: queryObj
     })
   },
   saveBlog(blog) {

@@ -31,8 +31,12 @@
         FROM
             m_blog AS blog
             LEFT JOIN m_sort AS sort ON blog.sort_id = sort.id
-            ORDER BY
-            created DESC
+
+        <if test="sql != null">
+            ${sql}
+        </if>
+
+            ORDER BY created DESC
             LIMIT #{pageSize}, #{currentPage}
     </select>
 
@@ -199,5 +203,13 @@
             m_blog_key
         WHERE
             id = #{id}
+    </select>
+
+    <select id="selectCountByCustomSql" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            m_blog
+        ${sql}
     </select>
 </mapper>

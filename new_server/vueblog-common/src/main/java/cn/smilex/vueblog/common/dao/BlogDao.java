@@ -28,7 +28,8 @@ public interface BlogDao extends BaseMapper<Blog> {
      */
     List<SelectShowBlog> selectBlogPage(
             @Param("pageSize") Long pageSize,
-            @Param("currentPage") Long currentPage
+            @Param("currentPage") Long currentPage,
+            @Param("sql") String sql
     );
 
     /**
@@ -127,4 +128,12 @@ public interface BlogDao extends BaseMapper<Blog> {
      * @return BlogKey
      */
     BlogKey selectBlogKeyById(@Param("id") Long id);
+
+    /**
+     * 查询count根据自定义sql
+     *
+     * @param sql sql
+     * @return count
+     */
+    long selectCountByCustomSql(@Param("sql") String sql);
 }

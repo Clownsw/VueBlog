@@ -10,6 +10,17 @@
           <el-button type="danger" slot="reference" :disabled="deleteStatus" size="mini">批量删除</el-button>
         </el-popconfirm>
       </el-form-item>
+
+      <el-form-item>
+        <el-input
+          placeholder="请输入标题或描述"
+          v-model="queryObj.value"
+          clearable
+          size="mini"
+          @input="handlerQueryInput"
+        >
+        </el-input>
+      </el-form-item>
     </el-form>
 
     <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" border stripe
@@ -81,14 +92,12 @@ export default {
       pageSize: 10,
       currentPage: 1,
       pageCount: 0,
+      queryObj: {},
       tableData: [],
       multipleSelection: [],
     }
   },
   methods: {
-    fetchGetBlogList(currentPage, pageSize) {
-      return blogApi.getBlogList(currentPage, pageSize)
-    },
     fetchBatchDeleteBlogByIds(ids) {
       return blogApi.batchDeleteBlogByIds(ids)
     },
@@ -115,8 +124,11 @@ export default {
       this.currentPage = currentPage
       this.getBlogs()
     },
+    handlerQueryInput() {
+      this.getBlogs()
+    },
     getBlogs() {
-      this.fetchGetBlogList(this.currentPage, this.pageSize).then(resp => {
+      blogApi.getBlogList(this.currentPage, this.pageSize, this.queryObj).then(resp => {
         this.total = resp.data.totalCount
         this.pageCount = resp.data.pageCount
         this.currentPage = resp.data.currentPage

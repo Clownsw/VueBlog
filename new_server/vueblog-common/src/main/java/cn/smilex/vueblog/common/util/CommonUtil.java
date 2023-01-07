@@ -44,9 +44,11 @@ import java.util.stream.Collectors;
  * @date 2022/9/29/18:09
  * @since 1.0
  */
+@SuppressWarnings({"unchecked", "OptionalGetWithoutIsPresent"})
 @Slf4j
 public final class CommonUtil {
     public static final String EMPTY_STRING = "";
+    public static final Map<?, ?> EMPTY_MAP = new HashMap<>(0);
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
     public static final String COMMA = ",";
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -489,5 +491,24 @@ public final class CommonUtil {
         }
 
         return null;
+    }
+
+    /**
+     * 解析QueryString到Map
+     *
+     * @param queryString queryString
+     * @return Map
+     */
+    public static Map<String, Object> parseQueryStringToMap(Optional<String> queryString) {
+        try {
+            return CommonUtil.OBJECT_MAPPER.readValue(
+                    queryString.get(),
+                    new TypeReference<HashMap<String, Object>>() {
+                    }
+            );
+        } catch (Exception ignore) {
+        }
+
+        return (Map<String, Object>) EMPTY_MAP;
     }
 }

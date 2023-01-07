@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/12/11:45
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Duplicates"})
+@SuppressWarnings({"unused", "Duplicates", "unchecked"})
 @Slf4j
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
@@ -67,13 +68,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
                 if ((tagIds = selectShowBlog.getTagIds()) != null && (tagNames = selectShowBlog.getTagNames()) != null) {
                     List<Long> tagIdList = Arrays.stream(
-                                    tagIds.split(CommonUtil.COMMA))
+                            tagIds.split(CommonUtil.COMMA))
                             .map(Long::parseLong)
                             .collect(Collectors.toList()
                             );
 
                     List<String> tagNameList = Arrays.stream(
-                                    tagNames.split(CommonUtil.COMMA))
+                            tagNames.split(CommonUtil.COMMA))
                             .collect(Collectors.toList()
                             );
 
@@ -126,16 +127,56 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             Long currentPage,
             Long pageSize
     ) {
+        return selectBlogPage(
+                currentPage,
+                pageSize,
+                (Map<String, Object>) CommonUtil.EMPTY_MAP
+        );
+    }
+
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @param queryObj    查询对象
+     * @return 博文集合
+     */
+    @Override
+    public Limit<SelectShowBlog> selectBlogPage(
+            Long currentPage,
+            Long pageSize,
+            Map<String, Object> queryObj
+    ) {
         Limit<SelectShowBlog> limit = Limit.defaultLimit(
                 pageSize,
                 currentPage
         );
 
+        String sql = CommonUtil.EMPTY_STRING;
+        if (queryObj.size() > 0) {
+            StringBuilder sb = new StringBuilder("where");
+
+            String value;
+            if ((value = (String) queryObj.get("value")) != null && StringUtils.isNotBlank(value)) {
+                sb.append(" title LIKE '%").append(value).append("%'")
+                        .append(" OR description LIKE '%").append(value).append("%'");
+            }
+
+            sql = sb.toString();
+            if ("where".equals(sql)) {
+                sql = CommonUtil.EMPTY_STRING;
+            }
+        }
+
         try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
+            final String finalSql = sql;
+
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPage(
                         CommonUtil.calcLimit(currentPage, pageSize),
-                        pageSize
+                        pageSize,
+                        finalSql
                 );
 
                 blogParseTag(selectShowBlogList);
@@ -144,7 +185,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             });
 
             scope.execute(() -> {
-                final long blogCount = this.count();
+                final long blogCount = CommonUtil.EMPTY_STRING.equals(finalSql) ? this.count() : this.selectCountByCustomSql(finalSql);
                 limit.setTotalCount(blogCount);
                 limit.setPageCount(CommonUtil.calcPageCount(blogCount, pageSize));
             });
@@ -467,5 +508,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
     public BlogKey selectBlogKeyById(Long id) {
         return this.getBaseMapper()
                 .selectBlogKeyById(id);
+    }
+
+    /**
+     * 查询count根据自定义sql
+     *
+     * @param sql sql
+     * @return count
+     */
+    @Override
+    public long selectCountByCustomSql(String sql) {
+        return this.getBaseMapper()
+                .selectCountByCustomSql(sql);
     }
 }

@@ -7,6 +7,7 @@ import cn.smilex.vueblog.common.entity.blog.RequestBlog;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.BlogService;
+import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.server.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +43,19 @@ public class BlogController {
      * @param pageSize    每页大小
      * @return 博文列表
      */
-    @Get("/list")
+    @Post("/list")
     @Options("/list")
     @Cache(name = "aaa")
     public Result<?> list(
             @Param("currentPage") Long currentPage,
-            @Param("pageSize") Long pageSize
+            @Param("pageSize") Long pageSize,
+            @RequestObject Optional<String> queryString
     ) {
-        return Result.success(blogService.selectBlogPage(currentPage, pageSize));
+        return Result.success(blogService.selectBlogPage(
+                currentPage,
+                pageSize,
+                CommonUtil.parseQueryStringToMap(queryString)
+        ));
     }
 
     /**

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smilex
@@ -36,6 +37,20 @@ public interface BlogService extends IService<Blog> {
     Limit<SelectShowBlog> selectBlogPage(
             Long currentPage,
             Long pageSize
+    );
+
+    /**
+     * 分页查询博文
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @param queryObj    查询对象
+     * @return 博文集合
+     */
+    Limit<SelectShowBlog> selectBlogPage(
+            Long currentPage,
+            Long pageSize,
+            Map<String, Object> queryObj
     );
 
     /**
@@ -136,4 +151,12 @@ public interface BlogService extends IService<Blog> {
      * @return BlogKey
      */
     BlogKey selectBlogKeyById(Long id);
+
+    /**
+     * 查询count根据自定义sql
+     *
+     * @param sql sql
+     * @return count
+     */
+    long selectCountByCustomSql(String sql);
 }
