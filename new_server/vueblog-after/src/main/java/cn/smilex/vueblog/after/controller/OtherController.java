@@ -131,4 +131,15 @@ public class OtherController {
     public Result<?> statistics() {
         return Result.success(otherService.statistics());
     }
+
+    /**
+     * 刷新搜索数据
+     *
+     * @return 结果
+     */
+    @Get("/flushSearchData")
+    @Options("/flushSearchData")
+    public Result<?> flushSearchData() {
+        return otherService.flushSearchData() ? Result.success() : Result.error();
+    }
 }

@@ -25,4 +25,13 @@ public class SearchBlog {
         searchBlog.setContent(requestBlog.getContent());
         return searchBlog;
     }
+
+    public static SearchBlog fromBlog(Blog blog) {
+        return new SearchBlog(
+                blog.getId(),
+                blog.getTitle(),
+                blog.getDescription(),
+                blog.getContent()
+        );
+    }
 }

@@ -9,6 +9,7 @@
   "vueBlogFriendDefaultAvatar": "https://avatars.githubusercontent.com/u/28394742?v=4",
   "vueBlogAfterFriendPageSize": 8,
   "searchServer": "http://127.0.0.1:7700",
+  "searchKey": "",
   "searchAttributesToHighlight": [
     "id",
     "title",

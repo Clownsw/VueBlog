@@ -127,6 +127,14 @@ export const constantRouterMap = [{
         meta: {
           title: '友链管理'
         }
+      },
+      {
+        path: 'search/index',
+        name: 'SearchIndex',
+        component: () => import('@/views/search/index'),
+        meta: {
+          title: '搜索管理'
+        }
       }
     ]
   },

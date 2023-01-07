@@ -75,4 +75,9 @@ public interface OtherService extends IService<Other> {
      * @return 统计数据
      */
     Map<String, Object> statistics();
+
+    /**
+     * 刷新搜索数据
+     */
+    boolean flushSearchData();
 }

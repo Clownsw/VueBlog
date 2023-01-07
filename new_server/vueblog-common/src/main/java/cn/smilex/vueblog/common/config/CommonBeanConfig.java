@@ -71,7 +71,7 @@ public class CommonBeanConfig {
         return new Client(
                 new Config(
                         vueBlogConfig.getSearchServer(),
-                        vueBlogConfig.getSearchKey()
+                        StringUtils.isBlank(vueBlogConfig.getSearchKey()) ? null : vueBlogConfig.getSearchKey()
                 )
         );
     }
