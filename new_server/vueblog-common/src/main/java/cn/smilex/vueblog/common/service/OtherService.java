@@ -9,6 +9,8 @@ import cn.smilex.vueblog.common.entity.other.Other;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.util.Map;
+
 /**
  * @author smilex
  * @date 2022/11/12/11:45
@@ -66,4 +68,11 @@ public interface OtherService extends IService<Other> {
      * @return 是否成功
      */
     boolean updateFooter(Footer footer);
+
+    /**
+     * 综合统计
+     *
+     * @return 统计数据
+     */
+    Map<String, Object> statistics();
 }

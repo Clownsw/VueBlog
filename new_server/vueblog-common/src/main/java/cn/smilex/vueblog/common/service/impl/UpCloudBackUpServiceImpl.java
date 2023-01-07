@@ -61,7 +61,7 @@ public class UpCloudBackUpServiceImpl implements BackUpService {
                 fileContentByteArray,
                 new HashMapBuilder<String, String>(1)
                         .put(RestManager.PARAMS.CONTENT_MD5.getValue(), UpYunUtils.md5(fileContentByteArray))
-                        .build()
+                        .getMap()
         );
     }
 }

@@ -54,7 +54,7 @@ public class LoginServiceImpl implements LoginService {
                         .put("id", user.getId())
                         .put("username", user.getUserName())
                         .put("status", user.getStatus())
-                        .build()
+                        .getMap()
         );
     }
 }

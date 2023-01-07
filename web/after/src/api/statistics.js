@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   statistics() {
     return request({
-      url: '/statistics',
+      url: '/other/statistics',
       method: 'GET'
     })
   },

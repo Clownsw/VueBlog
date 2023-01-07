@@ -58,12 +58,12 @@ public class OtherController {
     @Options("/me/update")
     public Result<?> update(@RequestObject Optional<AboutMe> aboutMe) {
         return aboutMe.filter(v -> {
-                    try {
-                        return !ClassUtil.objIsNull(AboutMe.class, v, "id");
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+            try {
+                return !ClassUtil.objIsNull(AboutMe.class, v, "id");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        })
                 .<Result<?>>map(v -> {
                     otherService.updateMe(v);
                     return Result.success();
@@ -119,5 +119,16 @@ public class OtherController {
     @Options("/footer")
     public Result<?> footer() {
         return Result.success(otherService.selectPageFooter());
+    }
+
+    /**
+     * 综合统计
+     *
+     * @return 统计数据
+     */
+    @Get("/statistics")
+    @Options("/statistics")
+    public Result<?> statistics() {
+        return Result.success(otherService.statistics());
     }
 }

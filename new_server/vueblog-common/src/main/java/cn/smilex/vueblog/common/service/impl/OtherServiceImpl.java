@@ -2,13 +2,14 @@ package cn.smilex.vueblog.common.service.impl;
 
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.dao.OtherDao;
+import cn.smilex.vueblog.common.entity.common.HashMapBuilder;
 import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.SelectPageFooter;
 import cn.smilex.vueblog.common.entity.other.AboutMe;
 import cn.smilex.vueblog.common.entity.other.BackUp;
 import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.Other;
-import cn.smilex.vueblog.common.service.OtherService;
+import cn.smilex.vueblog.common.service.*;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author smilex
@@ -30,7 +32,31 @@ import java.time.LocalDateTime;
 @Service
 public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements OtherService {
 
+    private BlogService blogService;
+    private SortService sortService;
+    private TagService tagService;
+    private FriendService friendService;
     private UpCloudBackUpServiceImpl upCloudBackUpService;
+
+    @Autowired
+    public void setBlogService(BlogService blogService) {
+        this.blogService = blogService;
+    }
+
+    @Autowired
+    public void setSortService(SortService sortService) {
+        this.sortService = sortService;
+    }
+
+    @Autowired
+    public void setTagService(TagService tagService) {
+        this.tagService = tagService;
+    }
+
+    @Autowired
+    public void setFriendService(FriendService friendService) {
+        this.friendService = friendService;
+    }
 
     @Autowired
     public void setUpCloudBackUpService(UpCloudBackUpServiceImpl upCloudBackUpService) {
@@ -156,5 +182,20 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
                         .set(Other::getContent, footer.getContent())
                         .eq(Other::getOrder, 1)
         );
+    }
+
+    /**
+     * 综合统计
+     *
+     * @return 统计数据
+     */
+    @Override
+    public Map<String, Object> statistics() {
+        return new HashMapBuilder<String, Object>(4)
+                .put("blogTotal", blogService.count())
+                .put("sortTotal", sortService.count())
+                .put("tagTotal", tagService.count())
+                .put("friendTotal", friendService.count())
+                .getMap();
     }
 }

@@ -24,7 +24,7 @@ public class HashMapBuilder<T, K> {
         return this;
     }
 
-    public HashMap<T, K> build() {
+    public HashMap<T, K> getMap() {
         return this.data;
     }
 }

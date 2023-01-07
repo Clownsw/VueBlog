@@ -13,7 +13,7 @@
           </div>
 
           <div class="right">
-            <h1>{{ statisticsInfo.blog_total_num }}</h1>
+            <h1>{{ statisticsInfo.blogTotal }}</h1>
             <p>博文条数</p>
           </div>
         </el-card>
@@ -32,7 +32,7 @@
           </div>
 
           <div class="right">
-            <h1>{{ statisticsInfo.sort_total_num }}</h1>
+            <h1>{{ statisticsInfo.sortTotal }}</h1>
             <p>分类个数</p>
           </div>
         </el-card>
@@ -55,7 +55,7 @@
           </div>
 
           <div class="right">
-            <h1>{{ statisticsInfo.tag_total_num }}</h1>
+            <h1>{{ statisticsInfo.tagTotal }}</h1>
             <p>标签个数</p>
           </div>
         </el-card>
@@ -76,7 +76,7 @@
           </div>
 
           <div class="right">
-            <h1>{{ statisticsInfo.friend_total_num }}</h1>
+            <h1>{{ statisticsInfo.friendTotal }}</h1>
             <p>友链个数</p>
           </div>
         </el-card>
