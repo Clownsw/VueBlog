@@ -3,7 +3,6 @@ package cn.smilex.vueblog.after.controller;
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
-import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.MusicService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.server.annotation.*;
@@ -22,7 +21,7 @@ import java.util.Optional;
 @ProducesJson
 @RequestConverter(JacksonRequestConverterFunction.class)
 @CrossOrigin
-@Decorator(AuthService.class)
+// @Decorator(AuthService.class)
 @Component
 public class MusicController {
 
@@ -36,18 +35,18 @@ public class MusicController {
     /**
      * 搜索音乐
      *
-     * @param musicName 音乐名称
+     * @param keyWord 关键字
      * @return 结果
      */
     @Get("/search")
     @Options("/search")
-    public Result<?> searchMusic(@Param("musicName") Optional<String> musicName) {
-        if (CommonUtil.isEmpty(musicName)) {
+    public Result<?> searchMusic(@Param("keyWord") Optional<String> keyWord) {
+        if (CommonUtil.isEmpty(keyWord)) {
             return Result.fromResultCode(
                     ResultCode.ERROR_REQUEST_PARAM_ERROR
             );
         }
 
-        return Result.success(musicService.searchMusic(musicName.get()));
+        return Result.success(musicService.searchMusic(keyWord.get()));
     }
 }

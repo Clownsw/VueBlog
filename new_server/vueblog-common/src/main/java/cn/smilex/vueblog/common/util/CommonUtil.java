@@ -7,6 +7,9 @@ import cn.smilex.vueblog.common.entity.common.Result;
 import cn.smilex.vueblog.common.entity.common.Triplet;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.exception.VueBlogException;
+import cn.smilex.vueblog.common.function.TryRunExceptionHandler;
+import cn.smilex.vueblog.common.function.TryRunTask;
+import cn.smilex.vueblog.common.function.TryRunTaskNotResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -119,14 +123,18 @@ public final class CommonUtil {
         return false;
     }
 
-    @FunctionalInterface
-    public interface TryRunTask<T> {
-        T run();
-    }
-
-    @FunctionalInterface
-    public interface TryRunExceptionHandler<T> {
-        Optional<T> handler(Throwable e);
+    /**
+     * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理
+     *
+     * @param task                   任务
+     * @param tryRunExceptionHandler 异常处理
+     */
+    public static void tryRun(TryRunTaskNotResult tryRunTaskNotResult, TryRunExceptionHandler exceptionHandler) {
+        try {
+            tryRunTaskNotResult.run();
+        } catch (Throwable e) {
+            exceptionHandler.handler(e);
+        }
     }
 
     /**
@@ -135,23 +143,38 @@ public final class CommonUtil {
      * @param task                   任务
      * @param tryRunExceptionHandler 异常处理
      * @param <T>                    unknown type1
-     * @param <K>                    unknown type2
+     * @param <E>                    unknown type2
      * @return 结果
      */
     @SuppressWarnings("all")
-    public static <T, K> Result<?> tryRun(TryRunTask<T> task, Optional<TryRunExceptionHandler<K>> exceptionHandler) {
+    public static <T> Result<?> tryRun(TryRunTask<T> task, Optional<TryRunExceptionHandler> exceptionHandler) {
         try {
             return Result.success(task.run());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (exceptionHandler.isPresent()) {
-                Optional<K> result = exceptionHandler.get().handler(e);
-
-                if (result.isPresent()) {
-                    return Result.error(result.get());
-                }
+                exceptionHandler.get()
+                        .handler(e);
             }
             return Result.error();
         }
+    }
+
+    /**
+     * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理并调用 defaultValue返回默认值
+     *
+     * @param task                   任务
+     * @param tryRunExceptionHandler 异常处理
+     * @param <T>                    unknown type1
+     * @param <E>                    unknown type2
+     * @return 结果
+     */
+    public static <T, E> T tryRun(TryRunTask<T> task, Supplier<T> defaultValue, TryRunExceptionHandler exceptionHandler) {
+        try {
+            return task.run();
+        } catch (Throwable e) {
+            exceptionHandler.handler(e);
+        }
+        return defaultValue.get();
     }
 
     /**
@@ -475,5 +498,26 @@ public final class CommonUtil {
         }
 
         return (Map<String, Object>) CommonConfig.EMPTY_MAP;
+    }
+
+    /**
+     * 遍历JsonNode
+     *
+     * @param jsonNode JsonNode
+     * @param map      map
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> mapJsonNode(JsonNode jsonNode, Function<JsonNode, T> mapHandler) {
+        List<T> valueList = new ArrayList<>(jsonNode.size());
+
+        for (JsonNode node : jsonNode) {
+            T value;
+            if ((value = mapHandler.apply(node)) != null) {
+                valueList.add(value);
+            }
+        }
+
+        return valueList;
     }
 }

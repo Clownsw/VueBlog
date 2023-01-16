@@ -28,6 +28,7 @@ public class StartListener {
     private FriendController friendController;
     private OtherController otherController;
     private SystemController systemController;
+    private MusicController musicController;
     private ApplicationStartListener applicationStartListener;
 
     @Autowired
@@ -76,6 +77,11 @@ public class StartListener {
     }
 
     @Autowired
+    public void setMusicController(MusicController musicController) {
+        this.musicController = musicController;
+    }
+
+    @Autowired
     public void setApplicationStartListener(ApplicationStartListener applicationStartListener) {
         this.applicationStartListener = applicationStartListener;
     }
@@ -92,6 +98,7 @@ public class StartListener {
                 .annotatedService(friendController)
                 .annotatedService(otherController)
                 .annotatedService(systemController)
+                .annotatedService(musicController)
                 .build();
 
         // 启动时, 任务

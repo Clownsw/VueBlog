@@ -7,12 +7,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author smilex
@@ -28,6 +27,7 @@ public class CommonConfig {
     public static final String EMPTY_STRING = "";
     public static final Map<?, ?> EMPTY_MAP = new HashMap<>(0);
     public static final List<?> EMPTY_LIST = new ArrayList<>(0);
+    public static final Deque<?> EMTPY_DEQUE = new LinkedBlockingDeque<>();
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
 
 

@@ -21,12 +21,10 @@ public final class RequestUtil {
             .put("content-type", "application/json")
             .getMap();
 
-    public static Optional<HttpResponse> get(
+    public static HttpResponse get(
             String url
     ) {
-        return Optional.of(
-                Requests.requests.fast_get(url)
-        );
+        return Requests.requests.fast_get(url);
     }
 
     public static Optional<HttpResponse> get(
