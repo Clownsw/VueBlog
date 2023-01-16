@@ -4,6 +4,7 @@ import cn.smilex.req.HttpBodyInterface;
 import cn.smilex.req.HttpRequest;
 import cn.smilex.req.HttpResponse;
 import cn.smilex.req.Requests;
+import cn.smilex.vueblog.common.entity.common.HashMapBuilder;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -16,13 +17,9 @@ import static cn.smilex.req.Requests.REQUEST_METHOD.GET;
  * @since 1.0
  */
 public final class RequestUtil {
-
-    public static HashMap<String, String> JSON_HEADER;
-
-    static {
-        JSON_HEADER = new HashMap<>(1);
-        JSON_HEADER.put("content-type", "application/json");
-    }
+    public static HashMap<String, String> JSON_HEADER = new HashMapBuilder<String, String>(1)
+            .put("content-type", "application/json")
+            .getMap();
 
     public static Optional<HttpResponse> get(
             String url

@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/12/11:45
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Duplicates", "unchecked"})
+@SuppressWarnings({"unused", "Duplicates"})
 @Slf4j
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
@@ -68,13 +68,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
                 if ((tagIds = selectShowBlog.getTagIds()) != null && (tagNames = selectShowBlog.getTagNames()) != null) {
                     List<Long> tagIdList = Arrays.stream(
-                            tagIds.split(CommonUtil.COMMA))
+                            tagIds.split(CommonConfig.COMMA))
                             .map(Long::parseLong)
                             .collect(Collectors.toList()
                             );
 
                     List<String> tagNameList = Arrays.stream(
-                            tagNames.split(CommonUtil.COMMA))
+                            tagNames.split(CommonConfig.COMMA))
                             .collect(Collectors.toList()
                             );
 
@@ -130,7 +130,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         return selectBlogPage(
                 currentPage,
                 pageSize,
-                (Map<String, Object>) CommonUtil.EMPTY_MAP
+                (Map<String, Object>) CommonConfig.EMPTY_MAP
         );
     }
 
@@ -153,7 +153,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 currentPage
         );
 
-        String sql = CommonUtil.EMPTY_STRING;
+        String sql = CommonConfig.EMPTY_STRING;
         if (queryObj.size() > 0) {
             StringBuilder sb = new StringBuilder("where");
 
@@ -165,7 +165,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
             sql = sb.toString();
             if ("where".equals(sql)) {
-                sql = CommonUtil.EMPTY_STRING;
+                sql = CommonConfig.EMPTY_STRING;
             }
         }
 
@@ -185,7 +185,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             });
 
             scope.execute(() -> {
-                final long blogCount = CommonUtil.EMPTY_STRING.equals(finalSql) ? this.count() : this.selectCountByCustomSql(finalSql);
+                final long blogCount = CommonConfig.EMPTY_STRING.equals(finalSql) ? this.count() : this.selectCountByCustomSql(finalSql);
                 limit.setTotalCount(blogCount);
                 limit.setPageCount(CommonUtil.calcPageCount(blogCount, pageSize));
             });
@@ -411,7 +411,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                         SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
                         CommonUtil.searchClientAddOrUpdate(
                                 blogIndex,
-                                CommonUtil.OBJECT_MAPPER.writeValueAsString(
+                                CommonConfig.OBJECT_MAPPER.writeValueAsString(
                                         searchBlog
                                 ),
                                 searchBlog
@@ -453,7 +453,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             searchBlog.setId(blog.getId());
 
             blogIndex.addDocuments(
-                    CommonUtil.OBJECT_MAPPER.writeValueAsString(searchBlog),
+                    CommonConfig.OBJECT_MAPPER.writeValueAsString(searchBlog),
                     CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY
             );
         } catch (Exception e) {

@@ -15,5 +15,6 @@
     "title",
     "description"
   ],
-  "searchLimit": 50
+  "searchLimit": 50,
+  "musicServer": "https://music.smilex.vip/api/"
 }

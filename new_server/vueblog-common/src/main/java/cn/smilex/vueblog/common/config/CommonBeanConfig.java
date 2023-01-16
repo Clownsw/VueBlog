@@ -51,7 +51,7 @@ public class CommonBeanConfig {
             System.exit(-1);
         }
 
-        return CommonUtil.OBJECT_MAPPER.readValue(
+        return CommonConfig.OBJECT_MAPPER.readValue(
                 IOUtils.toString(vueBlogConfigInputStream),
                 new TypeReference<VueBlogConfig>() {
                 }

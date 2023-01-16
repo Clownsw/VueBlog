@@ -37,8 +37,11 @@ public class AuthService implements DecoratingHttpServiceFunction {
         }
 
         Method method = CommonUtil.getHttpServiceMethodField(delegate);
-        Cache cacheAnnotation = method.getAnnotation(Cache.class);
-        log.info("{}", cacheAnnotation);
+
+        if (method != null) {
+            Cache cacheAnnotation = method.getAnnotation(Cache.class);
+            log.info("{}", cacheAnnotation);
+        }
 
         return delegate.serve(ctx, req);
     }

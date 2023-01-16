@@ -3,6 +3,7 @@ package cn.smilex.vueblog.common.util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
@@ -82,5 +83,36 @@ public final class ClassUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 查找Method
+     *
+     * @param clazz      clazz
+     * @param methodName method name
+     * @param paramTypes param types
+     * @return method
+     * @throws NoSuchMethodException unknown exception
+     */
+    public static Method getMethodByClass(Class<?> clazz, String methodName, Class<?>... paramTypes) throws NoSuchMethodException {
+        Method method = clazz.getDeclaredMethod(methodName, paramTypes);
+        method.setAccessible(true);
+        return method;
+    }
+
+    /**
+     * 获取字段值
+     *
+     * @param object    object
+     * @param fieldName field name
+     * @return value
+     * @throws NoSuchFieldException   unknown exception
+     * @throws IllegalAccessException unknown exception
+     */
+    public static Object getFieldValueByClassAndObject(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        Class<?> clazz = object.getClass();
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(object);
     }
 }

@@ -26,4 +26,5 @@ public class VueBlogConfig {
     private String searchKey;
     private String[] searchAttributesToHighlight;
     private Integer searchLimit;
+    private String musicServer;
 }

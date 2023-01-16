@@ -130,7 +130,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
                         .eq(Other::getOrder, 3)
         );
 
-        return CommonUtil.OBJECT_MAPPER.readValue(
+        return CommonConfig.OBJECT_MAPPER.readValue(
                 other.getContent(),
                 new TypeReference<>() {
                 }
@@ -149,7 +149,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
 
         return this.update(
                 new LambdaUpdateWrapper<Other>()
-                        .set(Other::getContent, CommonUtil.OBJECT_MAPPER.writeValueAsString(backUp))
+                        .set(Other::getContent, CommonConfig.OBJECT_MAPPER.writeValueAsString(backUp))
                         .eq(Other::getOrder, 3)
         );
     }
@@ -223,7 +223,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
                     .collect(Collectors.toList());
 
             index.addDocuments(
-                    CommonUtil.OBJECT_MAPPER.writeValueAsString(searchBlogList),
+                    CommonConfig.OBJECT_MAPPER.writeValueAsString(searchBlogList),
                     CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY
             );
             return true;

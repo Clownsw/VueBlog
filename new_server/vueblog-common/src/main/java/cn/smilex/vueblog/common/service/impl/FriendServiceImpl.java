@@ -1,5 +1,6 @@
 package cn.smilex.vueblog.common.service.impl;
 
+import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.dao.FriendDao;
 import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
@@ -44,8 +45,8 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
             friendList.add(
                     new Friend(
                             0L,
-                            CommonUtil.EMPTY_FRIEND_MESSAGE,
-                            CommonUtil.EMPTY_FRIEND_MESSAGE,
+                            CommonConfig.EMPTY_FRIEND_MESSAGE,
+                            CommonConfig.EMPTY_FRIEND_MESSAGE,
                             vueBlogConfig.getVueBlogFriendDefaultHref(),
                             vueBlogConfig.getVueBlogFriendDefaultAvatar()
                     )

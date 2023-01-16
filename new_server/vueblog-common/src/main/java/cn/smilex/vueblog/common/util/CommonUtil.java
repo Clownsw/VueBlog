@@ -1,6 +1,5 @@
 package cn.smilex.vueblog.common.util;
 
-import cn.smilex.vueblog.common.concurrent.CounterThreadFactory;
 import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.blog.SearchBlog;
@@ -11,9 +10,6 @@ import cn.smilex.vueblog.common.exception.VueBlogException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.linecorp.armeria.common.*;
 import com.linecorp.armeria.internal.server.annotation.AnnotatedService;
 import com.linecorp.armeria.server.HttpService;
@@ -32,8 +28,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -44,25 +38,18 @@ import java.util.stream.Collectors;
  * @date 2022/9/29/18:09
  * @since 1.0
  */
-@SuppressWarnings({"unchecked", "OptionalGetWithoutIsPresent"})
+@SuppressWarnings("all")
 @Slf4j
 public final class CommonUtil {
-    public static final String EMPTY_STRING = "";
-    public static final Map<?, ?> EMPTY_MAP = new HashMap<>(0);
-    public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
-    public static final String COMMA = ",";
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final ExecutorService COMMON_THREAD_POOL = Executors.newCachedThreadPool(
-            new CounterThreadFactory("common-pool")
-    );
 
-    static {
-        OBJECT_MAPPER.registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule());
-    }
-
+    /**
+     * 创建任务并提交到公共线程池
+     *
+     * @param runnable 任务
+     * @return 结果
+     */
     public static Future<?> createTask(Runnable runnable) {
-        return COMMON_THREAD_POOL.submit(runnable);
+        return CommonConfig.COMMON_THREAD_POOL.submit(runnable);
     }
 
     public static boolean isInForArray(Class<?> clazz, Class<?>[] array) {
@@ -286,7 +273,7 @@ public final class CommonUtil {
                     .append(splice);
         }
 
-        return collection.size() == 0 ? EMPTY_STRING : sb.substring(0, sb.length() - 1);
+        return collection.size() == 0 ? CommonConfig.EMPTY_STRING : sb.substring(0, sb.length() - 1);
     }
 
     /**
@@ -333,7 +320,7 @@ public final class CommonUtil {
      * @throws JsonProcessingException unknown exception
      */
     public static void searchClientAddOrUpdate(Index blogIndex, String document, SearchBlog searchBlog) throws MeilisearchException, JsonProcessingException {
-        JsonNode root = OBJECT_MAPPER.readTree(blogIndex.getDocuments());
+        JsonNode root = CommonConfig.OBJECT_MAPPER.readTree(blogIndex.getDocuments());
 
         if (root.size() == 0) {
             blogIndex.addDocuments(document, CommonConfig.SEARCH_DOCUMENT_PRIMARY_KEY);
@@ -345,7 +332,7 @@ public final class CommonUtil {
                 root,
                 node -> {
                     try {
-                        return OBJECT_MAPPER.readValue(
+                        return CommonConfig.OBJECT_MAPPER.readValue(
                                 node.toString(),
                                 new TypeReference<SearchBlog>() {
                                 }
@@ -402,6 +389,21 @@ public final class CommonUtil {
     @SuppressWarnings("all")
     public static <T> boolean isEmpty(Optional<T> value) {
         return !value.isPresent();
+    }
+
+    /**
+     * 判断Optional数组内是否包含空数据
+     *
+     * @param values Optional 数组
+     * @return 结果
+     */
+    public static boolean isEmpty(Optional<Object>... values) {
+        for (Optional<Object> value : values) {
+            if (!value.isPresent()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -501,7 +503,7 @@ public final class CommonUtil {
      */
     public static Map<String, Object> parseQueryStringToMap(Optional<String> queryString) {
         try {
-            return CommonUtil.OBJECT_MAPPER.readValue(
+            return CommonConfig.OBJECT_MAPPER.readValue(
                     queryString.get(),
                     new TypeReference<HashMap<String, Object>>() {
                     }
@@ -509,6 +511,6 @@ public final class CommonUtil {
         } catch (Exception ignore) {
         }
 
-        return (Map<String, Object>) EMPTY_MAP;
+        return (Map<String, Object>) CommonConfig.EMPTY_MAP;
     }
 }
