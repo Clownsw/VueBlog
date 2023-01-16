@@ -1,8 +1,10 @@
 package cn.smilex.vueblog.common.config;
 
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -40,7 +42,14 @@ public class MybatisPlusBeanConfig {
     }
 
     @Bean
-    public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
+    public MybatisConfiguration mybatisConfiguration() {
+        MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
+        mybatisConfiguration.setLogImpl(NoLoggingImpl.class);
+        return mybatisConfiguration;
+    }
+
+    @Bean
+    public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource, MybatisConfiguration mybatisConfiguration) {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource);
         sqlSessionFactory.setTypeAliasesPackage("cn.smilex.vueblog.common.entity");
@@ -50,6 +59,7 @@ public class MybatisPlusBeanConfig {
                 new ClassPathResource("mappers/FriendDaoMapper.xml"),
                 new ClassPathResource("mappers/OtherDaoMapper.xml")
         );
+        sqlSessionFactory.setConfiguration(mybatisConfiguration);
         return sqlSessionFactory;
     }
 }
