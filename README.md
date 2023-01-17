@@ -18,12 +18,13 @@
 	- 加密文章
 - 分类管理
 - 标签管理
+- 歌单管理(音乐系统)
 - 评论系统(Vuline + LeanCloud)
 - 关于我
 - 备份管理(将数据库备份到又拍云OSS)
 - 系统管理
 
-## 相关项目
+## 音乐系统
 - [VueBlogNeteaseCloudMusicApi](https://github.com/Clownsw/VueBlogNeteaseCloudMusicApi)
 
 ## example
