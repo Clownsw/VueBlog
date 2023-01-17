@@ -1,10 +1,10 @@
 package cn.smilex.vueblog.common.entity.common;
 
+import cn.smilex.vueblog.common.config.CommonConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +12,7 @@ import java.util.List;
  * @date 2022/11/13/13:34
  * @since 1.0
  */
+@SuppressWarnings("unchecked")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class Limit<T> {
 
     public static <T> Limit<T> defaultLimit(Long pageSize, Long currentPage) {
         return new Limit<>(
-                new ArrayList<>(0),
+                (List<T>) CommonConfig.EMPTY_LIST,
                 0L,
                 pageSize,
                 currentPage,

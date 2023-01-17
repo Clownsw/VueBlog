@@ -4,6 +4,7 @@ import cn.smilex.req.HttpResponse;
 import cn.smilex.vueblog.common.config.CommonConfig;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.dao.MusicDao;
+import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.entity.music.Music;
 import cn.smilex.vueblog.common.entity.music.MusicSearchResult;
@@ -13,8 +14,8 @@ import cn.smilex.vueblog.common.util.CommonUtil;
 import cn.smilex.vueblog.common.util.RequestUtil;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.stream.Collectors;
 
 /**
  * @author smilex
@@ -136,9 +138,20 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
      * @return 音乐列表
      */
     @Override
-    public Page<Music> selectMusicPage(Long currentPage, Long pageSize) {
-        Page<Music> page = new Page<>(currentPage, pageSize);
-        return page(page);
+    public Limit<Music> selectMusicPage(Long currentPage, Long pageSize) {
+        Limit<Music> limit = Limit.defaultLimit(pageSize, currentPage);
+
+        try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
+            scope.execute(() -> limit.setDataList(this.getBaseMapper().selectMusicPage(limit)));
+
+            scope.execute(() -> {
+                long count = this.count();
+                limit.setTotalCount(count);
+                limit.setPageCount(CommonUtil.calcPageCount(count, pageSize));
+            });
+        }
+
+        return limit;
     }
 
     /**
@@ -176,5 +189,62 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
                 new LambdaQueryWrapper<Music>()
                         .eq(Music::getId, id)
         );
+    }
+
+    /**
+     * 根据歌单ID导入音乐
+     *
+     * @param id 歌单ID
+     * @return 结果
+     */
+    @Override
+    public boolean playListImport(Long id) {
+        List<Music> musicList = CommonUtil.tryRun(
+                () -> {
+                    HttpResponse httpResponse = RequestUtil.get(
+                            String.format(
+                                    CommonConfig.MUSIC_API_PLAY_LIST_DETAIL_TEMPLATE,
+                                    vueBlogConfig.getMusicServer(),
+                                    id
+                            )
+                    );
+
+                    return CommonConfig.OBJECT_MAPPER.readValue(
+                            httpResponse.getBody(),
+                            new TypeReference<>() {
+                            }
+                    );
+                },
+                () -> (List<Music>) CommonConfig.EMPTY_LIST,
+                e -> log.error("", e)
+        );
+
+        if (musicList.size() == 0) {
+            return false;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        musicList = musicList.stream()
+                .peek(music -> music.setCreated(now))
+                .collect(Collectors.toList());
+
+        for (Music music : musicList) {
+            CommonUtil.tryRun(
+                    () -> {
+                        if (
+                                this.count(
+                                        new LambdaQueryWrapper<Music>()
+                                                .eq(Music::getId, music.getId())
+                                ) == 0
+                        ) {
+                            this.save(music);
+                        }
+                    },
+                    e -> log.error("", e)
+            );
+        }
+
+        return true;
     }
 }

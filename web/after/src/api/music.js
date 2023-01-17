@@ -25,5 +25,11 @@ export default {
       url: `/music/delete?id=${id}`,
       method:'GET'
     })
+  },
+  playListImport(id) {
+    return request({
+      url: `/music/playListImport?playListId=${id}`,
+      method: 'GET'
+    })
   }
 }

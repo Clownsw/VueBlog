@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author smilex
@@ -46,4 +45,5 @@ public class CommonConfig {
 
     public static final String MUSIC_API_SONG_URL_TEMPLATE = "%s/vueblog/song/url?id=%d";
     public static final String MUSIC_API_LRC_TEMPLATE = "%s/vueblog/lyric?id=%d";
+    public static final String MUSIC_API_PLAY_LIST_DETAIL_TEMPLATE = "%s/vueblog/playlist/detail?id=%d";
 }

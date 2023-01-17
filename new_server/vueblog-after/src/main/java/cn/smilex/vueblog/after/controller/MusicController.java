@@ -96,4 +96,20 @@ public class MusicController {
     public Result<?> delete(@Param("id") Long id) {
         return musicService.deleteMusicById(id) ? Result.success() : Result.error();
     }
+
+    /**
+     * 根据歌单ID导入音乐
+     *
+     * @param id 歌单ID
+     * @return 结果
+     */
+    @Get("/playListImport")
+    @Options("/playListImport")
+    public Result<?> playListImport(@Param("playListId") Optional<Long> id) {
+        if (CommonUtil.isEmpty(id) || id.get() <= 0) {
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR);
+        }
+
+        return musicService.playListImport(id.get()) ? Result.success() : Result.error();
+    }
 }

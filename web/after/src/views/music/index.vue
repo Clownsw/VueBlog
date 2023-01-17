@@ -2,6 +2,11 @@
   <div class="app-container">
     <div class="musicManageContainer">
       <el-card class="currentMusicManagerBox">
+        <div class="currentMusicPlayListImportBox" style="display: flex">
+          <el-input v-model="playListId" size="mini" style="margin-right: 20px"></el-input>
+          <el-button type="primary" size="mini" @click="handlerPlayListImport" style="float: right">从歌单导入</el-button>
+        </div>
+
         <el-table
           :data="currentMusicTableData"
           stripe
@@ -138,9 +143,10 @@ export default {
       loading: null,
       currentMusicPagination: {
         currentPage: 1,
-        pageSize: 30,
+        pageSize: 10,
         total: 0
-      }
+      },
+      playListId: null,
     }
   },
   methods: {
@@ -166,8 +172,8 @@ export default {
     handlerSelectMusicPage() {
       musicApi.list(this.currentMusicPagination.currentPage, this.currentMusicPagination.pageSize).then(resp => {
         if (resp.code === 200) {
-          this.currentMusicPagination.total = resp.data.total
-          this.currentMusicTableData = resp.data.records
+          this.currentMusicPagination.total = resp.data.totalCount
+          this.currentMusicTableData = resp.data.dataList
         } else {
           this.$message.error('获取音乐列表失败')
         }
@@ -217,6 +223,34 @@ export default {
         this.loading.close()
       }).catch(_ => {
         this.$message.error('删除失败')
+        this.loading.close()
+      })
+    },
+    handlerPlayListImport() {
+      this.loading = this.$loading({
+        lock: true,
+        text: '正在导入中...',
+        spinner: 'el-icon-loading',
+        background: 'rgb(0 0 0 / 80%)'
+      })
+
+      if (this.playListId === null || this.playListId === '') {
+        this.$message.error('非法的歌单ID')
+        return
+      }
+
+      musicApi.playListImport(this.playListId).then(resp => {
+        if (resp.code === 200) {
+          this.$message.success('导入成功')
+        } else {
+          this.$message.error('导入失败')
+        }
+
+        this.currentMusicPagination.currentPage = 1
+        this.handlerSelectMusicPage()
+        this.loading.close()
+      }).catch(_ => {
+        this.$message.error('导入失败')
         this.loading.close()
       })
     },

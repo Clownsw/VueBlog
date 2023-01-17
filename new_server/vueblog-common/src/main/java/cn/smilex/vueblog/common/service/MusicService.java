@@ -1,8 +1,8 @@
 package cn.smilex.vueblog.common.service;
 
+import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.music.Music;
 import cn.smilex.vueblog.common.entity.music.MusicSearchResult;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -37,7 +37,7 @@ public interface MusicService extends IService<Music> {
      * @param pageSize    每页大小
      * @return 音乐列表
      */
-    Page<Music> selectMusicPage(Long currentPage, Long pageSize);
+    Limit<Music> selectMusicPage(Long currentPage, Long pageSize);
 
     /**
      * 添加音乐
@@ -54,4 +54,12 @@ public interface MusicService extends IService<Music> {
      * @return 结果
      */
     boolean deleteMusicById(Long id);
+
+    /**
+     * 根据歌单ID导入音乐
+     *
+     * @param id 歌单ID
+     * @return 结果
+     */
+    boolean playListImport(Long id);
 }

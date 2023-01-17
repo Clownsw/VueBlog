@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/12/11:45
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Duplicates"})
+@SuppressWarnings({"unused", "Duplicates", "unchecked"})
 @Slf4j
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
