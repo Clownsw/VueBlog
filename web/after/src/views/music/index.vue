@@ -24,7 +24,7 @@
           </el-table-column>
 
           <el-table-column
-            prop="author"
+            prop="artist"
             label="作者"
             align="center"
           >
@@ -174,6 +174,13 @@ export default {
       })
     },
     handlerAddMusic(music) {
+      this.loading = this.$loading({
+        lock: true,
+        text: '正在添加中...',
+        spinner: 'el-icon-loading',
+        background: 'rgb(0 0 0 / 80%)'
+      })
+
       musicApi.add(music).then(resp => {
         if (resp.code === 200) {
           this.$message.success('添加成功')
@@ -183,11 +190,21 @@ export default {
 
         this.currentMusicPagination.currentPage = 1
         this.handlerSelectMusicPage()
+
+        this.loading.close()
       }).catch(_ => {
         this.$message.error('添加失败')
+        this.loading.close()
       })
     },
     handlerDeleteMusic(id) {
+      this.loading = this.$loading({
+        lock: true,
+        text: '正在删除中...',
+        spinner: 'el-icon-loading',
+        background: 'rgb(0 0 0 / 80%)'
+      })
+
       musicApi.delete(id).then(resp => {
         if (resp.code === 200) {
           this.$message.success('删除成功')
@@ -197,8 +214,10 @@ export default {
 
         this.currentMusicPagination.currentPage = 1
         this.handlerSelectMusicPage()
+        this.loading.close()
       }).catch(_ => {
         this.$message.error('删除失败')
+        this.loading.close()
       })
     },
     handlerCurrentMusicPaginationChange(currentPage) {

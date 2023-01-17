@@ -24,7 +24,7 @@ public class MusicSearchResult {
     @JsonSerialize(using = ToStringSerializer.class)
     private Integer id;
     private String name;
-    private String author;
+    private String artist;
     private String cover;
 
     public static MusicSearchResult parse(JsonNode song) {

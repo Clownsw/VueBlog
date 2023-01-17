@@ -155,7 +155,8 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
                                 .eq(Music::getId, music.getId())
                 ) == 0
         ) {
-            music.setUrl(String.format("%s/vueblog/song/url?id=%d", vueBlogConfig.getMusicServer(), music.getId()));
+            music.setUrl(String.format(CommonConfig.MUSIC_API_SONG_URL_TEMPLATE, vueBlogConfig.getMusicServer(), music.getId()));
+            music.setLrc(String.format(CommonConfig.MUSIC_API_LRC_TEMPLATE, vueBlogConfig.getMusicServer(), music.getId()));
             music.setCreated(LocalDateTime.now());
 
             return this.save(music);

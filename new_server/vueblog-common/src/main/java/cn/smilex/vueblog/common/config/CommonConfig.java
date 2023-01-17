@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @SuppressWarnings("all")
 public class CommonConfig {
-    public static ApplicationContext APPLICATION_CONTEXT;
+    public static ApplicationContext APPLICATION_CONTEXT = null;
     public static final int VUEBLOG_BLOG_KEY_SIZE = 30;
     public static final String SEARCH_DOCUMENT_PRIMARY_KEY = "id";
 
@@ -44,7 +44,6 @@ public class CommonConfig {
 
     public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
-    static {
-        APPLICATION_CONTEXT = null;
-    }
+    public static final String MUSIC_API_SONG_URL_TEMPLATE = "%s/vueblog/song/url?id=%d";
+    public static final String MUSIC_API_LRC_TEMPLATE = "%s/vueblog/lyric?id=%d";
 }

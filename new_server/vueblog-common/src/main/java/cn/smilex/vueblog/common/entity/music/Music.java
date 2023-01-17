@@ -28,14 +28,17 @@ public class Music {
     @TableField(value = "name")
     private String name;
 
-    @TableField(value = "author")
-    private String author;
+    @TableField(value = "artist")
+    private String artist;
+
+    @TableField(value = "url")
+    private String url;
 
     @TableField(value = "cover")
     private String cover;
 
-    @TableField(value = "url")
-    private String url;
+    @TableField(value = "lrc")
+    private String lrc;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
