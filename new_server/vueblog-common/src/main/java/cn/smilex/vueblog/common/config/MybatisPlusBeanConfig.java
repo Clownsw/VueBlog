@@ -57,7 +57,8 @@ public class MybatisPlusBeanConfig {
                 new ClassPathResource("mappers/BlogDaoMapper.xml"),
                 new ClassPathResource("mappers/TagDaoMapper.xml"),
                 new ClassPathResource("mappers/FriendDaoMapper.xml"),
-                new ClassPathResource("mappers/OtherDaoMapper.xml")
+                new ClassPathResource("mappers/OtherDaoMapper.xml"),
+                new ClassPathResource("mappers/MusicDaoMapper.xml")
         );
         sqlSessionFactory.setConfiguration(mybatisConfiguration);
         return sqlSessionFactory;

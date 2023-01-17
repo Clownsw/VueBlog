@@ -135,6 +135,14 @@ export const constantRouterMap = [{
         meta: {
           title: '搜索管理'
         }
+      },
+      {
+        path: 'music/index',
+        name: 'MusicIndex',
+        component: () => import('@/views/music/index'),
+        meta: {
+          title: '歌单管理'
+        }
       }
     ]
   },

@@ -3,6 +3,8 @@ package cn.smilex.vueblog.after.controller;
 import cn.smilex.vueblog.common.annotation.CrossOrigin;
 import cn.smilex.vueblog.common.config.ResultCode;
 import cn.smilex.vueblog.common.entity.common.Result;
+import cn.smilex.vueblog.common.entity.music.Music;
+import cn.smilex.vueblog.common.handler.AuthService;
 import cn.smilex.vueblog.common.service.MusicService;
 import cn.smilex.vueblog.common.util.CommonUtil;
 import com.linecorp.armeria.server.annotation.*;
@@ -21,7 +23,7 @@ import java.util.Optional;
 @ProducesJson
 @RequestConverter(JacksonRequestConverterFunction.class)
 @CrossOrigin
-// @Decorator(AuthService.class)
+@Decorator(AuthService.class)
 @Component
 public class MusicController {
 
@@ -48,5 +50,50 @@ public class MusicController {
         }
 
         return Result.success(musicService.searchMusic(keyWord.get()));
+    }
+
+    /**
+     * 分页查询音乐列表
+     *
+     * @param currentPage 当前页
+     * @param pageSize    每页大小
+     * @return 音乐列表
+     */
+    @Get("/list")
+    @Options("/list")
+    public Result<?> list(
+            @Param("currentPage") Optional<Long> currentPage,
+            @Param("pageSize") Optional<Long> pageSize
+    ) {
+        return Result.success(
+                musicService.selectMusicPage(
+                        currentPage.orElse(1L),
+                        pageSize.orElse(30L)
+                )
+        );
+    }
+
+    /**
+     * 添加一个音乐
+     *
+     * @param music 音乐
+     * @return 结果
+     */
+    @Post("/add")
+    @Options("/add")
+    public Result<?> add(@RequestObject Music music) {
+        return musicService.addMusic(music) ? Result.success() : Result.error();
+    }
+
+    /**
+     * 根据ID删除音乐
+     *
+     * @param id id
+     * @return 结果
+     */
+    @Get("/delete")
+    @Options("/delete")
+    public Result<?> delete(@Param("id") Long id) {
+        return musicService.deleteMusicById(id) ? Result.success() : Result.error();
     }
 }
