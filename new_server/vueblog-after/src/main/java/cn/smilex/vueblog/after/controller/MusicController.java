@@ -98,6 +98,18 @@ public class MusicController {
     }
 
     /**
+     * 清空歌单
+     *
+     * @return 结果
+     */
+    @Get("/deleteAll")
+    @Options("/deleteAll")
+    public Result<?> deleteAll() {
+        musicService.deleteAll();
+        return Result.success();
+    }
+
+    /**
      * 根据歌单ID导入音乐
      *
      * @param id 歌单ID

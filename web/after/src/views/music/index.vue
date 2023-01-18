@@ -5,6 +5,7 @@
         <div class="currentMusicPlayListImportBox" style="display: flex">
           <el-input v-model="playListId" size="mini" style="margin-right: 20px"></el-input>
           <el-button type="primary" size="mini" @click="handlerPlayListImport" style="float: right">从歌单导入</el-button>
+          <el-button type="danger" size="mini" @click="handlerDeleteAll" style="float: right">清空歌单</el-button>
         </div>
 
         <el-table
@@ -212,6 +213,29 @@ export default {
       })
 
       musicApi.delete(id).then(resp => {
+        if (resp.code === 200) {
+          this.$message.success('删除成功')
+        } else {
+          this.$message.error('删除失败')
+        }
+
+        this.currentMusicPagination.currentPage = 1
+        this.handlerSelectMusicPage()
+        this.loading.close()
+      }).catch(_ => {
+        this.$message.error('删除失败')
+        this.loading.close()
+      })
+    },
+    handlerDeleteAll() {
+      this.loading = this.$loading({
+        lock: true,
+        text: '正在删除中...',
+        spinner: 'el-icon-loading',
+        background: 'rgb(0 0 0 / 80%)'
+      })
+
+      musicApi.deleteAll().then(resp => {
         if (resp.code === 200) {
           this.$message.success('删除成功')
         } else {

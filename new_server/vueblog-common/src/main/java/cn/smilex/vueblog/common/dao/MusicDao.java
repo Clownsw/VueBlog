@@ -20,4 +20,11 @@ public interface MusicDao extends BaseMapper<Music> {
      * @return 音乐列表
      */
     List<Music> selectMusicPage(Limit<Music> limit);
+
+    /**
+     * 清空歌单
+     *
+     * @return 结果
+     */
+    int deleteAll();
 }

@@ -62,4 +62,11 @@ public interface MusicService extends IService<Music> {
      * @return 结果
      */
     boolean playListImport(Long id);
+
+    /**
+     * 清空歌单
+     *
+     * @return 结果
+     */
+    boolean deleteAll();
 }

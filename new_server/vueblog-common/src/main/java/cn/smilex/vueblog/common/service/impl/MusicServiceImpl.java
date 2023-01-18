@@ -247,4 +247,15 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
 
         return true;
     }
+
+    /**
+     * 清空歌单
+     *
+     * @return 结果
+     */
+    @Override
+    public boolean deleteAll() {
+        return this.getBaseMapper()
+                .deleteAll() > 0;
+    }
 }
