@@ -42,14 +42,7 @@ public class MybatisPlusBeanConfig {
     }
 
     @Bean
-    public MybatisConfiguration mybatisConfiguration() {
-        MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
-        mybatisConfiguration.setLogImpl(NoLoggingImpl.class);
-        return mybatisConfiguration;
-    }
-
-    @Bean
-    public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource, MybatisConfiguration mybatisConfiguration) {
+    public MybatisSqlSessionFactoryBean sqlSessionFactory(DataSource dataSource, VueBlogConfig vueBlogConfig) {
         MybatisSqlSessionFactoryBean sqlSessionFactory = new MybatisSqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(dataSource);
         sqlSessionFactory.setTypeAliasesPackage("cn.smilex.vueblog.common.entity");
@@ -60,7 +53,12 @@ public class MybatisPlusBeanConfig {
                 new ClassPathResource("mappers/OtherDaoMapper.xml"),
                 new ClassPathResource("mappers/MusicDaoMapper.xml")
         );
-        sqlSessionFactory.setConfiguration(mybatisConfiguration);
+
+        if (vueBlogConfig.getIsProc() != null && vueBlogConfig.getIsProc()) {
+            MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
+            mybatisConfiguration.setLogImpl(NoLoggingImpl.class);
+            sqlSessionFactory.setConfiguration(mybatisConfiguration);
+        }
         return sqlSessionFactory;
     }
 }

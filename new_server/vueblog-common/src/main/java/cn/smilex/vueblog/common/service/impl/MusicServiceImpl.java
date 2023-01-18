@@ -142,7 +142,13 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
         Limit<Music> limit = Limit.defaultLimit(pageSize, currentPage);
 
         try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
-            scope.execute(() -> limit.setDataList(this.getBaseMapper().selectMusicPage(limit)));
+            scope.execute(() -> limit.setDataList(
+                    this.getBaseMapper()
+                            .selectMusicPage(
+                                    CommonUtil.calcLimit(currentPage, pageSize),
+                                    pageSize
+                            ))
+            );
 
             scope.execute(() -> {
                 long count = this.count();
