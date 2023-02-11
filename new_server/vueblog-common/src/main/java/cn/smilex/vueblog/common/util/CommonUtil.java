@@ -281,15 +281,44 @@ public final class CommonUtil {
      *
      * @param collection 集合
      * @param handler    处理方法
-     * @param splice     分隔符
+     * @param split      分隔符
      * @param <T>        unknown type
      * @return 字符串
      */
-    public static <T> String collectionToStr(Collection<T> collection, CollectionToStrMap<T> handler, String splice) {
+    public static <T> String collectionToStr(Collection<T> collection, CollectionToStrMap<T> handler, String split) {
         StringBuilder sb = new StringBuilder();
         for (T t : collection) {
             sb.append(handler.map(t))
-                    .append(splice);
+                    .append(split);
+        }
+
+        return collection.size() == 0 ? CommonConfig.EMPTY_STRING : sb.substring(0, sb.length() - 1);
+    }
+
+    /**
+     * 集合转字符串(最后一个不添加分割)
+     *
+     * @param collection 集合
+     * @param handler    处理方法
+     * @param split      分隔符
+     * @param <T>        unknown type
+     * @return 字符串
+     */
+    public static <T> String collectionToStrNotLast(Collection<T> collection, CollectionToStrMap<T> handler, String split) {
+        final int len = collection.size();
+        StringBuilder sb = new StringBuilder();
+
+        int i = 0;
+        for (T t : collection) {
+            sb.append(handler.map(t));
+
+            if (i + 1 == len) {
+                continue;
+            }
+
+            sb.append(split);
+
+            i++;
         }
 
         return collection.size() == 0 ? CommonConfig.EMPTY_STRING : sb.substring(0, sb.length() - 1);

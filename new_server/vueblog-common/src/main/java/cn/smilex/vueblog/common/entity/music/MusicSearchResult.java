@@ -31,7 +31,7 @@ public class MusicSearchResult {
         return new MusicSearchResult(
                 song.get("id").asInt(),
                 song.get("name").asText(),
-                CommonUtil.collectionToStr(
+                CommonUtil.collectionToStrNotLast(
                         CommonUtil.<List<String>, Throwable>tryRun(
                                 () -> {
                                     JsonNode ar = song.get("ar");

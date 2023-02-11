@@ -99,7 +99,7 @@
           </el-table-column>
 
           <el-table-column
-            prop="author"
+            prop="artist"
             label="作者"
             align="center"
           >
