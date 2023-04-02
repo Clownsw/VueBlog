@@ -38,6 +38,7 @@
         <common-lang3.version>3.12.0</common-lang3.version>
         <commons-io.version>2.11.0</commons-io.version>
         <upyun-sdk.version>4.2.3</upyun-sdk.version>
+        <micrometer.version>1.10.5</micrometer.version>
     </properties>
 
     <dependencies>
@@ -171,6 +172,12 @@
             <groupId>com.upyun</groupId>
             <artifactId>java-sdk</artifactId>
             <version>${upyun-sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
         </dependency>
     </dependencies>
 
