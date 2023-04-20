@@ -22,14 +22,14 @@
         <spring.version>5.3.24</spring.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <armeria.version>1.20.3</armeria.version>
-        <logback.version>1.3.5</logback.version>
+        <logback.version>1.4.6</logback.version>
         <slf4j.version>2.0.5</slf4j.version>
         <lombok.version>1.18.24</lombok.version>
         <jackson.version>2.14.0</jackson.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
-        <hikariCP.version>4.0.3</hikariCP.version>
-        <mysql.version>8.0.31</mysql.version>
-        <jwt.version>4.2.1</jwt.version>
+        <hikariCP.version>5.0.1</hikariCP.version>
+        <mysql.version>8.0.32</mysql.version>
+        <jwt.version>4.3.0</jwt.version>
         <req.version>0.11</req.version>
         <guava.version>31.1-jre</guava.version>
         <jctools.version>4.0.1</jctools.version>
@@ -64,12 +64,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
 
         <dependency>
