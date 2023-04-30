@@ -438,7 +438,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
         // 更新加密文章的KEY和KEY title
         if (StringUtils.isNotBlank(requestBlog.getKey()) && StringUtils.isNotBlank(requestBlog.getKeyTitle())) {
-            this.updateBlogKeyById(requestBlog.getId(), requestBlog.getKey(), requestBlog.getKeyTitle());
+            this.updateBlogKeyById(blog.getId(), requestBlog.getKey(), requestBlog.getKeyTitle());
         }
 
         if (requestBlog.getTag() != null && requestBlog.getTag().size() > 0) {
