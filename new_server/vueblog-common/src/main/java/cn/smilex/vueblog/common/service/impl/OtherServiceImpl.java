@@ -12,7 +12,7 @@ import cn.smilex.vueblog.common.entity.other.BackUp;
 import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.Other;
 import cn.smilex.vueblog.common.service.*;
-import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -132,7 +132,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
 
         return CommonConfig.OBJECT_MAPPER.readValue(
                 other.getContent(),
-                new TypeReference<>() {
+                new TypeReference<BackUp>() {
                 }
         );
     }
@@ -161,7 +161,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
     public Result<?> backUpBuy() throws JsonProcessingException {
         BackUp backUp = selectBackUpInfo();
         try {
-            String sql = CommonUtil.dumpSql(backUp.getUserName(), backUp.getPassWord(), "vueblog");
+            String sql = CommonUtils.dumpSql(backUp.getUserName(), backUp.getPassWord(), "vueblog");
             if (StringUtils.isBlank(sql)) {
                 return Result.fromResultCode(ResultCode.ERROR_DUMP_ERROR_NOT_GET_DUMP_SQL);
             }

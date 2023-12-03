@@ -25,7 +25,7 @@ public final class StructuredTaskScope implements AutoCloseable {
     }
 
     public void execute(Runnable runnable) {
-        this.futureList.add(CommonUtil.createTask(runnable));
+        this.futureList.add(CommonUtils.createTask(runnable));
     }
 
     @Override

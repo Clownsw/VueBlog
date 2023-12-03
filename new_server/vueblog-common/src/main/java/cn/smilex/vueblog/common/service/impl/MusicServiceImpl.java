@@ -10,8 +10,8 @@ import cn.smilex.vueblog.common.entity.music.Music;
 import cn.smilex.vueblog.common.entity.music.MusicSearchResult;
 import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.MusicService;
-import cn.smilex.vueblog.common.util.CommonUtil;
-import cn.smilex.vueblog.common.util.RequestUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
+import cn.smilex.vueblog.common.util.RequestUtils;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -59,9 +60,9 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
     @Override
     public Deque<MusicSearchResult> searchMusic(String keyWord) {
         checkServer();
-        return CommonUtil.tryRun(
+        return CommonUtils.tryRun(
                 () -> {
-                    HttpResponse httpResponse = RequestUtil.get(String.format(
+                    HttpResponse httpResponse = RequestUtils.get(String.format(
                             "%s/search/?keyWords=%s",
                             vueBlogConfig.getMusicServer(),
                             keyWord
@@ -73,14 +74,14 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
                     Deque<MusicSearchResult> musicSearchResultDeque = new LinkedBlockingDeque<>(songs.size());
 
                     JsonNode songDetailJsonNodeList = selectSongDetailByIdList(
-                            CommonUtil.mapJsonNode(
+                            CommonUtils.mapJsonNode(
                                     songs,
                                     v -> v.get("id").asInt()
                             )
                     );
 
                     try (StructuredTaskScope scope = new StructuredTaskScope(songs.size())) {
-                        CommonUtil.tryRun(
+                        CommonUtils.tryRun(
                                 () -> {
                                     for (JsonNode song : songDetailJsonNodeList.get("songs")) {
                                         scope.execute(() -> musicSearchResultDeque.add(
@@ -109,13 +110,13 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
     @Override
     public JsonNode selectSongDetailByIdList(List<Integer> idList) {
 
-        return CommonUtil.tryRun(
+        return CommonUtils.tryRun(
                 () -> {
-                    HttpResponse httpResponse = RequestUtil.get(
+                    HttpResponse httpResponse = RequestUtils.get(
                             String.format(
                                     "%s/song/detail?id=%s",
                                     vueBlogConfig.getMusicServer(),
-                                    CommonUtil.collectionToStr(
+                                    CommonUtils.collectionToStr(
                                             idList,
                                             Object::toString,
                                             ","
@@ -145,7 +146,7 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
             scope.execute(() -> limit.setDataList(
                     this.getBaseMapper()
                             .selectMusicPage(
-                                    CommonUtil.calcLimit(currentPage, pageSize),
+                                    CommonUtils.calcLimit(currentPage, pageSize),
                                     pageSize
                             ))
             );
@@ -153,7 +154,7 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
             scope.execute(() -> {
                 long count = this.count();
                 limit.setTotalCount(count);
-                limit.setPageCount(CommonUtil.calcPageCount(count, pageSize));
+                limit.setPageCount(CommonUtils.calcPageCount(count, pageSize));
             });
         }
 
@@ -205,9 +206,9 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
      */
     @Override
     public boolean playListImport(Long id) {
-        List<Music> musicList = CommonUtil.tryRun(
+        List<Music> musicList = CommonUtils.tryRun(
                 () -> {
-                    HttpResponse httpResponse = RequestUtil.get(
+                    HttpResponse httpResponse = RequestUtils.get(
                             String.format(
                                     CommonConfig.MUSIC_API_PLAY_LIST_DETAIL_TEMPLATE,
                                     vueBlogConfig.getMusicServer(),
@@ -217,11 +218,11 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
 
                     return CommonConfig.OBJECT_MAPPER.readValue(
                             httpResponse.getBody(),
-                            new TypeReference<>() {
+                            new TypeReference<List<Music>>() {
                             }
                     );
                 },
-                () -> (List<Music>) CommonConfig.EMPTY_LIST,
+                Collections::emptyList,
                 e -> log.error("", e)
         );
 
@@ -236,7 +237,7 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
                 .collect(Collectors.toList());
 
         for (Music music : musicList) {
-            CommonUtil.tryRun(
+            CommonUtils.tryRun(
                     () -> {
                         if (
                                 this.count(
@@ -247,7 +248,7 @@ public class MusicServiceImpl extends ServiceImpl<MusicDao, Music> implements Mu
                             this.save(music);
                         }
                     },
-                    e -> log.error("", e)
+                    e -> log.error(CommonConfig.EMPTY_STRING, e)
             );
         }
 

@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.entity.music;
 
 import cn.smilex.vueblog.common.config.CommonConfig;
-import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,22 +32,22 @@ public class MusicSearchResult {
         return new MusicSearchResult(
                 song.get("id").asInt(),
                 song.get("name").asText(),
-                CommonUtil.collectionToStrNotLast(
-                        CommonUtil.<List<String>, Throwable>tryRun(
+                CommonUtils.collectionToStrNotLast(
+                        CommonUtils.<List<String>, Throwable>tryRun(
                                 () -> {
                                     JsonNode ar = song.get("ar");
-                                    return CommonUtil.mapJsonNode(
+                                    return CommonUtils.mapJsonNode(
                                             ar,
                                             v -> v.get("name").asText()
                                     );
                                 },
-                                () -> (List<String>) CommonConfig.EMPTY_LIST,
+                                () -> Collections.emptyList(),
                                 e -> log.error("", e)
                         ),
                         v -> v,
                         ", "
                 ),
-                CommonUtil.tryRun(
+                CommonUtils.tryRun(
                         () -> {
                             JsonNode al = song.get("al");
                             return al.get("picUrl").asText();

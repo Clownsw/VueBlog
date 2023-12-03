@@ -19,7 +19,7 @@ import java.util.Map;
  * @since 1.0
  */
 @Slf4j
-public final class JwtUtil {
+public final class JwtUtils {
     private static JwtConfig JWT_CONFIG;
 
     public static JwtConfig getJwtConfig() {

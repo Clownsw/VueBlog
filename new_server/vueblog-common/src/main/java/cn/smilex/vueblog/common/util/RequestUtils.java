@@ -16,7 +16,7 @@ import static cn.smilex.req.Requests.REQUEST_METHOD.GET;
  * @date 2022/9/29/13:02
  * @since 1.0
  */
-public final class RequestUtil {
+public final class RequestUtils {
     public static HashMap<String, String> JSON_HEADER = new HashMapBuilder<String, String>(1)
             .put("content-type", "application/json")
             .getMap();

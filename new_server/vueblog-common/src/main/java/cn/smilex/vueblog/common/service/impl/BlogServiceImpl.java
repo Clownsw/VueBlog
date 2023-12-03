@@ -11,8 +11,8 @@ import cn.smilex.vueblog.common.entity.tag.SelectBlogTag;
 import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.service.BlogService;
 import cn.smilex.vueblog.common.service.TagService;
-import cn.smilex.vueblog.common.util.CommonUtil;
-import cn.smilex.vueblog.common.util.ListUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
+import cn.smilex.vueblog.common.util.ListUtils;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +32,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/12/11:45
  * @since 1.0
  */
-@SuppressWarnings({"unused", "Duplicates", "unchecked"})
+@SuppressWarnings({"unused", "Duplicates"})
 @Slf4j
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogService {
@@ -90,8 +87,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                     selectShowBlog.setTags(tagList);
                 }
             } catch (Exception e) {
-                log.error("", e);
-                selectShowBlog.setTags(new ArrayList<>(0));
+                log.error(CommonConfig.EMPTY_STRING, e);
+                selectShowBlog.setTags(Collections.emptyList());
             }
 
             selectShowBlog.setSort(
@@ -130,7 +127,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         return selectBlogPage(
                 currentPage,
                 pageSize,
-                (Map<String, Object>) CommonConfig.EMPTY_MAP
+                Collections.emptyMap()
         );
     }
 
@@ -174,7 +171,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPage(
-                        CommonUtil.calcLimit(currentPage, pageSize),
+                        CommonUtils.calcLimit(currentPage, pageSize),
                         pageSize,
                         finalSql
                 );
@@ -187,7 +184,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             scope.execute(() -> {
                 final long blogCount = CommonConfig.EMPTY_STRING.equals(finalSql) ? this.count() : this.selectCountByCustomSql(finalSql);
                 limit.setTotalCount(blogCount);
-                limit.setPageCount(CommonUtil.calcPageCount(blogCount, pageSize));
+                limit.setPageCount(CommonUtils.calcPageCount(blogCount, pageSize));
             });
         }
 
@@ -206,7 +203,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                 .selectBlogById(id, isAdmin);
 
         if (selectBlogInfo != null) {
-            blogParseTag(ListUtil.of(selectBlogInfo));
+            blogParseTag(ListUtils.of(selectBlogInfo));
         }
 
         return selectBlogInfo;
@@ -243,7 +240,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageByTagId(
-                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
+                        CommonUtils.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
                         vueBlogConfig.getVueBlogBeforeWebPageSize(),
                         tagId
                 );
@@ -256,7 +253,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             scope.execute(() -> {
                 final long blogCount = getBaseMapper().selectBlogCountByTagId(tagId);
                 limit.setTotalCount(blogCount);
-                limit.setPageCount(CommonUtil.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
+                limit.setPageCount(CommonUtils.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
             });
         }
 
@@ -280,7 +277,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         try (StructuredTaskScope scope = new StructuredTaskScope(2)) {
             scope.execute(() -> {
                 List<SelectShowBlog> selectShowBlogList = getBaseMapper().selectBlogPageBySortId(
-                        CommonUtil.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
+                        CommonUtils.calcLimit(currentPage, vueBlogConfig.getVueBlogBeforeWebPageSize()),
                         vueBlogConfig.getVueBlogBeforeWebPageSize(),
                         sortId
                 );
@@ -293,7 +290,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
             scope.execute(() -> {
                 final long blogCount = getBaseMapper().selectBlogCountBySortId(sortId);
                 limit.setTotalCount(blogCount);
-                limit.setPageCount(CommonUtil.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
+                limit.setPageCount(CommonUtils.calcPageCount(blogCount, vueBlogConfig.getVueBlogBeforeWebPageSize()));
             });
         }
 
@@ -369,7 +366,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                     .collect(Collectors.toList());
 
             // TODO 计算 删除、添加、默认 标签集合
-            Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtil.getDelAndAddAndDefaultList(oldTagIdList, idList);
+            Triplet<List<Long>, List<Long>, List<Long>> tagCalcResult = CommonUtils.getDelAndAddAndDefaultList(oldTagIdList, idList);
 
             if (tagCalcResult.getLeft().size() > 0) {
                 tagService.batchRemoveBlogTag(requestBlog.getId(), tagCalcResult.getLeft());
@@ -406,10 +403,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
 
             // 如果当前是公开文章, 则更新到搜索引擎
             if (blog.getStatus() == 0) {
-                CommonUtil.createTask(() -> {
+                CommonUtils.createTask(() -> {
                     try {
                         SearchBlog searchBlog = SearchBlog.fromRequestBlog(requestBlog);
-                        CommonUtil.searchClientAddOrUpdate(
+                        CommonUtils.searchClientAddOrUpdate(
                                 blogIndex,
                                 CommonConfig.OBJECT_MAPPER.writeValueAsString(
                                         searchBlog
@@ -489,7 +486,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
         // 删除博文相关标签引用
         tagService.batchRemoveBlogTagByBlogIdList(idList);
 
-        CommonUtil.exceptionToRunTimeException(
+        CommonUtils.exceptionToRunTimeException(
                 () -> blogIndex.deleteDocuments(
                         idList.stream()
                                 .map(String::valueOf)

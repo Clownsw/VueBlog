@@ -1,7 +1,6 @@
 package cn.smilex.vueblog.common.config;
 
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
-import cn.smilex.vueblog.common.util.CommonUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Config;

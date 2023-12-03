@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,12 +39,12 @@ public class SearchServiceImpl implements SearchService {
 
     private List<SearchBlogResult> searchResultToVec(ArrayList<HashMap<String, Object>> hitList) {
         if (hitList.size() == 0) {
-            return new ArrayList<>(0);
+            return Collections.emptyList();
         }
 
         List<SearchBlogResult> searchBlogResultList = new ArrayList<>(hitList.size());
 
-        for (HashMap<String, Object> hit : hitList) {
+        for (final HashMap<String, Object> hit : hitList) {
             searchBlogResultList.add(
                     new SearchBlogResult(
                             ((Double) hit.get("id")).longValue(),
@@ -65,7 +66,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<SearchBlogResult> search(String q) {
         try {
-            SearchResult search = blogIndex.search(
+            final SearchResult search = blogIndex.search(
                     new SearchRequest(q)
                             .setAttributesToHighlight(vueBlogConfig.getSearchAttributesToHighlight())
                             .setLimit(vueBlogConfig.getSearchLimit())
@@ -75,6 +76,6 @@ public class SearchServiceImpl implements SearchService {
         } catch (MeilisearchException ignore) {
         }
 
-        return new ArrayList<>(0);
+        return Collections.emptyList();
     }
 }

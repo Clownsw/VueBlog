@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @author smilex
  * @date 2022年7月28日10:56:32
  */
-public final class ClassUtil {
+public final class ClassUtils {
     private static final Class<?>[] NOT_CHECK_FILED_CLASS_LIST = new Class[]{Short.class, Integer.class, Long.class};
 
     /**
@@ -56,7 +56,7 @@ public final class ClassUtil {
             }
         }
 
-        if (CommonUtil.isInForArray(clazz, NOT_CHECK_FILED_CLASS_LIST)) {
+        if (CommonUtils.isInForArray(clazz, NOT_CHECK_FILED_CLASS_LIST)) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public final class ClassUtil {
                 continue;
             }
 
-            if (CommonUtil.isInForArray(CharSequence.class, type.getInterfaces())) {
+            if (CommonUtils.isInForArray(CharSequence.class, type.getInterfaces())) {
                 CharSequence o = (CharSequence) field.get(obj);
                 if (StringUtils.isBlank(o)) {
                     return true;

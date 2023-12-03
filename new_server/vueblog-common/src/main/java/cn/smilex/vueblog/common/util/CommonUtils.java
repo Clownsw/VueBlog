@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("all")
 @Slf4j
-public final class CommonUtil {
+public final class CommonUtils {
 
     /**
      * 创建任务并提交到公共线程池
@@ -201,7 +201,7 @@ public final class CommonUtil {
             throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
         }
 
-        Tuple<Boolean, Map<String, Object>> signResult = JwtUtil.signJWTToken(token);
+        Tuple<Boolean, Map<String, Object>> signResult = JwtUtils.signJWTToken(token);
 
         if (!signResult.getLeft()) {
             throw new VueBlogException(ResultCode.ERROR_CURRENT_LOGIN_USER_INFO_ERROR_NOT_FOUND_TOKEN);
@@ -526,7 +526,7 @@ public final class CommonUtil {
         } catch (Exception ignore) {
         }
 
-        return (Map<String, Object>) CommonConfig.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     /**

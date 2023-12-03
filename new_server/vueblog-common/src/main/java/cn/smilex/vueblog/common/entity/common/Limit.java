@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class Limit<T> {
 
     public static <T> Limit<T> defaultLimit(Long pageSize, Long currentPage) {
         return new Limit<>(
-                (List<T>) CommonConfig.EMPTY_LIST,
+                Collections.emptyList(),
                 0L,
                 pageSize,
                 currentPage,

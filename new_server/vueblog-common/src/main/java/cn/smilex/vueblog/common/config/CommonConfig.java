@@ -24,8 +24,6 @@ public class CommonConfig {
     public static final String SEARCH_DOCUMENT_PRIMARY_KEY = "id";
 
     public static final String EMPTY_STRING = "";
-    public static final Map<?, ?> EMPTY_MAP = new HashMap<>(0);
-    public static final List<?> EMPTY_LIST = new ArrayList<>(0);
     public static final Deque<?> EMTPY_DEQUE = new LinkedBlockingDeque<>();
     public static final String EMPTY_FRIEND_MESSAGE = "暂无友链";
 

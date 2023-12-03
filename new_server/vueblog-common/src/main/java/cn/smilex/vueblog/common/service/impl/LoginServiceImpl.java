@@ -7,7 +7,7 @@ import cn.smilex.vueblog.common.entity.user.User;
 import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.LoginService;
 import cn.smilex.vueblog.common.service.UserService;
-import cn.smilex.vueblog.common.util.JwtUtil;
+import cn.smilex.vueblog.common.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.linecorp.armeria.common.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
             throw new VueBlogException(ResultCode.ERROR_LOGIN_PASSWORD_ERROR);
         }
 
-        return JwtUtil.createJWTToken(
+        return JwtUtils.createJWTToken(
                 new HashMapBuilder<String, Object>(3)
                         .put("id", user.getId())
                         .put("username", user.getUserName())

@@ -4,8 +4,8 @@ import cn.smilex.vueblog.common.dao.UserDao;
 import cn.smilex.vueblog.common.entity.common.Tuple;
 import cn.smilex.vueblog.common.entity.user.User;
 import cn.smilex.vueblog.common.service.UserService;
-import cn.smilex.vueblog.common.util.CommonUtil;
-import cn.smilex.vueblog.common.util.JwtUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
+import cn.smilex.vueblog.common.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.linecorp.armeria.common.HttpHeaderNames;
@@ -41,7 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             return false;
         }
 
-        Tuple<Boolean, Map<String, Object>> result = JwtUtil.signJWTToken(token);
+        Tuple<Boolean, Map<String, Object>> result = JwtUtils.signJWTToken(token);
         return result.getLeft();
     }
 
@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         return getOne(
                 new LambdaQueryWrapper<User>()
                         .eq(
-                                User::getId, CommonUtil.checkTokenAndGetData(request).get("id")
+                                User::getId, CommonUtils.checkTokenAndGetData(request).get("id")
                         )
         );
     }

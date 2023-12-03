@@ -6,7 +6,7 @@ import cn.smilex.vueblog.common.entity.common.Limit;
 import cn.smilex.vueblog.common.entity.common.VueBlogConfig;
 import cn.smilex.vueblog.common.entity.other.Friend;
 import cn.smilex.vueblog.common.service.FriendService;
-import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import cn.smilex.vueblog.common.util.StructuredTaskScope;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -76,7 +76,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
                                     .last(
                                             String.format(
                                                     "LIMIT %d, %d",
-                                                    CommonUtil.calcLimit(
+                                                    CommonUtils.calcLimit(
                                                             currentPage,
                                                             vueBlogConfig.getVueBlogAfterFriendPageSize()
                                                     ),
@@ -89,7 +89,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
             scope.execute(() -> {
                 limit.setTotalCount(this.count());
                 limit.setPageCount(
-                        CommonUtil.calcPageCount(
+                        CommonUtils.calcPageCount(
                                 limit.getTotalCount(),
                                 vueBlogConfig.getVueBlogAfterFriendPageSize()
                         )
@@ -110,7 +110,7 @@ public class FriendServiceImpl extends ServiceImpl<FriendDao, Friend> implements
     public void batchDelete(List<Long> idList) {
         this.getBaseMapper()
                 .batchDelete(
-                        CommonUtil.collectionToStr(
+                        CommonUtils.collectionToStr(
                                 idList,
                                 Object::toString,
                                 ","

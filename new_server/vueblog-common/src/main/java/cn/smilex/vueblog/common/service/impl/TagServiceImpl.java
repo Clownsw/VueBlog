@@ -4,7 +4,7 @@ import cn.smilex.vueblog.common.dao.TagDao;
 import cn.smilex.vueblog.common.entity.tag.SelectBlogTag;
 import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.service.TagService;
-import cn.smilex.vueblog.common.util.CommonUtil;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
         return this.getBaseMapper()
                 .batchRemoveBlogTag(
                         blogId,
-                        CommonUtil.collectionToStr(
+                        CommonUtils.collectionToStr(
                                 tagIdList,
                                 Object::toString,
                                 ","
@@ -77,7 +77,7 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
     public int batchAddBlogTag(Long blogId, List<SelectBlogTag> blogTagList) {
         return this.getBaseMapper()
                 .batchAddBlogTag(
-                        CommonUtil.collectionToStr(
+                        CommonUtils.collectionToStr(
                                 blogTagList,
                                 v -> String.format("(%d, %d, %d)", blogId, v.getId(), v.getSort()),
                                 ","
@@ -96,9 +96,9 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
     public int batchUpdateBlogTag(Long blogId, List<SelectBlogTag> blogTagList) {
         return this.getBaseMapper()
                 .batchUpdateBlogTag(
-                        CommonUtil.collectionToStr(blogTagList, v -> String.format("WHEN %d THEN %d", v.getId(), v.getSort()), " ") + " END",
+                        CommonUtils.collectionToStr(blogTagList, v -> String.format("WHEN %d THEN %d", v.getId(), v.getSort()), " ") + " END",
                         blogId,
-                        CommonUtil.collectionToStr(
+                        CommonUtils.collectionToStr(
                                 blogTagList,
                                 v -> v.getId().toString(),
                                 ","
@@ -144,7 +144,7 @@ public class TagServiceImpl extends ServiceImpl<TagDao, Tag> implements TagServi
     public long batchRemoveBlogTagByBlogIdList(List<Long> idList) {
         return this.getBaseMapper()
                 .batchRemoveBlogTagByBlogIdList(
-                        CommonUtil.collectionToStr(
+                        CommonUtils.collectionToStr(
                                 idList,
                                 Object::toString,
                                 ","
