@@ -2,7 +2,7 @@ import axios from 'axios'
 import store from './store'
 import { ElMessage } from 'element-ui'
 
-axios.defaults.baseURL='http://localhost:8888/'
+axios.defaults.baseURL='https://api.smilex.vip/'
 
 // 前置拦截
 axios.interceptors.request.use(config => {

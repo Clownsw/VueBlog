@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.util;
+package cn.smilex.vueblog.common.utils;
 
 import com.zaxxer.hikari.util.FastList;
 import lombok.extern.slf4j.Slf4j;

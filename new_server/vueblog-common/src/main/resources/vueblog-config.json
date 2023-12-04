@@ -1,5 +1,5 @@
 {
-  "dataSourceJdbcUrl": "jdbc:mysql://localhost:3306/vueblog_back",
+  "dataSourceJdbcUrl": "jdbc:mysql://192.168.204.214:3306/vueblog_back",
   "dataSourceUserName": "root",
   "datasourcePassWord": "123123",
   "jwtKey": "1ZnSR3QY68t011iYIdozXMG5OYckmeuL",

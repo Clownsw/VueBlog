@@ -7,8 +7,8 @@ import cn.smilex.vueblog.common.entity.other.AboutMe
 import cn.smilex.vueblog.common.entity.other.BackUp
 import cn.smilex.vueblog.common.handler.AuthService
 import cn.smilex.vueblog.common.service.OtherService
-import cn.smilex.vueblog.common.util.ClassUtils
-import cn.smilex.vueblog.common.util.CommonUtils
+import cn.smilex.vueblog.common.utils.ClassUtils
+import cn.smilex.vueblog.common.utils.CommonUtils
 import com.linecorp.armeria.server.annotation.*
 import org.springframework.stereotype.Component
 import java.util.*

@@ -2,7 +2,7 @@ package cn.smilex.vueblog.common.handler;
 
 import cn.smilex.vueblog.common.annotation.cache.Cache;
 import cn.smilex.vueblog.common.config.ResultCode;
-import cn.smilex.vueblog.common.util.CommonUtils;
+import cn.smilex.vueblog.common.utils.CommonUtils;
 import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @author smilex
@@ -27,7 +28,7 @@ public class AuthService implements DecoratingHttpServiceFunction {
     public HttpResponse serve(@NotNull HttpService delegate, @NotNull ServiceRequestContext ctx, @NotNull HttpRequest req) throws Exception {
 
         if (req.method() == HttpMethod.OPTIONS) {
-            return CommonUtils.createCrossOriginHttpResponse();
+            return Objects.requireNonNull(CommonUtils.createCrossOriginHttpResponse());
         }
 
         try {

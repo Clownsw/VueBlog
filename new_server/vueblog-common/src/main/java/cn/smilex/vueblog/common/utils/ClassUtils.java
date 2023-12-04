@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.util;
+package cn.smilex.vueblog.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 

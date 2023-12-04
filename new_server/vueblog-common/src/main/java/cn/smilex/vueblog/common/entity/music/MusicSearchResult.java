@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.entity.music;
 
 import cn.smilex.vueblog.common.config.CommonConfig;
-import cn.smilex.vueblog.common.util.CommonUtils;
+import cn.smilex.vueblog.common.utils.CommonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * @author smilex
  */
-@SuppressWarnings("unchecked")
 @Slf4j
 @Data
 @NoArgsConstructor
@@ -41,7 +40,7 @@ public class MusicSearchResult {
                                             v -> v.get("name").asText()
                                     );
                                 },
-                                () -> Collections.emptyList(),
+                                Collections::emptyList,
                                 e -> log.error("", e)
                         ),
                         v -> v,

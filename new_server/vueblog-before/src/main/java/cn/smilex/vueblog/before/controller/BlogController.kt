@@ -4,8 +4,8 @@ import cn.smilex.vueblog.common.annotation.CrossOrigin
 import cn.smilex.vueblog.common.config.ResultCode
 import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.service.BlogService
-import cn.smilex.vueblog.common.util.CommonUtils
-import cn.smilex.vueblog.common.util.OptionUtils
+import cn.smilex.vueblog.common.utils.CommonUtils
+import cn.smilex.vueblog.common.utils.OptionUtils
 import com.linecorp.armeria.server.annotation.Get
 import com.linecorp.armeria.server.annotation.Param
 import com.linecorp.armeria.server.annotation.PathPrefix

@@ -7,14 +7,14 @@ import cn.smilex.vueblog.common.entity.blog.RequestBlog
 import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.handler.AuthService
 import cn.smilex.vueblog.common.service.BlogService
-import cn.smilex.vueblog.common.util.CommonUtils
+import cn.smilex.vueblog.common.utils.CommonUtils
 import com.linecorp.armeria.server.annotation.*
 import org.springframework.stereotype.Component
 import java.util.*
 
 /**
  * TODO
- * @author yanglujia
+ * @author smilex
  * @date 2023/12/3 17:48:50
  */
 @Suppress("unused")
@@ -39,7 +39,7 @@ class BlogController(private val blogService: BlogService) {
     fun list(
         @Param("currentPage") currentPage: Long?,
         @Param("pageSize") pageSize: Long?,
-        @RequestObject queryString: Optional<String?>?
+        @RequestObject queryString: Optional<String?>
     ): Result<*> {
         return Result.success(
             blogService.selectBlogPage(

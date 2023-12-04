@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.util;
+package cn.smilex.vueblog.common.utils;
 
 import cn.smilex.req.HttpBodyInterface;
 import cn.smilex.req.HttpRequest;
