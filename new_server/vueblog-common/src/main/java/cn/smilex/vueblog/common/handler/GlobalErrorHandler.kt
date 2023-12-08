@@ -2,7 +2,7 @@ package cn.smilex.vueblog.common.handler
 
 import cn.smilex.vueblog.common.config.CommonConfig
 import cn.smilex.vueblog.common.config.ResultCode
-import cn.smilex.vueblog.common.utils.CommonUtils
+import cn.smilex.vueblog.common.util.CommonUtils
 import com.linecorp.armeria.common.HttpResponse
 import com.linecorp.armeria.server.HttpStatusException
 import com.linecorp.armeria.server.ServerErrorHandler

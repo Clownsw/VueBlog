@@ -1,7 +1,7 @@
 package cn.smilex.vueblog.common.entity.music;
 
 import cn.smilex.vueblog.common.config.CommonConfig;
-import cn.smilex.vueblog.common.utils.CommonUtils;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

@@ -4,7 +4,7 @@ import cn.smilex.vueblog.common.dao.TagDao;
 import cn.smilex.vueblog.common.entity.tag.SelectBlogTag;
 import cn.smilex.vueblog.common.entity.tag.Tag;
 import cn.smilex.vueblog.common.service.TagService;
-import cn.smilex.vueblog.common.utils.CommonUtils;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

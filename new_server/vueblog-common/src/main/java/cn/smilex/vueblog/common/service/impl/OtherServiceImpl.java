@@ -12,7 +12,7 @@ import cn.smilex.vueblog.common.entity.other.BackUp;
 import cn.smilex.vueblog.common.entity.other.Footer;
 import cn.smilex.vueblog.common.entity.other.Other;
 import cn.smilex.vueblog.common.service.*;
-import cn.smilex.vueblog.common.utils.CommonUtils;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

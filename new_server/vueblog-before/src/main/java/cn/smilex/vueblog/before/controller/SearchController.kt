@@ -3,8 +3,8 @@ package cn.smilex.vueblog.before.controller
 import cn.smilex.vueblog.common.annotation.CrossOrigin
 import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.service.SearchService
-import cn.smilex.vueblog.common.utils.OptionUtils.Companion.isEmpty
-import cn.smilex.vueblog.common.utils.OptionUtils.Companion.isEmptyAction
+import cn.smilex.vueblog.common.util.OptionUtils.Companion.isEmpty
+import cn.smilex.vueblog.common.util.OptionUtils.Companion.isEmptyAction
 import com.linecorp.armeria.server.annotation.Get
 import com.linecorp.armeria.server.annotation.Param
 import com.linecorp.armeria.server.annotation.PathPrefix

@@ -7,7 +7,7 @@ import cn.smilex.vueblog.common.entity.user.User;
 import cn.smilex.vueblog.common.exception.VueBlogException;
 import cn.smilex.vueblog.common.service.LoginService;
 import cn.smilex.vueblog.common.service.UserService;
-import cn.smilex.vueblog.common.utils.JwtUtils;
+import cn.smilex.vueblog.common.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.linecorp.armeria.common.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;

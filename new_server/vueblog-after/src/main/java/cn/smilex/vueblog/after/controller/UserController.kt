@@ -5,7 +5,7 @@ import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.function.TryRunExceptionHandler
 import cn.smilex.vueblog.common.handler.AuthService
 import cn.smilex.vueblog.common.service.UserService
-import cn.smilex.vueblog.common.utils.CommonUtils
+import cn.smilex.vueblog.common.util.CommonUtils
 import com.linecorp.armeria.common.HttpRequest
 import com.linecorp.armeria.server.annotation.*
 import org.springframework.stereotype.Component

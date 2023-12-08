@@ -1,4 +1,4 @@
-package cn.smilex.vueblog.common.utils
+package cn.smilex.vueblog.common.util
 
 import java.util.*
 

@@ -2,7 +2,7 @@ package cn.smilex.vueblog.common.handler;
 
 import cn.smilex.vueblog.common.annotation.cache.Cache;
 import cn.smilex.vueblog.common.config.ResultCode;
-import cn.smilex.vueblog.common.utils.CommonUtils;
+import cn.smilex.vueblog.common.util.CommonUtils;
 import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
