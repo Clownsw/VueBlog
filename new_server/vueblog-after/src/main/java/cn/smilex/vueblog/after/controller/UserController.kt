@@ -2,14 +2,11 @@ package cn.smilex.vueblog.after.controller
 
 import cn.smilex.vueblog.common.annotation.CrossOrigin
 import cn.smilex.vueblog.common.entity.common.Result
-import cn.smilex.vueblog.common.function.TryRunExceptionHandler
 import cn.smilex.vueblog.common.handler.AuthService
 import cn.smilex.vueblog.common.service.UserService
-import cn.smilex.vueblog.common.util.CommonUtils
 import com.linecorp.armeria.common.HttpRequest
 import com.linecorp.armeria.server.annotation.*
 import org.springframework.stereotype.Component
-import java.util.*
 
 /**
  * @author smilex
@@ -33,12 +30,7 @@ class UserController(private val userService: UserService) {
     @Post("/info")
     @Options("/info")
     fun info(request: HttpRequest): Result<*> {
-        return CommonUtils.tryRun(
-            { userService.getUserInfoByToken(request) },
-            Optional.of(
-                TryRunExceptionHandler { e: Throwable -> Optional.of(e) }
-            )
-        )
+        return Result.success(userService.getUserInfoByToken(request))
     }
 
 }

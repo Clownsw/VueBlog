@@ -34,12 +34,12 @@ class MusicController(private val musicService: MusicService) {
             musicService.list(
                 LambdaQueryWrapper<Music>()
                     .select(
-                        Music::getId,
-                        Music::getName,
-                        Music::getArtist,
-                        Music::getUrl,
-                        Music::getCover,
-                        Music::getLrc
+                        Music::id,
+                        Music::name,
+                        Music::artist,
+                        Music::url,
+                        Music::cover,
+                        Music::lrc
                     )
             )
         )

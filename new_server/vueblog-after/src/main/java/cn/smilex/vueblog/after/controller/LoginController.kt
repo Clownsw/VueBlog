@@ -4,10 +4,8 @@ import cn.smilex.vueblog.common.annotation.CrossOrigin
 import cn.smilex.vueblog.common.config.ResultCode
 import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.entity.user.LoginUser
-import cn.smilex.vueblog.common.function.TryRunExceptionHandler
 import cn.smilex.vueblog.common.service.LoginService
 import cn.smilex.vueblog.common.util.ClassUtils
-import cn.smilex.vueblog.common.util.CommonUtils
 import cn.smilex.vueblog.common.util.JwtUtils
 import com.linecorp.armeria.common.HttpRequest
 import com.linecorp.armeria.server.annotation.*
@@ -36,14 +34,11 @@ class LoginController(private val loginService: LoginService) {
     @Post("/login")
     @Options("/login")
     fun login(loginUser: Optional<LoginUser?>, request: HttpRequest?): Result<*> {
-        return if (!loginUser.isPresent || ClassUtils.objIsNull(LoginUser::class.java, loginUser.get())) {
-            Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR)
-        } else CommonUtils.tryRun(
-            { loginService.login(loginUser.get(), request) },
-            Optional.of(
-                TryRunExceptionHandler { e: Throwable -> Optional.of(e) }
-            )
-        )
+        if (!loginUser.isPresent || ClassUtils.objIsNull(LoginUser::class.java, loginUser.get())) {
+            return Result.fromResultCode(ResultCode.ERROR_REQUEST_PARAM_ERROR)
+        }
+
+        return Result.success(loginService.login(loginUser.get(), request))
     }
 
     /**

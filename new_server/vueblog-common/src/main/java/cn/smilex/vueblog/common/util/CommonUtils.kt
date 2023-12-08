@@ -6,9 +6,6 @@ import cn.smilex.vueblog.common.entity.blog.SearchBlog
 import cn.smilex.vueblog.common.entity.common.Result
 import cn.smilex.vueblog.common.entity.common.Triplet
 import cn.smilex.vueblog.common.exception.VueBlogException
-import cn.smilex.vueblog.common.function.TryRunExceptionHandler
-import cn.smilex.vueblog.common.function.TryRunTask
-import cn.smilex.vueblog.common.function.TryRunTaskNotResult
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
@@ -26,11 +23,9 @@ import java.util.*
 import java.util.concurrent.Future
 import java.util.function.Function
 import java.util.function.Predicate
-import java.util.function.Supplier
 import java.util.stream.Collectors
 
 /**
- * TODO
  * @author smilex
  * @date 2023/12/4 21:47:36
  */
@@ -44,7 +39,7 @@ class CommonUtils {
          * @return 结果
          */
         @JvmStatic
-        fun createTask(runnable: Runnable): Future<*>? {
+        fun createTask(runnable: Runnable): Future<*> {
             return CommonConfig.COMMON_THREAD_POOL.submit(runnable)
         }
 
@@ -119,59 +114,33 @@ class CommonUtils {
         }
 
         /**
-         * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理
-         *
-         * @param tryRunTaskNotResult                   任务
-         * @param exceptionHandler 异常处理
-         */
-        @JvmStatic
-        fun tryRun(tryRunTaskNotResult: TryRunTaskNotResult, exceptionHandler: TryRunExceptionHandler) {
-            try {
-                tryRunTaskNotResult.run()
-            } catch (e: Throwable) {
-                exceptionHandler.handler(e)
-            }
-        }
-
-        /**
-         * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理
-         *
-         * @param task                   任务
-         * @param tryRunExceptionHandler 异常处理
-         * @param <T>                    unknown type1
-         * @param <E>                    unknown type2
-         * @return 结果
-        </E></T> */
-        @JvmStatic
-        fun <T> tryRun(task: TryRunTask<T>, exceptionHandler: Optional<TryRunExceptionHandler>): Result<*> {
-            return try {
-                Result.success(task.run())
-            } catch (e: Throwable) {
-                if (exceptionHandler.isPresent) {
-                    exceptionHandler.get()
-                        .handler(e)
-                }
-                Result.error()
-            }
-        }
-
-        /**
          * try catch 运行 task, 如果发生异常 则调用exceptionHandler进行异常处理并调用 defaultValue返回默认值
          *
          * @param task                   任务
-         * @param tryRunExceptionHandler 异常处理
+         * @param defaultValue 默认值
+         * @param exceptionHandler 异常处理
          * @param <T>                    unknown type1
          * @param <E>                    unknown type2
          * @return 结果
         </E></T> */
         @JvmStatic
-        fun <T, E> tryRun(task: TryRunTask<T>, defaultValue: Supplier<T>, exceptionHandler: TryRunExceptionHandler): T {
+        inline fun <T> tryRun(task: () -> T, defaultValue: () -> T, exceptionHandler: (Throwable) -> Unit): T {
             try {
-                return task.run()
+                return task()
             } catch (e: Throwable) {
-                exceptionHandler.handler(e)
+                exceptionHandler(e)
             }
-            return defaultValue.get()
+
+            return defaultValue()
+        }
+
+        @JvmStatic
+        inline fun tryRunNoReturn(task: () -> Unit, exceptionHandler: (Throwable) -> Unit) {
+            try {
+                task()
+            } catch (e: Throwable) {
+                exceptionHandler(e)
+            }
         }
 
         /**
@@ -214,37 +183,37 @@ class CommonUtils {
          * @return 集合
         </T> */
         @JvmStatic
-        fun <T> getDelAndAddAndDefaultList(a: List<T>, b: List<T>): Triplet<List<T>, List<T>, List<T>>? {
-            val _del: MutableList<T> = ArrayList()
-            val _add: MutableList<T> = ArrayList()
-            val _default: MutableList<T> = ArrayList()
+        fun <T> getDelAndAddAndDefaultList(a: List<T>, b: List<T>): Triplet<List<T>, List<T>, List<T>> {
+            val delete: MutableList<T> = ArrayList()
+            val new: MutableList<T> = ArrayList()
+            val default: MutableList<T> = ArrayList()
 
-            // del
+            // delete
             for (v in a) {
                 if (!b.contains(v)) {
-                    _del.add(v)
+                    delete.add(v)
                 }
             }
 
-            // add
+            // new
             for (v in b) {
                 if (!a.contains(v)) {
-                    _add.add(v)
+                    new.add(v)
                 }
             }
 
             // default
             for (v in a) {
-                if (!_del.contains(v) && !_add.contains(v) && !_default.contains(v)) {
-                    _default.add(v)
+                if (!delete.contains(v) && !new.contains(v) && !default.contains(v)) {
+                    default.add(v)
                 }
             }
             for (v in b) {
-                if (!_del.contains(v) && !_add.contains(v) && !_default.contains(v)) {
-                    _default.add(v)
+                if (!delete.contains(v) && !new.contains(v) && !default.contains(v)) {
+                    default.add(v)
                 }
             }
-            return Triplet(_del, _add, _default)
+            return Triplet(delete, new, default)
         }
 
         /**
@@ -280,13 +249,18 @@ class CommonUtils {
          * @return 字符串
         </T> */
         @JvmStatic
-        fun <T> collectionToStr(collection: Collection<T>, handler: CollectionToStrMap<T>, split: String?): String? {
+        fun <T> collectionToStr(collection: Collection<T>, handler: CollectionToStrMap<T>, split: String?): String {
+            if (CollectionUtils.isEmpty(collection)) {
+                return CommonConfig.EMPTY_STRING
+            }
+
             val sb = StringBuilder()
             for (t in collection) {
                 sb.append(handler.map(t))
                     .append(split)
             }
-            return if (collection.size == 0) CommonConfig.EMPTY_STRING else sb.substring(0, sb.length - 1)
+
+            return sb.substring(0, sb.length - 1)
         }
 
         /**
@@ -303,7 +277,11 @@ class CommonUtils {
             collection: Collection<T>,
             handler: CollectionToStrMap<T>,
             split: String?
-        ): String? {
+        ): String {
+            if (CollectionUtils.isEmpty(collection)) {
+                return CommonConfig.EMPTY_STRING
+            }
+
             val len = collection.size
             val sb = StringBuilder()
             var i = 0
@@ -315,7 +293,7 @@ class CommonUtils {
                 sb.append(split)
                 i++
             }
-            return if (collection.size == 0) CommonConfig.EMPTY_STRING else sb.substring(0, sb.length - 1)
+            return sb.substring(0, sb.length - 1)
         }
 
         /**
@@ -526,19 +504,26 @@ class CommonUtils {
          * 遍历JsonNode
          *
          * @param jsonNode JsonNode
-         * @param map      map
+         * @param mapHandler      map
          * @param <T>
          * @return
-        </T> */
+         */
         @JvmStatic
-        fun <T> mapJsonNode(jsonNode: JsonNode, mapHandler: Function<JsonNode?, T>): List<T>? {
+        inline fun <T> mapJsonNode(jsonNode: JsonNode, mapHandler: (JsonNode) -> T): List<T> {
+            if (CollectionUtils.isEmpty(jsonNode)) {
+                return Collections.emptyList()
+            }
+
             val valueList: MutableList<T> = ArrayList(jsonNode.size())
+
             for (node in jsonNode) {
                 var value: T
-                if (mapHandler.apply(node).also { value = it } != null) {
+
+                if (mapHandler(node).also { value = it } != null) {
                     valueList.add(value)
                 }
             }
+
             return valueList
         }
     }

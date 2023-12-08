@@ -54,7 +54,7 @@ public class MybatisPlusBeanConfig {
                 new ClassPathResource("mappers/MusicDaoMapper.xml")
         );
 
-        if (vueBlogConfig.getIsProc() != null && vueBlogConfig.getIsProc()) {
+        if (vueBlogConfig.isProc()) {
             MybatisConfiguration mybatisConfiguration = new MybatisConfiguration();
             mybatisConfiguration.setLogImpl(NoLoggingImpl.class);
             sqlSessionFactory.setConfiguration(mybatisConfiguration);
