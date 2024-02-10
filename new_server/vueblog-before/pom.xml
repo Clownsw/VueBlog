@@ -14,6 +14,10 @@
     <groupId>vip.smilex.vueblog.before</groupId>
     <artifactId>vueblog-before</artifactId>
 
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -45,8 +49,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <target>8</target>
-                    <source>8</source>
+                    <target>17</target>
+                    <source>17</source>
                 </configuration>
             </plugin>
 
