@@ -7,6 +7,6 @@
        http://www.springframework.org/schema/context
        https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="cn.smilex.vueblog"/>
+    <context:component-scan base-package="vip.smilex.vueblog"/>
 
 </beans>

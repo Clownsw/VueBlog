@@ -4,20 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>vueblog-parent</artifactId>
-        <groupId>cn.smilex.vueblog.parent</groupId>
+        <groupId>vip.smilex.vueblog.parent</groupId>
         <version>0.11-dev</version>
         <relativePath>../vueblog-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.smilex.vueblog.after</groupId>
+    <groupId>vip.smilex.vueblog.after</groupId>
     <artifactId>vueblog-after</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>cn.smilex.vueblog.common</groupId>
+            <groupId>vip.smilex.vueblog.common</groupId>
             <artifactId>vueblog-common</artifactId>
-            <version>0.11-dev</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -55,7 +55,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>cn.smilex.vueblog.after.VueBlogAfterMain</mainClass>
+                            <mainClass>vip.smilex.vueblog.after.VueBlogAfterMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
