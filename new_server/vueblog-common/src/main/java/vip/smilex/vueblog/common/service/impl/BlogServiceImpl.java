@@ -176,6 +176,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                         finalSql
                 );
 
+                assert selectShowBlogList != null;
                 blogParseTag(selectShowBlogList);
 
                 limit.setDataList(selectShowBlogList);
@@ -245,6 +246,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                         tagId
                 );
 
+                assert selectShowBlogList != null;
                 blogParseTag(selectShowBlogList);
 
                 limit.setDataList(selectShowBlogList);
@@ -282,6 +284,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements BlogS
                         sortId
                 );
 
+                assert selectShowBlogList != null;
                 blogParseTag(selectShowBlogList);
 
                 limit.setDataList(selectShowBlogList);

@@ -1,19 +1,15 @@
 package vip.smilex.vueblog.common.service.impl;
 
-import vip.smilex.vueblog.common.dao.SystemDao;
-import vip.smilex.vueblog.common.entity.other.Footer;
-import vip.smilex.vueblog.common.entity.other.System;
-import vip.smilex.vueblog.common.entity.other.SystemUpdateRequest;
-import vip.smilex.vueblog.common.service.OtherService;
-import vip.smilex.vueblog.common.service.SystemService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vip.smilex.vueblog.common.dao.SystemDao;
 import vip.smilex.vueblog.common.entity.other.Footer;
 import vip.smilex.vueblog.common.entity.other.System;
 import vip.smilex.vueblog.common.entity.other.SystemUpdateRequest;
+import vip.smilex.vueblog.common.service.OtherService;
 import vip.smilex.vueblog.common.service.SystemService;
 
 /**
