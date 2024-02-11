@@ -1,0 +1,1 @@
+docker build -t smilex1/vueblog-after:0.12 -f Dockerfile .
