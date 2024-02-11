@@ -30,6 +30,12 @@
 
 ## 部署
 
+
+### meilisearch
+```bash
+docker run -it -d --name meilisearch -p 7700:7700 -e MEILI_MASTER_KEY="xxx" getmeili/meilisearch:v0.25.0
+```
+
 ### 数据库
 
 ```bash
