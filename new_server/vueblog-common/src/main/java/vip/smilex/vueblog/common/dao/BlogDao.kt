@@ -3,6 +3,8 @@ package vip.smilex.vueblog.common.dao
 import com.baomidou.mybatisplus.core.mapper.BaseMapper
 import org.apache.ibatis.annotations.Param
 import vip.smilex.vueblog.common.entity.blog.Blog
+import vip.smilex.vueblog.common.entity.blog.SelectBlogInfo
+import vip.smilex.vueblog.common.entity.blog.SelectShowBlog
 
 /**
  * @author smilex
@@ -20,7 +22,7 @@ interface BlogDao : BaseMapper<Blog> {
         @Param("pageSize") pageSize: Long?,
         @Param("currentPage") currentPage: Long?,
         @Param("sql") sql: String?,
-    ): List<vip.smilex.vueblog.common.entity.blog.SelectShowBlog?>?
+    ): List<SelectShowBlog>
 
     /**
      * 根据指定标签分页查询所有文章
@@ -34,7 +36,7 @@ interface BlogDao : BaseMapper<Blog> {
         @Param("pageSize") pageSize: Long?,
         @Param("currentPage") currentPage: Long?,
         @Param("tagId") tagId: Long?,
-    ): List<vip.smilex.vueblog.common.entity.blog.SelectShowBlog?>?
+    ): List<SelectShowBlog>
 
     /**
      * 根据指定分类分页查询所有文章
@@ -48,7 +50,7 @@ interface BlogDao : BaseMapper<Blog> {
         @Param("pageSize") pageSize: Long?,
         @Param("currentPage") currentPage: Long?,
         @Param("sortId") sortId: Int?,
-    ): List<vip.smilex.vueblog.common.entity.blog.SelectShowBlog?>?
+    ): List<SelectShowBlog?>?
 
     /**
      * 根据ID获取文章信息
@@ -59,7 +61,7 @@ interface BlogDao : BaseMapper<Blog> {
     fun selectBlogById(
         @Param("id") id: Long?,
         @Param("isAdmin") isAdmin: Boolean,
-    ): vip.smilex.vueblog.common.entity.blog.SelectBlogInfo?
+    ): SelectBlogInfo
 
     /**
      * 根据ID获取文章信息 (包含content)
@@ -67,7 +69,7 @@ interface BlogDao : BaseMapper<Blog> {
      * @param id id
      * @return 文章信息
      */
-    fun selectShowBlogById(id: Long?): vip.smilex.vueblog.common.entity.blog.SelectBlogInfo?
+    fun selectShowBlogById(id: Long): SelectBlogInfo
 
     /**
      * 根据标签ID查询文章个数
