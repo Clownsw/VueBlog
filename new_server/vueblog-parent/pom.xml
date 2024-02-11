@@ -7,7 +7,7 @@
     <groupId>vip.smilex.vueblog.parent</groupId>
     <artifactId>vueblog-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.11-dev</version>
+    <version>0.12</version>
 
     <modules>
         <module>../vueblog-after</module>

@@ -1,11 +1,10 @@
-FROM smilex1/tencent-kona:8.0.14-372
+FROM bellsoft/liberica-runtime-container:jdk-all-17-cds-slim-musl
 
-ENV JAVA_OPTIONS="-XX:+UseG1GC -XX:+G1ParallelFullGC -XX:+G1RebuildRemSet -XX:+UseStringDeduplication -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -XX:+UseTLAB -XX:+ZeroTLAB -XX:+ResizeTLAB -Xloggc:gc.log -verbose:gc"
-ENV JAVA_MEM_OPTIONS="-XX:ParallelGCThreads=8 -XX:ConcGCThreads=8 -XX:G1HeapRegionSize=4M -Xmx800M"
+ENV JAVA_OPTIONS="-XX:ParallelGCThreads=2 -XX:ConcGCThreads=1 -XX:G1HeapRegionSize=1M -XX:+UseTLAB -XX:+ZeroTLAB -XX:+ResizeTLAB -Xms128M -Xmx256M --add-opens java.base/sun.misc=ALL-UNNAMED --add-opens java.base/jdk.internal.misc=ALL-UNNAMED -Dio.netty.tryReflectionSetAccessible=true"
 ENV VUEBLOG_CONFIG_PATH="/app/vueblog-config.json"
 
 ENV FILE_NAME="vueblog-after.jar"
 
 ADD ./${FILE_NAME} /app/${FILE_NAME}
 
-ENTRYPOINT java ${JAVA_OPTIONS} ${JAVA_MEM_OPTIONS} -Dvueblog.config.path=${VUEBLOG_CONFIG_PATH} -jar "/app/${FILE_NAME}"
+ENTRYPOINT java ${JAVA_OPTIONS} -Dvueblog.config.path=${VUEBLOG_CONFIG_PATH} -jar "/app/${FILE_NAME}"
