@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import vip.smilex.vueblog.common.annotation.CrossOrigin
 import vip.smilex.vueblog.common.annotation.cache.Cache
 import vip.smilex.vueblog.common.entity.blog.RequestBlog
+import vip.smilex.vueblog.common.entity.common.Result
 import vip.smilex.vueblog.common.handler.AuthService
 import vip.smilex.vueblog.common.util.CommonUtils
 import java.util.*
@@ -36,8 +37,8 @@ class BlogController(private val blogService: vip.smilex.vueblog.common.service.
         @Param("currentPage") currentPage: Long?,
         @Param("pageSize") pageSize: Long?,
         @RequestObject queryString: Optional<String?>,
-    ): vip.smilex.vueblog.common.entity.common.Result<*> {
-        return vip.smilex.vueblog.common.entity.common.Result.success(
+    ): Result<*> {
+        return Result.success(
             blogService.selectBlogPage(
                 currentPage,
                 pageSize,
@@ -54,8 +55,8 @@ class BlogController(private val blogService: vip.smilex.vueblog.common.service.
      */
     @Get("/:id")
     @Options("/:id")
-    fun info(@Param("id") id: Long?): vip.smilex.vueblog.common.entity.common.Result<*> {
-        return vip.smilex.vueblog.common.entity.common.Result.success(blogService.selectSelectShowBlogById(id, true))
+    fun info(@Param("id") id: Long?): Result<*> {
+        return Result.success(blogService.selectSelectShowBlogById(id, true))
     }
 
     /**
@@ -66,8 +67,8 @@ class BlogController(private val blogService: vip.smilex.vueblog.common.service.
      */
     @Get("/key/:id")
     @Options("/key/:id")
-    fun blogKey(@Param("id") id: Long?): vip.smilex.vueblog.common.entity.common.Result<*> {
-        return vip.smilex.vueblog.common.entity.common.Result.success(blogService.selectBlogKeyById(id))
+    fun blogKey(@Param("id") id: Long?): Result<*> {
+        return Result.success(blogService.selectBlogKeyById(id))
     }
 
     /**
@@ -78,11 +79,11 @@ class BlogController(private val blogService: vip.smilex.vueblog.common.service.
      */
     @Post("/edit")
     @Options("/edit")
-    fun edit(@RequestObject requestBlog: Optional<RequestBlog?>): vip.smilex.vueblog.common.entity.common.Result<*> {
+    fun edit(@RequestObject requestBlog: Optional<RequestBlog?>): Result<*> {
         return requestBlog.filter { blog: RequestBlog? -> blogService.edit(blog) }
-            .map { vip.smilex.vueblog.common.entity.common.Result.success() }
+            .map { Result.success() }
             .orElseGet {
-                vip.smilex.vueblog.common.entity.common.Result.fromResultCode(
+                Result.fromResultCode(
                     vip.smilex.vueblog.common.config.ResultCode.ERROR_REQUEST_PARAM_ERROR
                 )
             }
@@ -96,14 +97,14 @@ class BlogController(private val blogService: vip.smilex.vueblog.common.service.
      */
     @Post("/batchDelete")
     @Options("/batchDelete")
-    fun batchDelete(@RequestObject idList: Optional<List<Long?>>): vip.smilex.vueblog.common.entity.common.Result<*> {
+    fun batchDelete(@RequestObject idList: Optional<List<Long?>>): Result<*> {
         return idList.filter { v: List<Long?> -> v.isNotEmpty() }
             .map { v: List<Long?>? ->
                 blogService.batchRemove(v)
-                vip.smilex.vueblog.common.entity.common.Result.success()
+                Result.success()
             }
             .orElseGet {
-                vip.smilex.vueblog.common.entity.common.Result.fromResultCode(
+                Result.fromResultCode(
                     vip.smilex.vueblog.common.config.ResultCode.ERROR_REQUEST_PARAM_ERROR
                 )
             }
