@@ -19,7 +19,7 @@ class RequestBlog {
     var title: String? = null
     var description: String? = null
     var content: String? = null
-    var tag: List<vip.smilex.vueblog.common.entity.tag.SelectBlogTag>? = null
+    var tag: List<SelectBlogTag>? = null
     var status: Short? = null
     var key: String? = null
 

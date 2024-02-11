@@ -132,7 +132,7 @@ public class OtherServiceImpl extends ServiceImpl<OtherDao, Other> implements Ot
 
         return CommonConfig.OBJECT_MAPPER.readValue(
                 other.getContent(),
-                new TypeReference<BackUp>() {
+                new TypeReference<>() {
                 }
         );
     }

@@ -41,8 +41,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             return false;
         }
 
-        Tuple<Boolean, Map<String, Object>> result = JwtUtils.signJWTToken(token);
-        return result.getLeft();
+        final Tuple<Boolean, Map<String, Object>> result = JwtUtils.signJWTToken(token);
+        return Boolean.TRUE.equals(result.getLeft());
     }
 
     /**

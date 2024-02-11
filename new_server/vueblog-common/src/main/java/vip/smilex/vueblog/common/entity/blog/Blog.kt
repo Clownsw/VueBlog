@@ -3,6 +3,7 @@ package vip.smilex.vueblog.common.entity.blog
 import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableField
 import com.baomidou.mybatisplus.annotation.TableId
+import com.baomidou.mybatisplus.annotation.TableName
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
@@ -14,6 +15,7 @@ import java.time.LocalDateTime
  * @author smilex
  * @date 2023/12/4 21:39:49
  */
+@TableName("m_blog")
 data class Blog(
     @TableId(value = "id", type = IdType.AUTO) @JsonSerialize(using = ToStringSerializer::class)
     var id: Long? = null,
